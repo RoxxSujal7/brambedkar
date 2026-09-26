@@ -658,9 +658,13 @@
     const mobileMenu = document.getElementById('mobile-menu');
     if (hamburger && mobileMenu && !hamburger.__navWired) {
       hamburger.__navWired = true;
-      hamburger.addEventListener('click', () => {
-        const isExpanded = hamburger.getAttribute('aria-expanded') === 'true';
-        const nextState = !isExpanded;
+      hamburger.addEventListener('click', (e) => {
+        if (e) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+        const isOpen = mobileMenu.classList.contains('open');
+        const nextState = !isOpen;
         hamburger.setAttribute('aria-expanded', String(nextState));
         mobileMenu.classList.toggle('open', nextState);
         document.body.style.overflow = nextState ? 'hidden' : '';
@@ -804,6 +808,8 @@
         }
         requestAnimationFrame(raf);
       }
+
+      initReadingProgressBar(lenis);
     }
 
     function setupChoreography() {
@@ -862,6 +868,9 @@
       }
     }
 
+    // Attach fallback progress bar immediately
+    initReadingProgressBar(null);
+
     // Load vendor libraries sequentially
     loadScript('js/vendor/lenis.min.js', () => {
       loadScript('js/vendor/gsap.min.js', () => {
@@ -870,6 +879,214 @@
         });
       });
     });
+  }
+
+  // ── 7C. Luxury Reading Progress Bar ───────────────────────
+  function initReadingProgressBar(lenis) {
+    let bar = document.getElementById('reading-progress-bar');
+    if (!bar) {
+      bar = document.createElement('div');
+      bar.id = 'reading-progress-bar';
+      bar.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(bar);
+    }
+    const updateProgress = () => {
+      const docH = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docH > 0 ? (window.scrollY / docH) * 100 : 0;
+      bar.style.width = Math.min(100, Math.max(0, progress)) + '%';
+    };
+    if (lenis && typeof lenis.on === 'function') {
+      lenis.on('scroll', (e) => {
+        const p = (e.progress !== undefined ? e.progress * 100 : (e.scroll / Math.max(1, e.limit)) * 100);
+        bar.style.width = Math.min(100, Math.max(0, p)) + '%';
+      });
+    } else {
+      window.addEventListener('scroll', updateProgress, { passive: true });
+    }
+    updateProgress();
+  }
+
+  // ── 7D. Apple Glass Command Palette (Cmd+K / ? Trigger) ───
+  function initCommandPalette() {
+    if (document.getElementById('command-palette-backdrop')) return;
+
+    const COMMAND_ITEMS = [
+      { id: 'search', title: 'Search Archive (Press /)', badge: 'Catalog', icon: '🔍', action: () => window.location.href = 'archive.html#search' },
+      { id: 'volumes', title: 'Complete Works (60 Volumes)', badge: 'Archive', icon: '📚', action: () => window.location.href = 'archive.html' },
+      { id: 'assistant', title: 'Ask AI Research Assistant', badge: 'Intelligence', icon: '🤖', action: () => window.location.href = 'assistant.html' },
+      { id: 'debates', title: 'Constituent Assembly Debates', badge: 'History', icon: '⚖️', action: () => window.location.href = 'debates.html' },
+      { id: 'letters', title: 'Letters & Correspondence (361)', badge: 'Writings', icon: '📜', action: () => window.location.href = 'letters.html' },
+      { id: 'vows', title: 'The 22 Vows (२२ प्रतिज्ञा)', badge: 'Philosophy', icon: '☸️', action: () => window.location.href = 'vows.html' },
+      { id: 'timeline', title: 'Historical Life Timeline', badge: 'Chronology', icon: '📅', action: () => window.location.href = 'timeline.html' },
+      { id: 'memorials', title: 'National Memorials & Heritage', badge: 'Memorials', icon: '🏛️', action: () => window.location.href = 'memorials.html' },
+      { id: 'constitution', title: 'Constitution of India', badge: 'Republic', icon: '📜', action: () => window.location.href = 'constitution.html' },
+      { id: 'ideas', title: 'Thematic Ideas & Philosophical Core', badge: 'Ideas', icon: '💡', action: () => window.location.href = 'ideas.html' },
+      { id: 'media', title: 'Historic Speeches & Audio-Visual Media', badge: 'Media', icon: '🎬', action: () => window.location.href = 'media.html' },
+      { id: 'ocr', title: 'Manuscript OCR Visualizer', badge: 'Technology', icon: '📜', action: () => window.location.href = 'ocr.html' },
+      { id: 'slides', title: 'Visual Exhibition Deck (16:9)', badge: 'Deck', icon: '📽️', action: () => window.location.href = 'slides.html' },
+      { id: 'learning', title: 'Learning Center & Curricula', badge: 'Education', icon: '🎓', action: () => window.location.href = 'learning.html' },
+      { id: 'theme-dark', title: 'Atmosphere: Switch to Dark Slate', badge: 'Theme', icon: '🌙', action: () => setSiteTheme('dark') },
+      { id: 'theme-paper', title: 'Atmosphere: Switch to Ivory Paper', badge: 'Theme', icon: '📜', action: () => setSiteTheme('paper') },
+      { id: 'theme-sepia', title: 'Atmosphere: Switch to Historical Sepia', badge: 'Theme', icon: '🏺', action: () => setSiteTheme('sepia') },
+      { id: 'lang-en', title: 'Language: English (EN)', badge: 'Language', icon: '🌐', action: () => setSiteLanguage('en') },
+      { id: 'lang-hi', title: 'Language: हिन्दी (Hindi)', badge: 'Language', icon: '🌐', action: () => setSiteLanguage('hi') },
+      { id: 'lang-mr', title: 'Language: मराठी (Marathi)', badge: 'Language', icon: '🌐', action: () => setSiteLanguage('mr') }
+    ];
+
+    function setSiteTheme(theme) {
+      if (window.AppState && typeof window.AppState.setSiteTheme === 'function') {
+        window.AppState.setSiteTheme(theme, true);
+      } else {
+        document.documentElement.setAttribute('data-theme', theme);
+        document.body.className = 'mode-' + theme;
+        localStorage.setItem('site_theme', theme);
+        document.querySelectorAll('.theme-toggle-btn').forEach(b => {
+          b.classList.toggle('active', b.dataset.theme === theme);
+        });
+      }
+    }
+
+    function setSiteLanguage(lang) {
+      if (window.AppState && typeof window.AppState.setLanguage === 'function') {
+        window.AppState.setLanguage(lang);
+      } else {
+        localStorage.setItem('site_lang', lang);
+        document.querySelectorAll('.lang-btn').forEach(b => {
+          const match = b.dataset.lang === lang;
+          b.classList.toggle('active', match);
+          b.setAttribute('aria-pressed', String(match));
+        });
+      }
+    }
+
+    const backdrop = document.createElement('div');
+    backdrop.id = 'command-palette-backdrop';
+    backdrop.className = 'command-palette-backdrop';
+    backdrop.innerHTML = `
+      <div class="command-palette-modal" role="dialog" aria-modal="true" aria-label="Command Palette">
+        <div class="command-palette-header">
+          <span class="command-palette-icon">⌘</span>
+          <input type="text" id="command-palette-input" class="command-palette-input" placeholder="Type a destination, volume, or atmosphere..." autocomplete="off" spellcheck="false" />
+          <kbd class="command-palette-kbd">ESC</kbd>
+        </div>
+        <div id="command-palette-results" class="command-palette-results" role="listbox"></div>
+        <div class="command-palette-footer">
+          <span><kbd>↑</kbd> <kbd>↓</kbd> navigate</span>
+          <span><kbd>↵</kbd> select</span>
+          <span><kbd>ESC</kbd> dismiss</span>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(backdrop);
+
+    const input = backdrop.querySelector('#command-palette-input');
+    const results = backdrop.querySelector('#command-palette-results');
+    let selectedIndex = 0;
+    let currentMatches = [];
+
+    function renderResults(filterText) {
+      const q = (filterText || '').toLowerCase().trim();
+      currentMatches = COMMAND_ITEMS.filter(item => {
+        if (!q) return true;
+        return item.title.toLowerCase().includes(q) || item.badge.toLowerCase().includes(q);
+      });
+
+      if (selectedIndex >= currentMatches.length) selectedIndex = 0;
+
+      if (currentMatches.length === 0) {
+        results.innerHTML = '<div style="padding:18px;text-align:center;color:var(--text-muted);font-size:0.88rem;">No matching commands found. Press ESC to dismiss.</div>';
+        return;
+      }
+
+      results.innerHTML = currentMatches.map((item, idx) => `
+        <div class="command-palette-item ${idx === selectedIndex ? 'active' : ''}" data-index="${idx}" role="option" aria-selected="${idx === selectedIndex}">
+          <div class="command-palette-item-left">
+            <span class="command-palette-item-icon">${item.icon}</span>
+            <span class="command-palette-item-title">${item.title}</span>
+          </div>
+          <span class="command-palette-item-badge">${item.badge}</span>
+        </div>
+      `).join('');
+
+      // Wire clicks
+      results.querySelectorAll('.command-palette-item').forEach(el => {
+        el.addEventListener('click', () => {
+          const idx = parseInt(el.dataset.index, 10);
+          if (currentMatches[idx]) {
+            closePalette();
+            currentMatches[idx].action();
+          }
+        });
+      });
+    }
+
+    function openPalette() {
+      backdrop.classList.add('open');
+      input.value = '';
+      selectedIndex = 0;
+      renderResults('');
+      setTimeout(() => input.focus(), 60);
+    }
+
+    function closePalette() {
+      backdrop.classList.remove('open');
+      input.blur();
+    }
+
+    backdrop.addEventListener('click', (e) => {
+      if (e.target === backdrop) closePalette();
+    });
+
+    input.addEventListener('input', () => {
+      selectedIndex = 0;
+      renderResults(input.value);
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (currentMatches.length > 0) {
+          selectedIndex = (selectedIndex + 1) % currentMatches.length;
+          renderResults(input.value);
+        }
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (currentMatches.length > 0) {
+          selectedIndex = (selectedIndex - 1 + currentMatches.length) % currentMatches.length;
+          renderResults(input.value);
+        }
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (currentMatches[selectedIndex]) {
+          closePalette();
+          currentMatches[selectedIndex].action();
+        }
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        closePalette();
+      }
+    });
+
+    // Global shortcut listener
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && backdrop.classList.contains('open')) {
+        closePalette();
+        return;
+      }
+      const activeEl = document.activeElement;
+      const isInput = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.isContentEditable);
+      
+      if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        if (backdrop.classList.contains('open')) closePalette();
+        else openPalette();
+      } else if (e.key === '?' && !isInput && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        e.preventDefault();
+        openPalette();
+      }
+    });
+
+    window.openCommandPalette = openPalette;
   }
 
   // ── 8. Public API & Auto-Initialization ───────────────────
@@ -887,6 +1104,7 @@
       renderOrSyncFloatingDock();
       wireCoreNavActions();
       initSmoothMotion();
+      initCommandPalette();
     },
     resetDockPosition: function() {
       const def = { ...DEFAULT_POS, snap: 'snap-bottom-center' };

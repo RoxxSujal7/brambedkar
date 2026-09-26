@@ -404,9 +404,14 @@ function initHamburger() {
   const mobileMenu = document.getElementById('mobile-menu');
   if (!hamburger || !mobileMenu) return;
 
-  hamburger.addEventListener('click', () => {
-    const isExpanded = hamburger.getAttribute('aria-expanded') === 'true';
-    const nextState = !isExpanded;
+  // Single Source of Truth: if handled by NavigationSystem, prevent duplicate click listeners
+  if (hamburger.__navWired || window.NavigationSystem) return;
+  hamburger.__navWired = true;
+
+  hamburger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = mobileMenu.classList.contains('open');
+    const nextState = !isOpen;
     hamburger.setAttribute('aria-expanded', String(nextState));
     mobileMenu.classList.toggle('open', nextState);
     document.body.style.overflow = nextState ? 'hidden' : '';

@@ -18,7 +18,9 @@
 [![AI Engine: Google Gemini](https://img.shields.io/badge/AI_CORE-GOOGLE_GEMINI_1.5-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://aistudio.google.com/)
 [![Voice: Web Speech STT/TTS](https://img.shields.io/badge/VOICE_ENGINE-SPEECH_STT%20%7C%20TTS-D4AF37?style=for-the-badge&logo=soundcharts&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API)
 [![Security: Strix SAST & Hardened](https://img.shields.io/badge/SECURITY-STRIX_AI_%7C_HELMET_CSP-E11D48?style=for-the-badge&logo=securityscorecard&logoColor=white)](https://github.com/RoxxSujal7/brsih2026)
-[![Audit: 104+ Passing](https://img.shields.io/badge/AUDIT_SUITE-104%2B_CHECKS_PASSING-10B981?style=for-the-badge&logo=checkmarx&logoColor=white)](#-testing--quality-gates)
+[![Audit: 204 Checks Passing](https://img.shields.io/badge/AUDIT_SUITE-204%20CHECKS%20PASSING-10B981?style=for-the-badge&logo=checkmarx&logoColor=white)](#-quality-gates--verification-suite)
+[![Smooth Scroll: Lenis](https://img.shields.io/badge/SMOOTH_SCROLL-LENIS_1.1-000000?style=for-the-badge&logo=apple&logoColor=white)](https://lenis.darkroom.engineering/)
+[![Motion: GSAP Scrollytelling](https://img.shields.io/badge/ANIMATION-GSAP_3.12-88CE02?style=for-the-badge&logo=greensock&logoColor=white)](https://gsap.com/)
 [![License: MIT](https://img.shields.io/badge/LICENSE-MIT-1E293B?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
 <br/>
@@ -295,7 +297,7 @@ ecc/
     │   │   └── ...                     # Feature-specific controllers
     │   └── pdfs/                       # Static archival volume documents
     ├── docs/                           # Architecture JSON diagrams & visual checks
-    └── tests/                          # 11 Test suites with 104+ verified checks
+    └── tests/                          # 11 Test suites with 204 verified checks (100% passing)
 ```
 
 ---
@@ -366,6 +368,42 @@ npm run build
 # Start production server
 npm start
 ```
+
+---
+
+## 🧪 Quality Gates & Verification Suite
+
+The platform enforces **eval-driven development (EDD)** and continuous quality gates with **11 comprehensive automated test suites** validating 204 institutional integrity checks:
+
+| # | Test Suite | Scope & Invariants Verified | Checks | Status |
+|---|---|---|:---:|:---:|
+| 1 | `content-expansion-audit.test.js` | 60 BAWS Volumes, 361 Letters, 22 Vows, and Debates integrity | 79 | **PASSED** ✅ |
+| 2 | `institutional-audit.test.js` | Sourcing, metadata integrity, historical accuracy & preservation standards | 35 | **PASSED** ✅ |
+| 3 | `admin-cms.test.js` | CMS CRUD operations, audit log immutability, and state consistency | 18 | **PASSED** ✅ |
+| 4 | `security-regression.test.js` | Rate limiting, Helmet CSP headers, NoSQL injection & Strix security guards | 17 | **PASSED** ✅ |
+| 5 | `navigation-system.test.js` | Master navbar, movable dock, snap coords & mobile drawer synchronization | 11 | **PASSED** ✅ |
+| 6 | `rbac-authorization.test.js` | Role-based access control (Admin, Researcher, Public), JWT token scopes | 9 | **PASSED** ✅ |
+| 7 | `research-workspace.test.js` | Citation generator, bookmark exports, multi-format annotations | 9 | **PASSED** ✅ |
+| 8 | `about-page.test.js` | Developer portfolio links, architectural diagrams & institutional vision | 8 | **PASSED** ✅ |
+| 9 | `hybrid-search.test.js` | Multi-corpus text matching, transliterated search & ranking latency | 6 | **PASSED** ✅ |
+| 10 | `sha256-integrity.test.js` | Cryptographic SHA-256 digital signature verification for volume assets | 6 | **PASSED** ✅ |
+| 11 | `theme-font-contrast.test.js` | WCAG 2.1 AAA contrast ratios across Dark Slate, Ivory Paper, and Sepia | 6 | **PASSED** ✅ |
+| **Total** | **11 Test Suites** | **Comprehensive Full-Stack Institutional Test Harness** | **204** | **100% GREEN** 🏆 |
+
+---
+
+## 🚀 Advanced Interaction & Motion Architecture
+
+- **Lenis Smooth Inertial Scrolling (`Lenis 1.1`)**: Silk-smooth 60fps inertial scrolling on desktop with `smoothTouch: false` to retain native 120Hz Apple ProMotion touch physics on smartphones.
+- **GSAP Scrollytelling (`GSAP 3.12 + ScrollTrigger`)**: Orchestrated staggered entrances for statistics, bento showcase cards, and archival quotes with zero layout thrashing.
+- **Apple Glass Curated Hubs Dockbar**: Movable glass capsule pill with spring snap physics across desktop and mobile, dynamically synchronized across reading atmospheres:
+  - 🌙 **Dark Slate**: Obsidian glass with radiant gold highlights.
+  - 📜 **Ivory Paper**: Warm parchment glass with refined scholastic bronze ink.
+  - 🏺 **Historical Sepia**: Antique museum parchment with rich terracotta accents.
+- **Mobile Tap-to-Expand Glass Bottom Sheet**: On mobile viewports (390px), the Curated Hub collapses into an unobtrusive glass capsule (`[ ⠿ CURATED HUBS (10) ▾ ]`) and expands into an iOS-grade 2-column quick sheet.
+- **Luxury Reading Scroll Progress Bar**: Lenis & scroll-synchronized 2.5px gold gradient indicator at the top of the viewport.
+- **Keyboard Shortcuts Command Palette (`Cmd/Ctrl + K` or `?`)**: Instant Apple Glass search modal allowing instant navigation across all 60 volumes, 361 letters, 22 vows, debates, themes, and language preferences.
+- **Pixel-Perfect Mobile Viewport**: 100% responsive on 390px screens (`scrollWidth === clientWidth === 390px`, 0 overflow elements).
 
 ---
 

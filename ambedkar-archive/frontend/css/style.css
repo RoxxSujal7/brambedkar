@@ -1246,9 +1246,32 @@ body.mode-sepia .theme-toggle-btn.active {
   .nav-inner {
     padding: 0 8px 0 10px;
   }
-  .nav-logo-text span:first-child {
+  .nav-actions {
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .nav-actions a[href*="archive.html#search"] {
+    padding: 6px 10px;
     font-size: 0.82rem;
-    letter-spacing: 0.02em;
+  }
+  .nav-actions a[href*="archive.html#search"] .btn-icon-bubble {
+    display: none !important;
+  }
+  .nav-logo {
+    min-width: 0;
+    flex-shrink: 1;
+  }
+  .nav-logo-text {
+    min-width: 0;
+    overflow: hidden;
+  }
+  .nav-logo-text span:first-child {
+    font-size: 0.8rem;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
   }
   #nav-login-btn {
     display: none !important; /* Accessible inside mobile drawer */
@@ -1257,6 +1280,7 @@ body.mode-sepia .theme-toggle-btn.active {
     min-width: 38px;
     min-height: 38px;
     padding: 6px;
+    flex-shrink: 0;
   }
 }
 

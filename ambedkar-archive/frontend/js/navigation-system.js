@@ -724,6 +724,154 @@
     });
   }
 
+  // ── 7B. Lenis Inertial Smooth Scrolling & GSAP Scrollytelling ─
+  function initSmoothMotion() {
+    if (typeof window === 'undefined' || typeof document === 'undefined') return;
+    if (!document.head || typeof document.head.appendChild !== 'function') return;
+
+    const path = getCurrentPath();
+    // Exclude specialized kiosk / ambient fullscreen exhibition modes
+    if (path === 'kiosk.html' || path === 'exhibition.html' || path === 'slides.html') {
+      return;
+    }
+
+    // Respect reduced motion preference for accessibility
+    if (typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return;
+    }
+
+    function loadScript(src, cb) {
+      if (document.querySelector(`script[src="${src}"]`)) {
+        if (cb) cb();
+        return;
+      }
+      const s = document.createElement('script');
+      s.src = src;
+      s.async = false;
+      s.onload = cb;
+      s.onerror = () => { /* graceful degradation */ };
+      document.head.appendChild(s);
+    }
+
+    function setupSmoothEngine() {
+      if (typeof window.Lenis === 'undefined') return;
+
+      const lenis = new window.Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        orientation: 'vertical',
+        gestureOrientation: 'vertical',
+        smoothWheel: true,
+        smoothTouch: false, // Keep native 120Hz ProMotion on mobile touch screens
+        touchMultiplier: 1.5,
+        prevent: (node) => {
+          if (!node) return false;
+          return !!(node.closest && node.closest('.floating-dock, .modal, .chat-messages, .reader-panel, #mobile-menu'));
+        }
+      });
+
+      window.lenis = lenis;
+
+      // Handle anchor hash smooth jumps
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', (e) => {
+          const targetId = anchor.getAttribute('href');
+          if (targetId && targetId !== '#' && targetId.length > 1) {
+            const targetEl = document.querySelector(targetId);
+            if (targetEl) {
+              e.preventDefault();
+              lenis.scrollTo(targetEl, { offset: -80 });
+            }
+          }
+        });
+      });
+
+      if (window.gsap && window.ScrollTrigger) {
+        window.gsap.registerPlugin(window.ScrollTrigger);
+
+        lenis.on('scroll', window.ScrollTrigger.update);
+
+        window.gsap.ticker.add((time) => {
+          lenis.raf(time * 1000);
+        });
+        window.gsap.ticker.lagSmoothing(0);
+
+        setupChoreography();
+      } else {
+        function raf(time) {
+          lenis.raf(time);
+          requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+      }
+    }
+
+    function setupChoreography() {
+      if (!window.gsap || !window.ScrollTrigger) return;
+      const gsap = window.gsap;
+
+      // Subtle staggered entrance for stats bar
+      const statItems = document.querySelectorAll('.stat-item');
+      if (statItems.length > 0) {
+        gsap.from(statItems, {
+          y: 20,
+          opacity: 0,
+          duration: 0.7,
+          stagger: 0.1,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '.stats-bar',
+            start: 'top 90%',
+            toggleActions: 'play none none none'
+          }
+        });
+      }
+
+      // Foundational Treatises bento cards
+      const bentoCards = document.querySelectorAll('.bento-grid .card');
+      if (bentoCards.length > 0) {
+        gsap.from(bentoCards, {
+          y: 28,
+          opacity: 0,
+          duration: 0.75,
+          stagger: 0.1,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '.bento-grid',
+            start: 'top 85%',
+            toggleActions: 'play none none none'
+          }
+        });
+      }
+
+      // Feature cards / generic cards across archive
+      const featureCards = document.querySelectorAll('.feature-card, .collection-card');
+      if (featureCards.length > 0) {
+        gsap.from(featureCards, {
+          y: 20,
+          opacity: 0,
+          duration: 0.6,
+          stagger: 0.08,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: featureCards[0].parentElement || featureCards[0],
+            start: 'top 85%',
+            toggleActions: 'play none none none'
+          }
+        });
+      }
+    }
+
+    // Load vendor libraries sequentially
+    loadScript('js/vendor/lenis.min.js', () => {
+      loadScript('js/vendor/gsap.min.js', () => {
+        loadScript('js/vendor/ScrollTrigger.min.js', () => {
+          setupSmoothEngine();
+        });
+      });
+    });
+  }
+
   // ── 8. Public API & Auto-Initialization ───────────────────
   const NavigationSystem = {
     init: function() {
@@ -738,6 +886,7 @@
       renderOrSyncBottomBar();
       renderOrSyncFloatingDock();
       wireCoreNavActions();
+      initSmoothMotion();
     },
     resetDockPosition: function() {
       const def = { ...DEFAULT_POS, snap: 'snap-bottom-center' };

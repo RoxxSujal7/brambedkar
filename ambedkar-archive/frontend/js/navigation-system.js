@@ -313,6 +313,7 @@
           <div class="dock-header-actions">
             <button class="dock-action-btn" id="dock-orient-btn" title="Toggle Layout (Vertical / Horizontal)" aria-label="Toggle layout">⇄</button>
             <button class="dock-action-btn" id="dock-reset-btn" title="Reset dock to default position" aria-label="Reset dock position">↺</button>
+            <button class="dock-action-btn dock-close-btn" id="dock-collapse-btn" title="Collapse Hubs" aria-label="Collapse hubs">✕</button>
           </div>
         </div>
 
@@ -383,11 +384,20 @@
     left = Math.max(margin, Math.min(left, viewW - dockW - margin));
     top = Math.max(margin, Math.min(top, viewH - dockH - margin));
 
-    dock.style.left = `${left}px`;
-    dock.style.top = `${top}px`;
-    dock.style.right = 'auto';
-    dock.style.bottom = 'auto';
-    dock.style.transform = 'none';
+    if (viewW <= 768) {
+      dock.classList.add('mobile-collapsed');
+      dock.style.left = '';
+      dock.style.top = '';
+      dock.style.right = '';
+      dock.style.bottom = '';
+      dock.style.transform = '';
+    } else {
+      dock.style.left = `${left}px`;
+      dock.style.top = `${top}px`;
+      dock.style.right = 'auto';
+      dock.style.bottom = 'auto';
+      dock.style.transform = 'none';
+    }
   }
 
   // ── 6. Free-Floating Drag & Placement Engine ─────────────
@@ -395,7 +405,59 @@
     const handle = dock.querySelector('#dock-drag-handle');
     const resetBtn = dock.querySelector('#dock-reset-btn');
     const orientBtn = dock.querySelector('#dock-orient-btn');
+    const collapseBtn = dock.querySelector('#dock-collapse-btn');
     if (!handle) return;
+
+    // Mobile Tap-to-Expand / Collapse Handlers
+    dock.addEventListener('click', (e) => {
+      if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+        if (dock.classList.contains('mobile-collapsed')) {
+          dock.classList.remove('mobile-collapsed');
+          dock.classList.add('mobile-expanded');
+          e.stopPropagation();
+        }
+      }
+    });
+
+    if (collapseBtn) {
+      collapseBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dock.classList.remove('mobile-expanded');
+        dock.classList.add('mobile-collapsed');
+      });
+    }
+
+    if (typeof document !== 'undefined') {
+      document.addEventListener('click', (e) => {
+        if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+          if (dock.classList.contains('mobile-expanded') && !dock.contains(e.target)) {
+            dock.classList.remove('mobile-expanded');
+            dock.classList.add('mobile-collapsed');
+          }
+        }
+      });
+    }
+
+    dock.querySelectorAll('.dock-item').forEach(item => {
+      item.addEventListener('click', () => {
+        if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+          dock.classList.remove('mobile-expanded');
+          dock.classList.add('mobile-collapsed');
+        }
+      });
+    });
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', () => {
+        if (window.innerWidth <= 768) {
+          if (!dock.classList.contains('mobile-expanded')) {
+            dock.classList.add('mobile-collapsed');
+          }
+        } else {
+          dock.classList.remove('mobile-collapsed', 'mobile-expanded');
+        }
+      });
+    }
 
     let isDragging = false;
     let startX = 0;

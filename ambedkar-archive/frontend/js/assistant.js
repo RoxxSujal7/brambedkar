@@ -353,14 +353,67 @@ const micBtn = document.getElementById('mic-btn');
 const voiceBanner = document.getElementById('voice-banner');
 const voiceStatusText = document.getElementById('voice-status-text');
 const voiceCancelBtn = document.getElementById('voice-cancel-btn');
+const waveformCanvas = document.getElementById('voice-waveform');
+const waveformCtx = waveformCanvas ? waveformCanvas.getContext('2d') : null;
 
 let recognition = null;
 let isVoiceListening = false;
 let voiceSubmitTimeout = null;
+let waveformAnimId = null;
+let customVoiceLang = null;
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
+function animateWaveform(timestamp) {
+  if (!waveformCtx || !isVoiceListening) return;
+  const w = waveformCanvas.width;
+  const h = waveformCanvas.height;
+  waveformCtx.clearRect(0, 0, w, h);
+
+  const bars = 7;
+  const barW = 4;
+  const gap = 3;
+  const startX = (w - (bars * barW + (bars - 1) * gap)) / 2;
+
+  for (let i = 0; i < bars; i++) {
+    const t = (timestamp || performance.now()) * 0.007 + i * 0.9;
+    const factor = 0.25 + 0.75 * Math.abs(Math.sin(t));
+    const barH = Math.max(3, Math.round(h * factor));
+    const y = (h - barH) / 2;
+    const x = startX + i * (barW + gap);
+
+    const grad = waveformCtx.createLinearGradient(0, y, 0, y + barH);
+    grad.addColorStop(0, '#f87171');
+    grad.addColorStop(1, '#dc2626');
+
+    waveformCtx.fillStyle = grad;
+    if (waveformCtx.roundRect) {
+      waveformCtx.beginPath();
+      waveformCtx.roundRect(x, y, barW, barH, 2);
+      waveformCtx.fill();
+    } else {
+      waveformCtx.fillRect(x, y, barW, barH);
+    }
+  }
+
+  waveformAnimId = requestAnimationFrame(animateWaveform);
+}
+
+function startWaveform() {
+  if (!waveformCtx) return;
+  cancelAnimationFrame(waveformAnimId);
+  waveformAnimId = requestAnimationFrame(animateWaveform);
+}
+
+function stopWaveform() {
+  cancelAnimationFrame(waveformAnimId);
+  if (waveformCtx && waveformCanvas) {
+    waveformCtx.clearRect(0, 0, waveformCanvas.width, waveformCanvas.height);
+  }
+}
+
 function getVoiceRecognitionLang() {
+  if (customVoiceLang) return customVoiceLang;
   const currentLang = (window.AppState && typeof window.AppState.getCurrentLang === 'function')
     ? window.AppState.getCurrentLang()
     : (document.documentElement.lang || 'en');
@@ -369,11 +422,44 @@ function getVoiceRecognitionLang() {
   return 'en-IN';
 }
 
+function syncVoiceLangChips(activeLang) {
+  document.querySelectorAll('.voice-lang-chip').forEach(chip => {
+    chip.classList.toggle('active', chip.getAttribute('data-vlang') === activeLang);
+  });
+}
+
 function getVoicePromptText(langCode) {
   if (langCode === 'hi-IN') return 'सुन रहे हैं... बोलिए (हिन्दी)';
   if (langCode === 'mr-IN') return 'ऐकत आहोत... बोला (मराठी)';
   return 'Listening... Speak now';
 }
+
+// Bind voice language chips
+document.querySelectorAll('.voice-lang-chip').forEach(chip => {
+  chip.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const vlang = chip.getAttribute('data-vlang');
+    if (!vlang) return;
+    customVoiceLang = vlang;
+    syncVoiceLangChips(vlang);
+
+    if (voiceStatusText) {
+      voiceStatusText.textContent = getVoicePromptText(vlang);
+    }
+
+    if (isVoiceListening && recognition) {
+      try {
+        recognition.stop();
+        setTimeout(() => {
+          if (isVoiceListening) {
+            recognition.lang = vlang;
+            recognition.start();
+          }
+        }, 150);
+      } catch (_) {}
+    }
+  });
+});
 
 function initSpeechRecognition() {
   if (!SpeechRecognition) return null;
@@ -390,7 +476,9 @@ function initSpeechRecognition() {
       micBtn?.setAttribute('aria-pressed', 'true');
       if (voiceBanner) voiceBanner.style.display = 'flex';
       const lang = getVoiceRecognitionLang();
+      syncVoiceLangChips(lang);
       if (voiceStatusText) voiceStatusText.textContent = getVoicePromptText(lang);
+      startWaveform();
       if (navigator.vibrate) {
         try { navigator.vibrate(40); } catch (_) {}
       }
@@ -502,6 +590,7 @@ function stopVoiceListening() {
   micBtn?.classList.remove('listening');
   micBtn?.setAttribute('aria-pressed', 'false');
   if (voiceBanner) voiceBanner.style.display = 'none';
+  stopWaveform();
   try {
     recognition?.stop();
   } catch (_) {}

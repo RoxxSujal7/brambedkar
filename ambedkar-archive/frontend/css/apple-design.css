@@ -606,7 +606,7 @@ button:active,
 }
 
 /* ───────────────────────────────────────────────────────────────
-   MOBILE RESPONSIVENESS
+   MOBILE RESPONSIVENESS & TOUCH OPTIMIZATION (Curated Hubs UX Fix)
    ─────────────────────────────────────────────────────────────── */
 @media (max-width: 900px) {
   .floating-dock.dock-horizontal {
@@ -618,6 +618,185 @@ button:active,
   }
   .floating-dock.dock-horizontal .dock-shell::-webkit-scrollbar {
     display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Prevent default expanded dock from covering 50% of the mobile screen */
+  .floating-dock {
+    position: fixed !important;
+    left: 14px !important;
+    top: auto !important;
+    bottom: 70px !important; /* Resting cleanly above bottom navigation bar */
+    width: auto !important;
+    max-width: calc(100vw - 28px) !important;
+    z-index: 960 !important;
+    transform: none !important;
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease !important;
+  }
+
+  /* Default Mobile State: Compact Apple Glass Floating Capsule Pill */
+  .floating-dock.mobile-collapsed {
+    width: auto !important;
+  }
+
+  .floating-dock.mobile-collapsed .dock-shell {
+    padding: 7px 14px !important;
+    border-radius: 999px !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 8px !important;
+    background: var(--apple-glass-toolbar) !important;
+    border: var(--apple-hairline-border) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), var(--apple-specular-top) !important;
+    cursor: pointer !important;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .floating-dock.mobile-collapsed .dock-header {
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    gap: 6px !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .floating-dock.mobile-collapsed .dock-handle-bar {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    cursor: pointer !important;
+  }
+
+  .floating-dock.mobile-collapsed .dock-handle-grip {
+    display: inline-block !important;
+    font-size: 0.9rem !important;
+    color: var(--gold-light) !important;
+  }
+
+  .floating-dock.mobile-collapsed .dock-badge {
+    display: inline-block !important;
+    font-size: 0.78rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.02em !important;
+  }
+
+  .floating-dock.mobile-collapsed .dock-badge::after {
+    content: " (10) ▾";
+    font-size: 0.72rem;
+    opacity: 0.85;
+    color: var(--gold-light);
+  }
+
+  .floating-dock.mobile-collapsed .dock-header-actions {
+    display: none !important;
+  }
+
+  .floating-dock.mobile-collapsed .dock-items {
+    display: none !important;
+  }
+
+  /* Expanded State on Mobile: High-End iOS Bottom Sheet / Popover */
+  .floating-dock.mobile-expanded {
+    left: 12px !important;
+    right: 12px !important;
+    bottom: 68px !important;
+    top: auto !important;
+    width: auto !important;
+    max-width: none !important;
+    z-index: 9999 !important;
+    animation: mobileDockSheetIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .floating-dock.mobile-expanded .dock-shell {
+    flex-direction: column !important;
+    border-radius: 24px !important;
+    padding: 14px 16px 16px !important;
+    max-height: 72vh !important;
+    overflow-y: auto !important;
+    background: rgba(14, 18, 27, 0.96) !important;
+    backdrop-filter: blur(28px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.88), 0 0 32px rgba(212, 175, 55, 0.16) !important;
+  }
+
+  .floating-dock.mobile-expanded .dock-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    padding-bottom: 10px !important;
+    margin-bottom: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+  }
+
+  .floating-dock.mobile-expanded .dock-header-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+  }
+
+  .floating-dock.mobile-expanded .dock-close-btn {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text);
+    border: none;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+
+  .floating-dock.mobile-expanded .dock-items {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
+  .floating-dock.mobile-expanded .dock-item {
+    width: auto !important;
+    padding: 10px 12px !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    border-radius: 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  .floating-dock.mobile-expanded .dock-item:active {
+    transform: scale(0.96) !important;
+    background: rgba(212, 175, 55, 0.15) !important;
+  }
+
+  /* Keep Quick Companion pill on the right, floating dock pill on the left */
+  .apple-quick-pill {
+    bottom: 70px !important;
+    right: 14px !important;
+    left: auto !important;
+  }
+
+  /* On mobile chat screens, give 100% breathing room to the chat input dock */
+  body:has(#chat-input) .floating-dock {
+    display: none !important;
+  }
+}
+
+@keyframes mobileDockSheetIn {
+  from {
+    transform: translateY(18px) scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
   }
 }
 

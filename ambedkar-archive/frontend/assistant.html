@@ -400,6 +400,50 @@
       50% { transform: scaleY(1); opacity: 1; }
     }
 
+    .voice-waveform-canvas {
+      width: 64px;
+      height: 20px;
+      flex-shrink: 0;
+      border-radius: 4px;
+      display: block;
+    }
+
+    .voice-lang-chips {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .voice-lang-chip {
+      padding: 2px 7px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      border-radius: var(--radius-full);
+      background: rgba(255, 255, 255, 0.08);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      cursor: pointer;
+      line-height: 1.3;
+      transition: all 160ms ease-out;
+    }
+
+    .voice-lang-chip:hover {
+      background: rgba(239, 68, 68, 0.2);
+      color: #fff;
+    }
+
+    .voice-lang-chip.active {
+      background: #ef4444;
+      color: #fff;
+      border-color: #f87171;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.45);
+    }
+
+    .voice-lang-chip:active {
+      transform: scale(0.95);
+    }
+
     .voice-status-text {
       flex: 1;
       font-size: 0.825rem;
@@ -649,12 +693,15 @@
         </div>
       </div>
 
-      <!-- Voice Status Banner (Active Speech-to-Text) -->
+      <!-- Voice Status Banner (Active Speech-to-Text & Live Waveform) -->
       <div id="voice-banner" class="voice-status-banner" style="display:none;" aria-live="polite">
-        <div class="voice-wave" aria-hidden="true">
-          <span></span><span></span><span></span><span></span><span></span>
-        </div>
+        <canvas id="voice-waveform" class="voice-waveform-canvas" width="64" height="20" aria-hidden="true"></canvas>
         <span id="voice-status-text" class="voice-status-text">Listening... Speak now</span>
+        <div class="voice-lang-chips" role="group" aria-label="Select voice language">
+          <button type="button" class="voice-lang-chip active" data-vlang="en-IN" title="English">EN</button>
+          <button type="button" class="voice-lang-chip" data-vlang="hi-IN" title="हिन्दी">हिन्दी</button>
+          <button type="button" class="voice-lang-chip" data-vlang="mr-IN" title="मराठी">मराठी</button>
+        </div>
         <button id="voice-cancel-btn" class="voice-cancel-btn" type="button" aria-label="Cancel voice input">✕</button>
       </div>
 

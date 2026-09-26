@@ -1,13 +1,20 @@
 // sw.js — Service Worker for Ambedkar Digital Heritage Archive
-const CACHE_NAME = 'ambedkar-archive-v1';
+const CACHE_NAME = 'ambedkar-archive-v2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/archive.html',
+  '/debates.html',
+  '/memorials.html',
   '/letters.html',
   '/vows.html',
-  '/assistant.html',
   '/timeline.html',
+  '/compare.html',
+  '/transparency.html',
+  '/about.html',
+  '/kiosk.html',
+  '/slides.html',
+  '/assistant.html',
   '/constitution.html',
   '/ideas.html',
   '/learning.html',
@@ -17,9 +24,14 @@ const STATIC_ASSETS = [
   '/css/style.css',
   '/css/reader.css',
   '/css/auth.css',
+  '/css/apple-design.css',
   '/js/app.js',
   '/js/api.js',
-  '/data/offline_vows.json'
+  '/js/navigation-system.js',
+  '/data/offline_vows.json',
+  '/manifest.json',
+  '/favicon.ico',
+  '/og-image.jpg'
 ];
 
 self.addEventListener('install', (event) => {

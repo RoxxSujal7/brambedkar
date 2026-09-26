@@ -6,7 +6,8 @@
     "install": "npm install --prefix ambedkar-archive",
     "build": "npm install --prefix ambedkar-archive",
     "start": "npm start --prefix ambedkar-archive",
-    "dev": "npm run dev --prefix ambedkar-archive"
+    "dev": "npm run dev --prefix ambedkar-archive",
+    "test": "node scratch/count-tests.js"
   },
   "engines": {
     "node": ">=18.0.0"

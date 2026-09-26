@@ -1,0 +1,87 @@
+{
+  "console_errors": [],
+  "failed_requests": [],
+  "overflow_issues": [],
+  "broken_images": [],
+  "interaction_results": {
+    "mic_button_present": true,
+    "voice_listening_active": false,
+    "ai_chat_reply_rendered": true,
+    "tts_listen_btn_present": true,
+    "mobile_mic_clickable": true
+  },
+  "tested_pages": [
+    {
+      "name": "01_home",
+      "path": "/index.html",
+      "status": 200,
+      "desktop_shot": "C:\\Users\\sujal\\OneDrive\\Desktop\\ecc\\tests\\playwright-proofs\\desktop\\01_home_desktop.png"
+    },
+    {
+      "name": "02_assistant_voice",
+      "path": "/assistant.html",
+      "status": 200,
+      "desktop_shot": "C:\\Users\\sujal\\OneDrive\\Desktop\\ecc\\tests\\playwright-proofs\\desktop\\02_assistant_voice_desktop.png"
+    },
+    {
+      "name": "03_archive_catalog",
+      "path": "/archive.html",
+      "status": 200,
+      "desktop_shot": "C:\\Users\\sujal\\OneDrive\\Desktop\\ecc\\tests\\playwright-proofs\\desktop\\03_archive_catalog_desktop.png"
+    },
+    {
+      "name": "04_debates",
+      "path": "/debates.html",
+      "status": 200,
+      "desktop_shot": "C:\\Users\\sujal\\OneDrive\\Desktop\\ecc\\tests\\playwright-proofs\\desktop\\04_debates_desktop.png"
+    },
+    {
+      "name": "05_memorials",
+      "path": "/memorials.html",
+      "status": 200,
+      "desktop_shot": "C:\\Users\\sujal\\OneDrive\\Desktop\\ecc\\tests\\playwright-proofs\\desktop\\05_memorials_desktop.png"
+    },
+    {
+      "name": "06_vows",
+      "path": "/vows.html",
+      "status": 200,
+      "desktop_shot": "C:\\Users\\sujal\\OneDrive\\Desktop\\ecc\\tests\\playwright-proofs\\desktop\\06_vows_desktop.png"
+    },
+    {
+      "name": "07_timeline",
+      "path": "/timeline.html",
+      "status": 200,
+      "desktop_shot": "C:\\Users\\sujal\\OneDrive\\Desktop\\ecc\\tests\\playwright-proofs\\desktop\\07_timeline_desktop.png"
+    },
+    {
+      "name": "08_compare_reader",
+      "path": "/compare.html",
+      "status": 200,
+      "desktop_shot": "C:\\Users\\sujal\\OneDrive\\Desktop\\ecc\\tests\\playwright-proofs\\desktop\\08_compare_reader_desktop.png"
+    },
+    {
+      "name": "09_transparency",
+      "path": "/transparency.html",
+      "status": 200,
+      "desktop_shot": "C:\\Users\\sujal\\OneDrive\\Desktop\\ecc\\tests\\playwright-proofs\\desktop\\09_transparency_desktop.png"
+    },
+    {
+      "name": "10_about",
+      "path": "/about.html",
+      "status": 200,
+      "desktop_shot": "C:\\Users\\sujal\\OneDrive\\Desktop\\ecc\\tests\\playwright-proofs\\desktop\\10_about_desktop.png"
+    },
+    {
+      "name": "11_kiosk",
+      "path": "/kiosk.html",
+      "status": 200,
+      "desktop_shot": "C:\\Users\\sujal\\OneDrive\\Desktop\\ecc\\tests\\playwright-proofs\\desktop\\11_kiosk_desktop.png"
+    },
+    {
+      "name": "12_slides",
+      "path": "/slides.html",
+      "status": 200,
+      "desktop_shot": "C:\\Users\\sujal\\OneDrive\\Desktop\\ecc\\tests\\playwright-proofs\\desktop\\12_slides_desktop.png"
+    }
+  ]
+}

@@ -9,7 +9,7 @@
     "seed": "node backend/seed/seedData.js",
     "seed:media": "node backend/scripts/seedMediaData.js",
     "download:hindi": "node backend/scripts/downloadHindiPDFs.js",
-    "test": "echo \"No test runner configured yet\""
+    "test": "node ../scratch/count-tests.js"
   },
   "keywords": [
     "ambedkar",

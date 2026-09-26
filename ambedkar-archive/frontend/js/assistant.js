@@ -37,6 +37,76 @@ function parseMarkdown(text) {
     .replace(/\n/g, '<br/>');
 }
 
+// ── Text-to-Speech (Listen to Answer) ─────────────────────────────────────
+function addSpeechNarrationButton(bubble, text) {
+  if (!('speechSynthesis' in window)) return;
+
+  const btn = document.createElement('button');
+  btn.className = 'listen-speech-btn';
+  btn.type = 'button';
+  btn.setAttribute('aria-label', 'Listen to answer');
+  btn.innerHTML = '<span class="speak-icon" aria-hidden="true">🔊</span> <span>Listen</span>';
+  btn.title = 'Listen to answer (Text-to-Speech)';
+
+  btn.addEventListener('click', () => {
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+      document.querySelectorAll('.listen-speech-btn').forEach(b => {
+        b.classList.remove('speaking');
+        const icon = b.querySelector('.speak-icon');
+        if (icon) icon.textContent = '🔊';
+        const label = b.querySelector('span:last-child');
+        if (label) label.textContent = 'Listen';
+      });
+      if (btn.classList.contains('speaking')) {
+        return;
+      }
+    }
+
+    // Strip HTML tags, markdown formatting, links, and tags for clean pronunciation
+    const cleanText = text
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/[*#_`]/g, '')
+      .replace(/\[.*?\]/g, '')
+      .replace(/https?:\/\/\S+/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    if (!cleanText) return;
+
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    const lang = (window.AppState && typeof window.AppState.getCurrentLang === 'function')
+      ? window.AppState.getCurrentLang()
+      : 'en';
+    if (lang === 'hi') utterance.lang = 'hi-IN';
+    else if (lang === 'mr') utterance.lang = 'mr-IN';
+    else utterance.lang = 'en-IN';
+
+    utterance.rate = 0.95;
+    utterance.pitch = 1.0;
+
+    utterance.onstart = () => {
+      btn.classList.add('speaking');
+      const icon = btn.querySelector('.speak-icon');
+      if (icon) icon.textContent = '⏹️';
+      const label = btn.querySelector('span:last-child');
+      if (label) label.textContent = 'Stop';
+    };
+
+    utterance.onend = utterance.onerror = () => {
+      btn.classList.remove('speaking');
+      const icon = btn.querySelector('.speak-icon');
+      if (icon) icon.textContent = '🔊';
+      const label = btn.querySelector('span:last-child');
+      if (label) label.textContent = 'Listen';
+    };
+
+    window.speechSynthesis.speak(utterance);
+  });
+
+  bubble.appendChild(btn);
+}
+
 function addMessage(text, type = 'ai', citation = null, volumeNo = null, related = []) {
   const bubble = document.createElement('div');
   bubble.className = `chat-bubble bubble-${type}`;
@@ -73,6 +143,11 @@ function addMessage(text, type = 'ai', citation = null, volumeNo = null, related
     cite.style.fontFamily = 'var(--font-mono)';
     cite.innerHTML = `📌 <em>${citation}</em>`;
     bubble.appendChild(cite);
+  }
+
+  // Add speech narration button for AI response
+  if (type === 'ai') {
+    addSpeechNarrationButton(bubble, text);
   }
 
   messagesEl.appendChild(bubble);
@@ -273,8 +348,201 @@ inputEl?.addEventListener('focus', () => {
   setTimeout(scrollToBottom, 250);
 });
 
+// ── Voice Input (Speech Recognition) Engine ───────────────────────────────
+const micBtn = document.getElementById('mic-btn');
+const voiceBanner = document.getElementById('voice-banner');
+const voiceStatusText = document.getElementById('voice-status-text');
+const voiceCancelBtn = document.getElementById('voice-cancel-btn');
+
+let recognition = null;
+let isVoiceListening = false;
+let voiceSubmitTimeout = null;
+
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+function getVoiceRecognitionLang() {
+  const currentLang = (window.AppState && typeof window.AppState.getCurrentLang === 'function')
+    ? window.AppState.getCurrentLang()
+    : (document.documentElement.lang || 'en');
+  if (currentLang === 'hi') return 'hi-IN';
+  if (currentLang === 'mr') return 'mr-IN';
+  return 'en-IN';
+}
+
+function getVoicePromptText(langCode) {
+  if (langCode === 'hi-IN') return 'सुन रहे हैं... बोलिए (हिन्दी)';
+  if (langCode === 'mr-IN') return 'ऐकत आहोत... बोला (मराठी)';
+  return 'Listening... Speak now';
+}
+
+function initSpeechRecognition() {
+  if (!SpeechRecognition) return null;
+
+  try {
+    const recog = new SpeechRecognition();
+    recog.continuous = false; // Capture single query then finish
+    recog.interimResults = true; // Stream live transcription
+    recog.maxAlternatives = 1;
+
+    recog.onstart = () => {
+      isVoiceListening = true;
+      micBtn?.classList.add('listening');
+      micBtn?.setAttribute('aria-pressed', 'true');
+      if (voiceBanner) voiceBanner.style.display = 'flex';
+      const lang = getVoiceRecognitionLang();
+      if (voiceStatusText) voiceStatusText.textContent = getVoicePromptText(lang);
+      if (navigator.vibrate) {
+        try { navigator.vibrate(40); } catch (_) {}
+      }
+    };
+
+    recog.onresult = (event) => {
+      let interimTranscript = '';
+      let finalTranscript = '';
+
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        const transcript = event.results[i][0]?.transcript || '';
+        if (event.results[i].isFinal) {
+          finalTranscript += transcript;
+        } else {
+          interimTranscript += transcript;
+        }
+      }
+
+      const activeText = (finalTranscript || interimTranscript).trim();
+      if (activeText && inputEl) {
+        inputEl.value = activeText;
+        inputEl.style.height = 'auto';
+        inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + 'px';
+      }
+
+      if (voiceStatusText && activeText) {
+        voiceStatusText.textContent = `"${activeText}"`;
+      }
+
+      if (finalTranscript.trim()) {
+        stopVoiceListening();
+        clearTimeout(voiceSubmitTimeout);
+        // Smooth 400ms pause to let user see recognized text, then auto-send!
+        voiceSubmitTimeout = setTimeout(() => {
+          if (inputEl.value.trim()) {
+            sendMessage();
+          }
+        }, 400);
+      }
+    };
+
+    recog.onerror = (event) => {
+      console.warn('[Voice Recognition Error]', event.error);
+      stopVoiceListening();
+
+      let errorMsg = 'Could not capture voice.';
+      if (event.error === 'not-allowed') {
+        errorMsg = 'Microphone access denied. Please grant microphone permission.';
+      } else if (event.error === 'no-speech') {
+        errorMsg = 'No speech detected. Tap 🎙️ to try again.';
+      } else if (event.error === 'network') {
+        errorMsg = 'Speech recognition network service unreachable.';
+      }
+
+      if (typeof showToast === 'function') {
+        showToast(errorMsg, 'error');
+      } else if (window.showToast) {
+        window.showToast(errorMsg, 'error');
+      } else if (voiceStatusText) {
+        voiceStatusText.textContent = errorMsg;
+      }
+    };
+
+    recog.onend = () => {
+      stopVoiceListening();
+    };
+
+    return recog;
+  } catch (err) {
+    console.error('Failed to initialize speech recognition:', err);
+    return null;
+  }
+}
+
+function startVoiceListening() {
+  if (!SpeechRecognition) {
+    const notSupported = 'Voice recognition is not supported in this browser. Please use Chrome, Edge, or Safari.';
+    if (typeof showToast === 'function') {
+      showToast(notSupported, 'info');
+    } else if (window.showToast) {
+      window.showToast(notSupported, 'info');
+    } else {
+      alert(notSupported);
+    }
+    return;
+  }
+
+  if (isVoiceListening) {
+    stopVoiceListening();
+    return;
+  }
+
+  try {
+    if (!recognition) {
+      recognition = initSpeechRecognition();
+    }
+    if (recognition) {
+      recognition.lang = getVoiceRecognitionLang();
+      recognition.start();
+    }
+  } catch (err) {
+    console.error('Recognition start error:', err);
+    stopVoiceListening();
+  }
+}
+
+function stopVoiceListening() {
+  isVoiceListening = false;
+  micBtn?.classList.remove('listening');
+  micBtn?.setAttribute('aria-pressed', 'false');
+  if (voiceBanner) voiceBanner.style.display = 'none';
+  try {
+    recognition?.stop();
+  } catch (_) {}
+}
+
+// ── Mic Button & Voice Events ─────────────────────────────────────────────
+micBtn?.addEventListener('click', (e) => {
+  e.preventDefault();
+  if (isVoiceListening) {
+    stopVoiceListening();
+  } else {
+    startVoiceListening();
+  }
+});
+
+voiceCancelBtn?.addEventListener('click', (e) => {
+  e.preventDefault();
+  stopVoiceListening();
+});
+
+// Keyboard shortcut: Alt + V to toggle voice input
+document.addEventListener('keydown', (e) => {
+  if (e.altKey && (e.key === 'v' || e.key === 'V')) {
+    e.preventDefault();
+    if (isVoiceListening) {
+      stopVoiceListening();
+    } else {
+      startVoiceListening();
+    }
+  }
+});
+
 // Initial suggestion chips
 document.querySelectorAll('.chip').forEach(chip => {
+  if (chip.id === 'voice-suggestion-chip') {
+    chip.addEventListener('click', (e) => {
+      e.preventDefault();
+      startVoiceListening();
+    });
+    return;
+  }
   chip.addEventListener('click', () => {
     inputEl.value = chip.textContent.trim();
     sendMessage();
@@ -286,6 +554,14 @@ document.querySelectorAll('.chip').forEach(chip => {
 
 // Auto-trigger query from URL param ?q= or ?search=
 document.addEventListener('DOMContentLoaded', () => {
+  // Attach narration button to initial welcome message if available
+  document.querySelectorAll('.chat-bubble.bubble-ai').forEach(b => {
+    if (!b.querySelector('.listen-speech-btn')) {
+      const textToRead = b.innerText || b.textContent || '';
+      addSpeechNarrationButton(b, textToRead);
+    }
+  });
+
   const urlParams = new URLSearchParams(window.location.search);
   const q = urlParams.get('q') || urlParams.get('search');
   if (q && inputEl) {

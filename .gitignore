@@ -1,6 +1,10 @@
 # Dependencies
 node_modules/
 **/node_modules/
+.venv/
+**/.venv/
+__pycache__/
+*.pyc
 
 # Environment and sensitive data
 .env
@@ -10,6 +14,7 @@ node_modules/
 # Scratch and temporary testing files
 scratch/
 strix_runs/
+brag-output/
 
 # Build and OS files
 dist/

@@ -20,3 +20,9 @@ npm run dev
 npm install
 npm run dev
 ```
+
+---
+
+### Author
+**Sujal Roxx** — Dr. B. R. Ambedkar Digital Heritage Archive<br/>
+[GitHub Profile](https://github.com/RoxxSujal7) · [LinkedIn](https://www.linkedin.com/in/sujalroxx7/)

@@ -154,7 +154,7 @@ async function findById(id) {
   return null;
 }
 
-async function createUser({ name, email, password, phone = '', role = 'visitor', language = 'en', institution = '', avatar = '', authProvider = 'local', googleId = '' }) {
+async function createUser({ name, email, password, phone = '', role = 'visitor', language = 'en', institution = '', avatar = '', authProvider = 'local', googleId = '', email_verified = false, phone_verified = false }) {
   const normalized = (email || '').toLowerCase().trim();
   const cleanPhone = (phone || '').replace(/[^0-9+]/g, '');
 
@@ -171,13 +171,15 @@ async function createUser({ name, email, password, phone = '', role = 'visitor',
         avatar,
         authProvider,
         googleId,
+        email_verified,
+        phone_verified,
       });
     } catch (e) {
       // fallback to memory
     }
   }
 
-  const hashedPassword = await cryptoUtil.hashPassword(password, 10);
+  const hashedPassword = await cryptoUtil.hashPassword(password, 12);
   const id = 'user-' + crypto.randomBytes(8).toString('hex');
   const user = {
     _id: id,
@@ -191,6 +193,8 @@ async function createUser({ name, email, password, phone = '', role = 'visitor',
     avatar,
     authProvider,
     googleId,
+    email_verified,
+    phone_verified,
     isActive: true,
     lastActiveAt: new Date(),
     createdAt: new Date(),
@@ -265,11 +269,38 @@ async function updateUser(id, updates) {
   return null;
 }
 
+async function updatePassword(email, newPassword) {
+  const normalized = (email || '').toLowerCase().trim();
+  if (isDbConnected()) {
+    try {
+      const user = await User.findOne({ email: normalized });
+      if (user) {
+        user.password = newPassword;
+        user.passwordChangedAt = new Date();
+        await user.save();
+        return true;
+      }
+    } catch (e) {
+      // fallback to memory
+    }
+  }
+
+  const memUser = inMemoryUsers.get(normalized);
+  if (memUser) {
+    const hashed = await cryptoUtil.hashPassword(newPassword, 12);
+    memUser.password = hashed;
+    memUser.passwordChangedAt = new Date();
+    return true;
+  }
+  return false;
+}
+
 module.exports = {
   findByEmail,
   findByPhone,
   findById,
   createUser,
   updateUser,
+  updatePassword,
   isDbConnected,
 };

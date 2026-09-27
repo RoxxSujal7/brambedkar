@@ -1,23 +1,29 @@
 const crypto = require('crypto');
 const express = require('express');
-const mongoose = require('mongoose');
 const { body, validationResult } = require('express-validator');
 const rateLimit = require('express-rate-limit');
 const { OAuth2Client } = require('google-auth-library');
 const cryptoUtil = require('../utils/cryptoUtil');
 const userService = require('../services/userService');
 const OtpVerification = require('../models/OtpVerification');
+const emailOtpService = require('../services/emailOtpService');
+const whatsappOtpService = require('../services/whatsappOtpService');
+const telegramOtpService = require('../services/telegramOtpService');
+const passwordPolicy = require('../utils/passwordPolicy');
+const PasswordReset = require('../models/PasswordReset');
 const { signToken } = require('../config/jwt');
 const { protect } = require('../middleware/auth');
 
 const router = express.Router();
 
+// In-memory fallback for password reset tokens when database is offline
+const passwordResetMemoryStore = new Map();
+
 // Initialize Google OAuth2 Client
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-function isDbConnected() {
-  return mongoose.connection && mongoose.connection.readyState === 1;
-}
+// Re-use isDbConnected from userService — no need to duplicate
+const { isDbConnected } = userService;
 
 /**
  * Cryptographically verify a Google GIS ID Token using Google's public keys
@@ -57,6 +63,14 @@ const authLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+// GET /api/auth/config — Public auth configuration for frontend GIS integration
+router.get('/config', (req, res) => {
+  res.json({
+    success: true,
+    googleClientId: process.env.GOOGLE_CLIENT_ID || '',
+  });
+});
+
 // POST /api/auth/register
 router.post(
   '/register',
@@ -64,7 +78,16 @@ router.post(
   [
     body('name').trim().isLength({ min: 2, max: 100 }).withMessage('Name must be 2–100 characters'),
     body('email').isEmail().normalizeEmail().withMessage('Invalid email address'),
-    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
+    body('password')
+      .isLength({ min: 8 })
+      .withMessage('Password must be at least 8 characters.')
+      .custom((value) => {
+        const check = passwordPolicy.validatePasswordStrength(value);
+        if (!check.valid) {
+          throw new Error(check.message);
+        }
+        return true;
+      }),
     body('phone').optional().trim().matches(/^[0-9+ ]{0,20}$/).withMessage('Invalid phone number format'),
     body('language').optional().isIn(['en', 'hi', 'mr']).withMessage('Language must be en, hi, or mr'),
     body('institution').optional().trim().isLength({ max: 200 }).withMessage('Institution max 200 characters'),
@@ -108,6 +131,151 @@ router.post(
           language: user.language,
           institution: user.institution,
         },
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+// POST /api/auth/forgot-password
+router.post(
+  '/forgot-password',
+  authLimiter,
+  [
+    body('email').isEmail().normalizeEmail().withMessage('Please enter a valid email address.'),
+  ],
+  async (req, res, next) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ success: false, errors: errors.array() });
+      }
+
+      const email = req.body.email.toLowerCase().trim();
+      const user = await userService.findByEmail(email);
+
+      // SECURITY: Generic response to prevent email enumeration attacks
+      if (!user) {
+        return res.json({
+          success: true,
+          message: 'If an account exists with this email, password reset instructions have been dispatched.',
+        });
+      }
+
+      // Generate 6-digit cryptographically secure reset token
+      const resetCode = (100000 + crypto.randomInt(0, 900000)).toString();
+      const tokenHash = cryptoUtil.sha256(resetCode);
+      const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
+
+      if (isDbConnected()) {
+        try {
+          await PasswordReset.deleteMany({ email });
+          await PasswordReset.create({ email, tokenHash, expiresAt });
+        } catch (e) {
+          // fallback
+        }
+      }
+      passwordResetMemoryStore.set(email, { tokenHash, expiresAt: expiresAt.getTime(), used: false });
+
+      // Dispatch reset email
+      try {
+        await emailOtpService.sendEmailOtp(email, resetCode);
+      } catch (e) {
+        console.warn('Could not dispatch password reset email:', e.message);
+      }
+
+      const isDev = process.env.NODE_ENV !== 'production' || process.env.DEV_AUTH_MODE === 'true';
+
+      res.json({
+        success: true,
+        message: 'If an account exists with this email, password reset instructions have been dispatched.',
+        demoCode: isDev ? resetCode : undefined,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+// POST /api/auth/reset-password
+router.post(
+  '/reset-password',
+  authLimiter,
+  [
+    body('email').isEmail().normalizeEmail().withMessage('Valid email is required.'),
+    body().custom((value, { req }) => {
+      const resetToken = (req.body && (req.body.token || req.body.code)) || '';
+      if (!resetToken || typeof resetToken !== 'string' || !resetToken.trim()) {
+        throw new Error('Verification code / reset token is required.');
+      }
+      return true;
+    }),
+    body('newPassword')
+      .isLength({ min: 8 })
+      .withMessage('Password must be at least 8 characters.')
+      .custom((value) => {
+        const check = passwordPolicy.validatePasswordStrength(value);
+        if (!check.valid) {
+          throw new Error(check.message);
+        }
+        return true;
+      }),
+  ],
+  async (req, res, next) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ success: false, errors: errors.array() });
+      }
+
+      const { email, newPassword } = req.body;
+      const token = ((req.body.token || req.body.code) || '').trim();
+      const cleanEmail = email.toLowerCase().trim();
+
+      // Retrieve reset record
+      let resetRecord = null;
+      if (isDbConnected()) {
+        try {
+          resetRecord = await PasswordReset.findOne({ email: cleanEmail, used: false, expiresAt: { $gt: new Date() } });
+        } catch (e) {
+          // fallback
+        }
+      }
+      if (!resetRecord) {
+        const mem = passwordResetMemoryStore.get(cleanEmail);
+        if (mem && !mem.used && mem.expiresAt > Date.now()) {
+          resetRecord = mem;
+        }
+      }
+
+      if (!resetRecord) {
+        return res.status(400).json({ success: false, message: 'Invalid or expired password reset code. Please request a new one.' });
+      }
+
+      // Constant-time token verification
+      const candidateHash = cryptoUtil.sha256(token.trim());
+      const isValid = cryptoUtil.timingSafeEqualStr(resetRecord.tokenHash, candidateHash);
+      if (!isValid) {
+        return res.status(400).json({ success: false, message: 'Invalid password reset code. Please try again.' });
+      }
+
+      // Mark token used / delete
+      if (isDbConnected() && resetRecord.save) {
+        resetRecord.used = true;
+        await resetRecord.save();
+      }
+      passwordResetMemoryStore.delete(cleanEmail);
+
+      // Update password (hashed with Bcrypt 12 rounds + SHA-256 pre-hash)
+      const updated = await userService.updatePassword(cleanEmail, newPassword);
+      if (!updated) {
+        return res.status(404).json({ success: false, message: 'User account not found.' });
+      }
+
+      res.json({
+        success: true,
+        message: 'Password has been successfully updated. You may now log in with your new password.',
       });
     } catch (err) {
       next(err);
@@ -180,7 +348,7 @@ router.post(
 // POST /api/auth/google
 router.post('/google', authLimiter, async (req, res, next) => {
   try {
-    const { credential, email: bodyEmail, name: bodyName, googleId: bodyGoogleId, picture: bodyPicture } = req.body;
+    const { credential, accessToken, email: bodyEmail, name: bodyName, googleId: bodyGoogleId, picture: bodyPicture } = req.body;
 
     let email, name, picture, googleId;
 
@@ -196,6 +364,25 @@ router.post('/google', authLimiter, async (req, res, next) => {
           success: false,
           message: 'Invalid or expired Google ID token verification failed.',
         });
+      }
+    } else if (accessToken && typeof accessToken === 'string') {
+      try {
+        const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        if (!userInfoRes.ok) {
+          return res.status(401).json({ success: false, message: 'Google authorization expired or invalid.' });
+        }
+        const profile = await userInfoRes.json();
+        if (!profile.email) {
+          return res.status(400).json({ success: false, message: 'Google account did not return an email address.' });
+        }
+        email = profile.email.trim().toLowerCase();
+        name = (profile.name || email.split('@')[0]).trim();
+        picture = profile.picture || '';
+        googleId = profile.sub;
+      } catch (tokenErr) {
+        return res.status(500).json({ success: false, message: 'Failed to verify Google access token.' });
       }
     } else if (bodyEmail && typeof bodyEmail === 'string' && bodyEmail.includes('@')) {
       // SECURITY GUARD: Unverified raw email login is strictly prohibited in production
@@ -223,7 +410,7 @@ router.post('/google', authLimiter, async (req, res, next) => {
     } else {
       return res.status(400).json({
         success: false,
-        message: 'A valid Google ID token credential is required.',
+        message: 'A valid Google ID token credential or access token is required.',
       });
     }
 
@@ -355,8 +542,9 @@ router.post(
   '/send-otp',
   authLimiter,
   [
-    body('target').trim().notEmpty().withMessage('Phone number or Email is required.'),
-    body('type').isIn(['phone', 'email']).withMessage('Type must be phone or email.'),
+    body('target').trim().notEmpty().withMessage('Identifier is required.'),
+    body('type').optional().isIn(['phone', 'email', 'whatsapp', 'telegram']).withMessage('Type must be phone, email, whatsapp, or telegram.'),
+    body('channel').optional().isIn(['phone', 'email', 'whatsapp', 'telegram']),
   ],
   async (req, res, next) => {
     try {
@@ -365,25 +553,51 @@ router.post(
         return res.status(400).json({ success: false, errors: errors.array() });
       }
 
-      const { target, type } = req.body;
+      const rawTarget = (req.body.target || '').trim();
+      const channel = req.body.channel || req.body.type || (rawTarget.includes('@') && rawTarget.includes('.') ? 'email' : 'whatsapp');
 
-      const cleanTarget = type === 'phone'
-        ? target.replace(/[^0-9+]/g, '').trim()
-        : target.toLowerCase().trim();
+      let cleanTarget = '';
+      let displayTarget = '';
 
-      if (type === 'phone' && cleanTarget.length < 10) {
-        return res.status(400).json({ success: false, message: 'Please enter a valid 10-digit mobile number.' });
+      if (channel === 'email') {
+        cleanTarget = rawTarget.toLowerCase().trim();
+        if (!cleanTarget.includes('@') || !cleanTarget.includes('.')) {
+          return res.status(400).json({ success: false, message: 'Please enter a valid email address.' });
+        }
+        displayTarget = maskTarget(cleanTarget, 'email');
+      } else if (channel === 'telegram') {
+        const parsed = telegramOtpService.parsePhoneNumber(rawTarget);
+        if (parsed.isPhone) {
+          cleanTarget = parsed.e164;
+          displayTarget = maskTarget(cleanTarget, 'phone');
+        } else {
+          cleanTarget = rawTarget.trim();
+          if (!cleanTarget) {
+            return res.status(400).json({ success: false, message: 'Please enter your mobile number or Telegram @username.' });
+          }
+          displayTarget = cleanTarget.startsWith('@') ? cleanTarget : '@' + cleanTarget;
+        }
+      } else {
+        // WhatsApp or Phone OTP: normalize to Indian E.164 format (+91XXXXXXXXXX)
+        const phoneNorm = whatsappOtpService.normalizeIndianPhone(rawTarget);
+        if (!phoneNorm.valid) {
+          return res.status(400).json({ success: false, message: phoneNorm.error });
+        }
+        cleanTarget = phoneNorm.e164;
+        displayTarget = maskTarget(cleanTarget, 'phone');
       }
-      if (type === 'email' && !cleanTarget.includes('@')) {
-        return res.status(400).json({ success: false, message: 'Please enter a valid email address.' });
-      }
 
-      // Rate-limit re-sending within 60s
+      // Enforce 60-second cooldown per target
       const existing = await getOtpRecord(cleanTarget);
       if (existing) {
         const remainingMs = (existing.expiresAt instanceof Date ? existing.expiresAt.getTime() : existing.expiresAt) - Date.now();
         if (remainingMs > 4 * 60 * 1000) {
-          return res.status(429).json({ success: false, message: 'Please wait 60 seconds before requesting another OTP.' });
+          const waitSec = Math.ceil((remainingMs - 4 * 60 * 1000) / 1000);
+          return res.status(429).json({
+            success: false,
+            message: `Please wait ${waitSec} seconds before requesting another code.`,
+            retryAfter: waitSec,
+          });
         }
       }
 
@@ -391,24 +605,26 @@ router.post(
       const otpHash = cryptoUtil.hashOtp(otp);
       const expiresAt = Date.now() + 5 * 60 * 1000; // 5 minutes validity
 
-      await saveOtpRecord(cleanTarget, otpHash, expiresAt, type);
+      await saveOtpRecord(cleanTarget, otpHash, expiresAt, channel);
 
-      // Only log OTP to server console in development — never in production logs
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(`\n======================================================`);
-        console.log(`🔐 [AMBEDKAR ARCHIVE SECURE OTP DISPATCH — DEV ONLY]`);
-        console.log(`📱 Destination: ${cleanTarget} (${type})`);
-        console.log(`🔑 Verification OTP: >>> ${otp} <<<`);
-        console.log(`🔒 SHA-256 Digest: ${otpHash.slice(0, 16)}...`);
-        console.log(`⏳ Valid for: 5 Minutes`);
-        console.log(`======================================================\n`);
+      // Dispatch via real delivery services
+      let dispatchInfo = null;
+      if (channel === 'email') {
+        dispatchInfo = await emailOtpService.sendEmailOtp(cleanTarget, otp);
+      } else if (channel === 'telegram') {
+        dispatchInfo = await telegramOtpService.sendTelegramOtp(cleanTarget, otp);
+      } else {
+        dispatchInfo = await whatsappOtpService.sendWhatsAppOtp(cleanTarget, otp);
       }
 
+      const channelName = channel === 'email' ? 'Email' : channel === 'telegram' ? 'Telegram' : 'WhatsApp';
       res.json({
         success: true,
-        message: `OTP dispatched to ${maskTarget(cleanTarget, type)}. Check your ${type === 'email' ? 'email inbox' : 'mobile device'}.`,
-        target: maskTarget(cleanTarget, type),
+        message: `OTP dispatched to ${displayTarget} via ${channelName}.`,
+        target: displayTarget,
+        channel,
         expiresIn: 300,
+        provider: dispatchInfo ? dispatchInfo.provider : undefined,
       });
     } catch (err) {
       next(err);
@@ -423,7 +639,8 @@ router.post(
   [
     body('target').trim().notEmpty().withMessage('Target identifier is required.'),
     body('otp').trim().isLength({ min: 6, max: 6 }).isNumeric().withMessage('OTP must be a 6-digit number.'),
-    body('type').isIn(['phone', 'email']).withMessage('Type must be phone or email.'),
+    body('type').optional().isIn(['phone', 'email', 'whatsapp', 'telegram']).withMessage('Type must be phone, email, whatsapp, or telegram.'),
+    body('channel').optional().isIn(['phone', 'email', 'whatsapp', 'telegram']),
   ],
   async (req, res, next) => {
     try {
@@ -432,13 +649,29 @@ router.post(
         return res.status(400).json({ success: false, errors: errors.array() });
       }
 
-      const { target, otp, type, name } = req.body;
+      const { target, otp, name } = req.body;
+      const channel = req.body.channel || req.body.type || (target.includes('@') ? 'email' : 'whatsapp');
 
-      const cleanTarget = type === 'phone'
-        ? target.replace(/[^0-9+]/g, '').trim()
-        : target.toLowerCase().trim();
+      let cleanTarget = '';
+      if (channel === 'email') {
+        cleanTarget = target.toLowerCase().trim();
+      } else if (channel === 'telegram') {
+        const parsed = telegramOtpService.parsePhoneNumber(target);
+        cleanTarget = parsed.isPhone ? parsed.e164 : target.trim();
+      } else {
+        const phoneNorm = whatsappOtpService.normalizeIndianPhone(target);
+        cleanTarget = phoneNorm.valid ? phoneNorm.e164 : target.replace(/[^0-9+]/g, '').trim();
+      }
 
-      const record = await getOtpRecord(cleanTarget);
+      // Check primary identifier and normalized fallback
+      let record = await getOtpRecord(cleanTarget);
+      if (!record && cleanTarget.startsWith('+91')) {
+        record = await getOtpRecord(cleanTarget.slice(3));
+      }
+      if (!record && !cleanTarget.startsWith('+') && cleanTarget.length === 10) {
+        record = await getOtpRecord('+91' + cleanTarget);
+      }
+
       if (!record) {
         return res.status(400).json({ success: false, message: 'No active OTP found. Please request a new code.' });
       }
@@ -467,21 +700,7 @@ router.post(
       await deleteOtpRecord(cleanTarget);
 
       let user;
-      if (type === 'phone') {
-        user = await userService.findByPhone(cleanTarget);
-        if (!user) {
-          const autoPassword = crypto.randomBytes(24).toString('hex');
-          const formattedName = name ? name.trim().slice(0, 100) : `Member ${cleanTarget.slice(-4)}`;
-          user = await userService.createUser({
-            name: formattedName,
-            email: `${cleanTarget.replace('+', '')}@phone.ambedkar-archive.in`,
-            phone: cleanTarget,
-            password: autoPassword,
-            role: 'visitor',
-            authProvider: 'phone',
-          });
-        }
-      } else {
+      if (channel === 'email') {
         user = await userService.findByEmail(cleanTarget);
         if (!user) {
           const autoPassword = crypto.randomBytes(24).toString('hex');
@@ -492,7 +711,57 @@ router.post(
             password: autoPassword,
             role: 'visitor',
             authProvider: 'email_otp',
+            email_verified: true,
           });
+        } else {
+          user.email_verified = true;
+          if (typeof user.save === 'function') await user.save();
+        }
+      } else if (channel === 'telegram') {
+        const parsed = telegramOtpService.parsePhoneNumber(cleanTarget);
+        const phoneFormatted = parsed.isPhone ? parsed.e164 : '';
+        const tgEmail = parsed.isPhone
+          ? `${parsed.tenDigits}@telegram.ambedkar-archive.in`
+          : `${cleanTarget.replace(/[^a-zA-Z0-9_]/g, '')}@telegram.ambedkar-archive.in`;
+
+        user = (phoneFormatted ? await userService.findByPhone(phoneFormatted) : null) || (await userService.findByEmail(tgEmail));
+        if (!user) {
+          const autoPassword = crypto.randomBytes(24).toString('hex');
+          const formattedName = name ? name.trim().slice(0, 100) : (parsed.isPhone ? `Member ${parsed.tenDigits.slice(-4)}` : `Telegram ${cleanTarget}`);
+          user = await userService.createUser({
+            name: formattedName,
+            email: tgEmail,
+            phone: phoneFormatted,
+            password: autoPassword,
+            role: 'visitor',
+            authProvider: 'telegram_otp',
+            phone_verified: !!phoneFormatted,
+          });
+        } else {
+          if (phoneFormatted) {
+            user.phone = phoneFormatted;
+            user.phone_verified = true;
+          }
+          if (typeof user.save === 'function') await user.save();
+        }
+      } else {
+        // WhatsApp or Phone OTP
+        user = await userService.findByPhone(cleanTarget);
+        if (!user) {
+          const autoPassword = crypto.randomBytes(24).toString('hex');
+          const formattedName = name ? name.trim().slice(0, 100) : `Member ${cleanTarget.slice(-4)}`;
+          user = await userService.createUser({
+            name: formattedName,
+            email: `${cleanTarget.replace('+', '')}@whatsapp.ambedkar-archive.in`,
+            phone: cleanTarget,
+            password: autoPassword,
+            role: 'visitor',
+            authProvider: 'whatsapp_otp',
+            phone_verified: true,
+          });
+        } else {
+          user.phone_verified = true;
+          if (typeof user.save === 'function') await user.save();
         }
       }
 
@@ -508,7 +777,7 @@ router.post(
 
       res.json({
         success: true,
-        message: 'Verified successfully.',
+        message: 'Authentication successful.',
         token,
         user: {
           id: user._id,
@@ -518,6 +787,9 @@ router.post(
           role: user.role,
           language: user.language || 'en',
           institution: user.institution || '',
+          email_verified: !!user.email_verified,
+          phone_verified: !!user.phone_verified,
+          authProvider: user.authProvider,
         },
       });
     } catch (err) {
@@ -586,5 +858,15 @@ router.patch(
     }
   }
 );
+
+
+
+// POST /api/auth/logout
+router.post('/logout', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Logged out successfully. Client session cleared.'
+  });
+});
 
 module.exports = router;

@@ -21,30 +21,70 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>" />
   <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>" />
   <link rel="manifest" href="manifest.json" />
-  <!-- JSON-LD Structured Data for SEO (Phase 5.3) -->
+  <!-- JSON-LD Structured Data for SEO (Phase 5.3 — Expanded) -->
   <script type="application/ld+json">
-  {
+  [{
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "Ambedkar Digital Heritage Archive",
+    "alternateName": "BAWS Digital Archive",
     "description": "Museum-grade digital archive for Dr. B. R. Ambedkar's complete writings, speeches, and constitutional work",
     "url": "https://ambedkar-archive.org",
+    "inLanguage": ["en", "hi", "mr"],
     "potentialAction": {
       "@type": "SearchAction",
       "target": "https://ambedkar-archive.org/archive.html?search={search_term_string}",
       "query-input": "required name=search_term_string"
     }
-  }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Dr. Bhimrao Ramji Ambedkar",
+    "alternateName": ["Babasaheb Ambedkar", "B. R. Ambedkar", "डॉ. भीमराव अम्बेडकर"],
+    "birthDate": "1891-04-14",
+    "deathDate": "1956-12-06",
+    "birthPlace": { "@type": "Place", "name": "Mhow, Central Provinces, British India" },
+    "nationality": "Indian",
+    "jobTitle": ["Chairman of the Drafting Committee of the Indian Constitution", "First Law and Justice Minister of India"],
+    "alumniOf": [
+      { "@type": "CollegeOrUniversity", "name": "Columbia University" },
+      { "@type": "CollegeOrUniversity", "name": "London School of Economics" }
+    ],
+    "sameAs": ["https://en.wikipedia.org/wiki/B._R._Ambedkar"]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Collection",
+    "name": "Dr. Babasaheb Ambedkar: Writings and Speeches (BAWS)",
+    "description": "60 official volumes of Dr. Ambedkar's complete writings and speeches published by the Government of Maharashtra",
+    "numberOfItems": 60,
+    "publisher": { "@type": "Organization", "name": "Government of Maharashtra, Education Department" },
+    "about": { "@type": "Person", "name": "Dr. Bhimrao Ramji Ambedkar" }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://ambedkar-archive.org/"
+    }]
+  }]
   </script>
   
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Cinzel:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,400;1,600&family=Noto+Serif+Devanagari:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css?v=2.2" />
-  <script>(function(){const t=localStorage.getItem('site_theme')||localStorage.getItem('reader_theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
+  <script>(function(){var t=localStorage.getItem('site_theme')||localStorage.getItem('reader_theme');if(!t){try{t=window.matchMedia('(prefers-color-scheme:light)').matches?'paper':'dark';}catch(e){t='dark';}}document.documentElement.setAttribute('data-theme',t);})();</script>
 
 </head>
 <body>
+
+<!-- Skip-to-Content Link (WCAG 2.2 Level A — keyboard navigation) -->
+<a href="#main-content" class="skip-link">Skip to main content</a>
 
 <!-- ─── Floating Island Navigation (High-End Visual Design & Apple Physics) ─── -->
 <nav class="nav" role="navigation" aria-label="Main navigation">
@@ -150,6 +190,7 @@
 <aside class="floating-dock snap-bottom-center" id="global-floating-dock" role="navigation" aria-label="Curated exploration hubs"></aside>
 
 <!-- ─── Hero Section (Editorial Split & Asymmetric Gravitas) ─── -->
+<main id="main-content">
 <section class="hero" aria-labelledby="hero-title">
   <div class="container">
     <div class="hero-split-layout">
@@ -209,7 +250,7 @@
       <div class="hero-portrait-col animate-fade-up delay-2">
         <div class="hero-portrait-card">
           <div class="hero-portrait-frame">
-            <img src="assets/images/ambedkar_portrait.jpg" alt="Dr. Bhimrao Ramji Ambedkar (1891–1956) - Chief Architect of the Constitution of India" />
+            <img src="assets/images/ambedkar_portrait.jpg" alt="Dr. Bhimrao Ramji Ambedkar (1891–1956) - Chief Architect of the Constitution of India" fetchpriority="high" decoding="async" />
             <div class="hero-portrait-overlay">
               <span class="hero-portrait-badge">National Archival Portrait</span>
             </div>
@@ -790,6 +831,7 @@ if (tp) {
     <a href="archive.html" style="color:var(--text-faint);font-size:0.8rem;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--text-faint)'">All 60 Volumes</a>
   </div>
 </footer>
+</main>
 
 </body>
 </html>

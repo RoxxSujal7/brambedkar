@@ -61,14 +61,6 @@ const ROLE_PERMISSIONS = {
     'verify_ocr',
     'manage_preservation'
   ],
-  editor: [
-    'browse_public',
-    'access_workspace',
-    'save_bookmarks',
-    'export_citations',
-    'edit_content',
-    'edit_metadata'
-  ],
   content_editor: [
     'browse_public',
     'access_workspace',
@@ -113,7 +105,6 @@ const requireRole = (...allowedRoles) => {
     const currentRole = normalizeRole(req.user.role);
     const effectiveRoles = [currentRole];
     if (currentRole === 'super_admin') effectiveRoles.push('admin');
-    if (currentRole === 'admin') effectiveRoles.push('super_admin');
     if (currentRole === 'content_editor') effectiveRoles.push('editor');
 
     const normalizedAllowed = allowedRoles.map(r => normalizeRole(r));

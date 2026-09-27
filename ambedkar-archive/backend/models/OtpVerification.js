@@ -14,7 +14,7 @@ const otpVerificationSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ['phone', 'email'],
+      enum: ['phone', 'email', 'whatsapp', 'telegram'],
       required: true,
     },
     attempts: {

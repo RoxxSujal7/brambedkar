@@ -492,11 +492,188 @@ function setActiveNavLink() {
   });
 }
 
-// ── Global Keyboard Shortcuts (Emil: Instant, no delay) ─
+// ── Apple Glass Floating Back-to-Top with Progress Ring ──
+function initBackToTop() {
+  if (document.getElementById('back-to-top')) return;
+
+  const btn = document.createElement('button');
+  btn.id = 'back-to-top';
+  btn.className = 'back-to-top-btn';
+  btn.setAttribute('aria-label', 'Back to top of page');
+  btn.setAttribute('title', 'Back to top');
+  btn.innerHTML = `
+    <svg class="progress-ring" width="44" height="44" viewBox="0 0 44 44">
+      <circle class="progress-ring-bg" cx="22" cy="22" r="18" fill="none" stroke="currentColor" stroke-width="2.5" opacity="0.15"></circle>
+      <circle class="progress-ring-circle" cx="22" cy="22" r="18" fill="none" stroke="var(--gold, #d4af37)" stroke-width="2.5" stroke-dasharray="113.097" stroke-dashoffset="113.097" stroke-linecap="round"></circle>
+    </svg>
+    <span class="back-to-top-arrow">↑</span>
+  `;
+  document.body.appendChild(btn);
+
+  const circle = btn.querySelector('.progress-ring-circle');
+  const circumference = 2 * Math.PI * 18; // ~113.097
+
+  function updateScrollProgress() {
+    const scrollTotal = document.documentElement.scrollHeight - window.innerHeight;
+    const scrollCurrent = window.scrollY || document.documentElement.scrollTop;
+
+    if (scrollCurrent > 280) {
+      btn.classList.add('visible');
+    } else {
+      btn.classList.remove('visible');
+    }
+
+    if (scrollTotal > 0 && circle) {
+      const scrollFraction = Math.min(1, Math.max(0, scrollCurrent / scrollTotal));
+      circle.style.strokeDashoffset = String(circumference - (scrollFraction * circumference));
+    }
+  }
+
+  window.addEventListener('scroll', updateScrollProgress, { passive: true });
+  if (window.lenis && typeof window.lenis.on === 'function') {
+    window.lenis.on('scroll', updateScrollProgress);
+  }
+
+  btn.addEventListener('click', () => {
+    if (window.lenis && typeof window.lenis.scrollTo === 'function') {
+      window.lenis.scrollTo(0, { immediate: false });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+}
+
+// ── Global Keyboard Shortcuts & Cheatsheet (Emil Style) ──
 function initKeyboardShortcuts() {
+  // Inject Shortcuts Cheatsheet modal if not present
+  let modal = document.getElementById('shortcuts-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'shortcuts-modal';
+    modal.className = 'cmd-backdrop';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Keyboard Shortcuts Cheatsheet');
+    modal.innerHTML = `
+      <div class="cmd-dialog card" style="max-width:520px;">
+        <div class="cmd-inner card-inner" style="padding:var(--space-6);">
+          <div class="flex-between items-center" style="margin-bottom:var(--space-4);padding-bottom:var(--space-3);border-bottom:1px solid var(--border);">
+            <h3 style="margin:0;font-size:1.15rem;color:var(--gold-light);display:flex;align-items:center;gap:8px;">
+              <span>⌨️</span> <span>Keyboard Shortcuts</span>
+            </h3>
+            <button id="shortcuts-modal-close" class="btn btn-ghost btn-sm" type="button" aria-label="Close shortcuts" style="padding:4px 10px;font-size:1.15rem;cursor:pointer;line-height:1;border-radius:var(--radius-sm);color:var(--text-muted);display:flex;align-items:center;justify-content:center;">✕</button>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div class="flex-between items-center" style="padding:6px 0;border-bottom:1px solid var(--border);">
+              <span style="font-size:0.88rem;color:var(--text);">Spotlight Command Palette</span>
+              <div style="display:flex;gap:4px;"><kbd class="kbd-badge">⌘K</kbd> / <kbd class="kbd-badge">Ctrl+K</kbd> / <kbd class="kbd-badge">/</kbd></div>
+            </div>
+            <div class="flex-between items-center" style="padding:6px 0;border-bottom:1px solid var(--border);">
+              <span style="font-size:0.88rem;color:var(--text);">Cycle Atmosphere (Dark / Paper / Sepia)</span>
+              <kbd class="kbd-badge">T</kbd>
+            </div>
+            <div class="flex-between items-center" style="padding:6px 0;border-bottom:1px solid var(--border);">
+              <span style="font-size:0.88rem;color:var(--text);">Cycle Language (EN / HI / MR)</span>
+              <kbd class="kbd-badge">L</kbd>
+            </div>
+            <div class="flex-between items-center" style="padding:6px 0;border-bottom:1px solid var(--border);">
+              <span style="font-size:0.88rem;color:var(--text);">Scroll to Top of Page</span>
+              <kbd class="kbd-badge">Home</kbd>
+            </div>
+            <div class="flex-between items-center" style="padding:6px 0;border-bottom:1px solid var(--border);">
+              <span style="font-size:0.88rem;color:var(--text);">Close Modals & Drawers</span>
+              <kbd class="kbd-badge">Esc</kbd>
+            </div>
+            <div class="flex-between items-center" style="padding:6px 0;">
+              <span style="font-size:0.88rem;color:var(--text);">Toggle this Shortcuts Cheatsheet</span>
+              <kbd class="kbd-badge">?</kbd>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    const closeBtn = modal.querySelector('#shortcuts-modal-close');
+    const dismissModal = (e) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      modal.classList.remove('cmd-active');
+    };
+    if (closeBtn) {
+      closeBtn.addEventListener('click', dismissModal);
+      closeBtn.addEventListener('touchend', dismissModal);
+    }
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) dismissModal(e);
+    });
+  }
+
   document.addEventListener('keydown', (e) => {
+    const isInput = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName) || document.activeElement?.isContentEditable;
+    if (isInput) return;
+
+    const shortcutsModal = document.getElementById('shortcuts-modal');
+
+    // Press '?' to toggle Shortcuts Cheatsheet
+    if (e.key === '?' || (e.shiftKey && e.key === '/')) {
+      e.preventDefault();
+      if (shortcutsModal) {
+        shortcutsModal.classList.toggle('cmd-active');
+      }
+      return;
+    }
+
+    // Press Escape to close Shortcuts Cheatsheet
+    if (e.key === 'Escape' && shortcutsModal && shortcutsModal.classList.contains('cmd-active')) {
+      e.preventDefault();
+      shortcutsModal.classList.remove('cmd-active');
+      return;
+    }
+
+    // Press Home to scroll to top
+    if (e.key === 'Home') {
+      e.preventDefault();
+      if (window.lenis && typeof window.lenis.scrollTo === 'function') {
+        window.lenis.scrollTo(0);
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      return;
+    }
+
+    // Press 'T' to cycle reading atmosphere
+    if (e.key === 't' || e.key === 'T') {
+      const themes = ['dark', 'paper', 'sepia'];
+      const current = getCurrentTheme();
+      const nextIdx = (themes.indexOf(current) + 1) % themes.length;
+      const nextTheme = themes[nextIdx];
+      setSiteTheme(nextTheme, true);
+      const names = { dark: 'Dark Slate', paper: 'Ivory Paper', sepia: 'Historical Sepia' };
+      if (window.toast && typeof window.toast.info === 'function') {
+        window.toast.info(`Atmosphere: ${names[nextTheme]}`);
+      }
+      return;
+    }
+
+    // Press 'L' to cycle language
+    if (e.key === 'l' || e.key === 'L') {
+      const langs = ['en', 'hi', 'mr'];
+      const current = getCurrentLang();
+      const nextIdx = (langs.indexOf(current) + 1) % langs.length;
+      const nextLang = langs[nextIdx];
+      setLanguage(nextLang);
+      const names = { en: 'English (EN)', hi: 'हिन्दी (HI)', mr: 'मराठी (MR)' };
+      if (window.toast && typeof window.toast.info === 'function') {
+        window.toast.info(`Language: ${names[nextLang]}`);
+      }
+      return;
+    }
+
     // Press '/' to trigger Spotlight HUD if available, else focus search input
-    if (e.key === '/' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) {
+    if (e.key === '/') {
       e.preventDefault();
       if (window.CommandPalette && typeof window.CommandPalette.open === 'function') {
         window.CommandPalette.open();
@@ -509,6 +686,68 @@ function initKeyboardShortcuts() {
       } else if (!window.location.pathname.includes('archive.html')) {
         window.location.href = 'archive.html#search';
       }
+    }
+  });
+}
+
+// ── Network Connectivity & PWA Install Handlers ───────────
+function initConnectivityAndPWA() {
+  window.addEventListener('offline', () => {
+    if (window.toast && typeof window.toast.info === 'function') {
+      window.toast.info('📶 Offline Mode: 60 BAWS volumes and cached catalogs remain accessible.');
+    }
+  });
+
+  window.addEventListener('online', () => {
+    if (window.toast && typeof window.toast.success === 'function') {
+      window.toast.success('🟢 Connection Restored: Synchronized with live archive.');
+    }
+  });
+
+  // PWA Install prompt
+  let deferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (localStorage.getItem('pwa_prompt_dismissed') === 'true') return;
+
+    if (!document.getElementById('pwa-install-banner')) {
+      const banner = document.createElement('div');
+      banner.id = 'pwa-install-banner';
+      banner.className = 'pwa-install-banner';
+      banner.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:1.4rem;">📱</span>
+          <div>
+            <div style="font-weight:700;font-size:0.85rem;color:var(--text);">Install Ambedkar Archive</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);">One-tap offline access to 60 volumes on your home screen</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <button id="pwa-install-accept" class="btn btn-primary btn-sm" style="padding:4px 12px;font-size:0.75rem;">Install</button>
+          <button id="pwa-install-dismiss" class="btn btn-ghost btn-sm" style="padding:4px 8px;font-size:0.75rem;">✕</button>
+        </div>
+      `;
+      document.body.appendChild(banner);
+
+      setTimeout(() => banner.classList.add('active'), 1500);
+
+      document.getElementById('pwa-install-accept')?.addEventListener('click', async () => {
+        banner.classList.remove('active');
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          if (outcome === 'accepted') {
+            if (window.toast) window.toast.success('Archival App installed successfully!');
+          }
+          deferredPrompt = null;
+        }
+      });
+
+      document.getElementById('pwa-install-dismiss')?.addEventListener('click', () => {
+        banner.classList.remove('active');
+        localStorage.setItem('pwa_prompt_dismissed', 'true');
+      });
     }
   });
 }
@@ -637,6 +876,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initNavScrollDynamics();
   setActiveNavLink();
   initKeyboardShortcuts();
+  initBackToTop();
+  initConnectivityAndPWA();
   initStatCounters();
 
   // Logout button

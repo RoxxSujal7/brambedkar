@@ -34,15 +34,16 @@ connectDB();
 // Security headers
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
+  crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "https://accounts.google.com", "https://accounts.google.com/gsi/client", "https://cdn.jsdelivr.net"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://accounts.google.com", "https://apis.google.com", "https://cdn.jsdelivr.net"],
       workerSrc: ["'self'", "blob:"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://accounts.google.com/gsi/style"],
       fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
       imgSrc: ["'self'", "data:", "https:", "blob:"],
-      connectSrc: ["'self'", "https://accounts.google.com", "https://accounts.google.com/gsi/", "https://generativelanguage.googleapis.com", "https://cdn.jsdelivr.net", "https://tessdata.projectnaptha.com"],
+      connectSrc: ["'self'", "https://accounts.google.com", "https://accounts.google.com/gsi/", "https://www.googleapis.com", "https://oauth2.googleapis.com", "https://generativelanguage.googleapis.com", "https://cdn.jsdelivr.net", "https://tessdata.projectnaptha.com"],
       frameSrc: ["'self'", "https://accounts.google.com"],
       objectSrc: ["'none'"],
       baseUri: ["'self'"],
@@ -154,14 +155,11 @@ app.get('/api/health', (req, res) => {
 app.use(express.static(path.join(__dirname, '../frontend'), {
   maxAge: '1d',
   setHeaders: (res, filePath) => {
-    if (filePath.endsWith('.html')) {
-      // HTML documents should always re-validate to ensure fresh deployments
-      res.setHeader('Cache-Control', 'no-cache, must-revalidate');
-    } else if (filePath.match(/\.(css|js)$/i)) {
-      // Stylesheets and scripts revalidate immediately during development
+    if (filePath.match(/\.(html|css|js)$/i)) {
+      // HTML, CSS, JS always re-validate — ensures fresh content on deploy
       res.setHeader('Cache-Control', 'no-cache, must-revalidate');
     } else if (filePath.match(/\.(woff2?|ttf|eot|png|jpg|jpeg|gif|svg|ico|webp)$/i)) {
-      // Media and fonts cached
+      // Media and fonts cached for 1 day
       res.setHeader('Cache-Control', 'public, max-age=86400');
     }
   }
@@ -187,12 +185,17 @@ app.use((err, req, res, next) => {
   const statusCode = err.statusCode || (err.name === 'ValidationError' ? 422 : err.code === 11000 ? 409 : err.name === 'CastError' ? 400 : 500);
   const code = err.code || (err.name === 'ValidationError' ? 'VALIDATION_ERROR' : err.name === 'CastError' ? 'INVALID_ID' : 'INTERNAL_ERROR');
 
+  const isProd = process.env.NODE_ENV === 'production';
+  const safeMessage = (isProd && statusCode >= 500)
+    ? 'Internal server error'
+    : (err.message || 'Internal server error');
+
   return res.status(statusCode).json({
     success: false,
     error: {
       code,
-      message: err.message || 'Internal server error',
-      details: err.details || null,
+      message: safeMessage,
+      details: isProd ? null : (err.details || null),
       timestamp: err.timestamp || new Date().toISOString(),
     },
   });

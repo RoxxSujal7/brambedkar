@@ -592,7 +592,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   async function loadUserCollections() {
     const listEl = document.getElementById('collections-list');
     if (!listEl) return;
-    const token = localStorage.getItem('token');
+    const token = (window.getToken ? window.getToken() : (localStorage.getItem('auth_token') || localStorage.getItem('token')));
     if (!token) {
       listEl.innerHTML = `<div style="text-align:center;padding:var(--space-4);color:var(--text-muted);font-size:0.85rem;">Log in to create and manage personal research collections.</div>`;
       return;
@@ -664,7 +664,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Create Collection
   document.getElementById('btn-create-collection')?.addEventListener('click', async () => {
-    const token = localStorage.getItem('token');
+    const token = (window.getToken ? window.getToken() : (localStorage.getItem('auth_token') || localStorage.getItem('token')));
     if (!token) {
       alert('Please log in to create a research collection.');
       return;
@@ -701,7 +701,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Export Collection
   window.exportCollection = function(colId, format) {
-    const token = localStorage.getItem('token');
+    const token = (window.getToken ? window.getToken() : (localStorage.getItem('auth_token') || localStorage.getItem('token')));
     if (!token) {
       alert('Authentication required to export collection.');
       return;
@@ -712,7 +712,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Delete Collection
   window.deleteCollection = async function(colId) {
     if (!confirm('Are you sure you want to delete this research collection? Archival sources will remain preserved in the archive.')) return;
-    const token = localStorage.getItem('token');
+    const token = (window.getToken ? window.getToken() : (localStorage.getItem('auth_token') || localStorage.getItem('token')));
     try {
       const res = await fetch(`/api/workspace/collections/${colId}`, {
         method: 'DELETE',

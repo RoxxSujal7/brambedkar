@@ -404,8 +404,8 @@ function updateCounterAndInputs() {
   const pageSlider = document.getElementById('page-slider');
   const progressFill = document.getElementById('reader-progress-fill');
 
-  const displayPage = isTwoPageMode && currentPageNum + 1 <= totalPages 
-    ? `Pages ${currentPageNum}–${currentPageNum + 1} of ${totalPages}` 
+  const displayPage = isTwoPageMode && currentPageNum + 1 <= totalPages
+    ? `Pages ${currentPageNum}–${currentPageNum + 1} of ${totalPages}`
     : `Page ${currentPageNum} of ${totalPages}`;
 
   if (counterEl) counterEl.textContent = displayPage;
@@ -591,8 +591,9 @@ function setupControls() {
     });
   }
 
-  // Bookmark modal
+  // Bookmark modal & Academic Citation Modal
   setupBookmarkModal();
+  setupCitationModal();
 
   // Window resize re-render
   let resizeTimeout;
@@ -668,6 +669,115 @@ function setupBookmarkModal() {
       }
     });
   }
+}
+
+function setupCitationModal() {
+  const citeBtn = document.getElementById('cite-reader-btn');
+  if (!citeBtn) return;
+
+  // Ensure modal DOM element exists
+  let modal = document.getElementById('cite-modal-backdrop');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'cite-modal-backdrop';
+    modal.className = 'cmd-backdrop';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Academic Citation Generator');
+    modal.innerHTML = `
+      <div class="cmd-dialog card" style="max-width:680px;">
+        <div class="cmd-inner card-inner" style="padding:var(--space-6);">
+          <div class="flex-between items-center" style="margin-bottom:var(--space-4);padding-bottom:var(--space-3);border-bottom:1px solid var(--border);">
+            <div class="flex items-center gap-2">
+              <span style="font-size:1.25rem;">🖋️</span>
+              <h3 style="margin:0;font-size:1.15rem;color:var(--text);">Academic Citation Generator</h3>
+            </div>
+            <button id="cite-modal-close" class="btn btn-ghost btn-sm" type="button" aria-label="Close citation modal" style="padding:4px 10px;font-size:1.15rem;cursor:pointer;line-height:1;border-radius:var(--radius-sm);color:var(--text-muted);display:flex;align-items:center;justify-content:center;">✕</button>
+          </div>
+
+          <p id="cite-doc-title" style="font-size:0.88rem;color:var(--gold-light);font-weight:600;margin-bottom:var(--space-4);"></p>
+
+          <div class="flex flex-col gap-3" id="cite-formats-list"></div>
+
+          <div class="flex-between items-center" style="margin-top:var(--space-5);padding-top:var(--space-3);border-top:1px solid var(--border);font-size:0.75rem;color:var(--text-muted);">
+            <span>Education Department, Government of Maharashtra (BAWS)</span>
+            <span><kbd>ESC</kbd> to close</span>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    const closeCite = (e) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      modal.classList.remove('cmd-active');
+    };
+
+    const closeBtn = modal.querySelector('#cite-modal-close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', closeCite);
+      closeBtn.addEventListener('touchend', closeCite);
+    }
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeCite(e);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('cmd-active')) {
+        closeCite(e);
+      }
+    });
+  }
+
+  citeBtn.addEventListener('click', () => {
+    if (!currentDocMeta) return;
+
+    const year = currentDocMeta.year || 1989;
+    const vol = currentDocMeta.volNo;
+    const title = currentDocMeta.title;
+
+    const citations = {
+      'APA (7th Ed.)': `Ambedkar, B. R. (${year}). ${title}. In Dr. Babasaheb Ambedkar: Writings and Speeches (Vol. ${vol}). Education Department, Government of Maharashtra.`,
+      'MLA (9th Ed.)': `Ambedkar, B. R. "${title}." Dr. Babasaheb Ambedkar: Writings and Speeches, vol. ${vol}, Education Department, Government of Maharashtra, ${year}.`,
+      'Chicago (Notes & Bibliography)': `Ambedkar, B. R. ${title}. Vol. ${vol} of Dr. Babasaheb Ambedkar: Writings and Speeches. Mumbai: Government of Maharashtra, ${year}.`,
+      'BibTeX': `@incollection{ambedkar_vol_${vol},\n  author    = {Ambedkar, Bhimrao Ramji},\n  title     = {${title}},\n  booktitle = {Dr. Babasaheb Ambedkar: Writings and Speeches},\n  volume    = {${vol}},\n  year      = {${year}},\n  publisher = {Education Department, Government of Maharashtra}\n}`
+    };
+
+    document.getElementById('cite-doc-title').textContent = `Volume ${vol}: ${title}`;
+    const listEl = document.getElementById('cite-formats-list');
+    listEl.innerHTML = Object.entries(citations).map(([styleName, citText]) => `
+      <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:var(--space-3) var(--space-4);">
+        <div class="flex-between items-center" style="margin-bottom:6px;">
+          <span style="font-size:0.75rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;">${styleName}</span>
+          <button class="btn btn-secondary btn-sm copy-cite-btn" data-text="${encodeURIComponent(citText)}" style="padding:2px 8px;font-size:0.75rem;">
+            📋 Copy
+          </button>
+        </div>
+        <pre style="margin:0;font-size:0.8rem;white-space:pre-wrap;word-break:break-word;font-family:${styleName === 'BibTeX' ? 'var(--font-mono)' : 'inherit'};color:var(--text);line-height:1.5;">${citText}</pre>
+      </div>
+    `).join('');
+
+    listEl.querySelectorAll('.copy-cite-btn').forEach(b => {
+      b.addEventListener('click', () => {
+        const text = decodeURIComponent(b.getAttribute('data-text'));
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(text).then(() => {
+            b.textContent = '✓ Copied!';
+            if (window.toast && typeof window.toast.success === 'function') {
+              window.toast.success('Citation copied to clipboard!');
+            }
+            setTimeout(() => { b.textContent = '📋 Copy'; }, 2000);
+          });
+        }
+      });
+    });
+
+    modal.classList.add('cmd-active');
+  });
 }
 
 // Window resize & orientation change handler

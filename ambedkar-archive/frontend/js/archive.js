@@ -441,6 +441,9 @@ function renderDocCard(doc) {
                 <span>${readLabel}</span>
                 <span class="btn-icon-bubble">📖</span>
               </a>
+              <button type="button" class="btn btn-secondary btn-sm btn-cite" data-id="${doc._id}" title="Generate Citation (APA, MLA, Chicago, BibTeX)" style="padding:6px 12px;font-size:0.8rem;">
+                🖋️ Cite
+              </button>
               <a href="${pdfUrl}" download class="btn btn-secondary btn-sm" title="Download Local Official PDF" style="padding:6px 12px;">
                 📥
               </a>
@@ -522,7 +525,13 @@ async function loadDocuments(reset = false) {
       <div class="empty-state" style="grid-column:1/-1;padding:var(--space-16) 0;text-align:center;">
         <span style="font-size:3.5rem;display:block;margin-bottom:var(--space-4);">🔍</span>
         <h3 style="font-size:1.4rem;margin-bottom:var(--space-2);color:var(--text);">No matching volumes found</h3>
-        <p style="color:var(--text-muted);margin-bottom:var(--space-6);">Try searching for terms like "caste", "constitution", "buddhism", or clear filters.</p>
+        <p style="color:var(--text-muted);margin-bottom:var(--space-4);">Explore these core subjects or reset all filters:</p>
+        <div class="flex gap-2 justify-center flex-wrap" style="margin-bottom:var(--space-6);">
+          <button type="button" class="tag search-suggest-btn" data-query="caste" style="cursor:pointer;background:var(--surface-2);border:1px solid var(--border);padding:6px 14px;">🏷️ Caste</button>
+          <button type="button" class="tag search-suggest-btn" data-query="constitution" style="cursor:pointer;background:var(--surface-2);border:1px solid var(--border);padding:6px 14px;">📜 Constitution</button>
+          <button type="button" class="tag search-suggest-btn" data-query="buddhism" style="cursor:pointer;background:var(--surface-2);border:1px solid var(--border);padding:6px 14px;">☸️ Buddhism</button>
+          <button type="button" class="tag search-suggest-btn" data-query="economics" style="cursor:pointer;background:var(--surface-2);border:1px solid var(--border);padding:6px 14px;">💰 Economics</button>
+        </div>
         <button id="reset-filters-btn" class="btn btn-primary">Reset Filters</button>
       </div>
     `;
@@ -538,6 +547,18 @@ async function loadDocuments(reset = false) {
         loadDocuments(true);
       });
     }
+    grid.querySelectorAll('.search-suggest-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const q = btn.dataset.query;
+        const input = document.getElementById('search-input');
+        if (input) input.value = q;
+        currentSearch = q;
+        currentTopic = 'all';
+        currentCategory = 'all';
+        syncUIFilters();
+        loadDocuments(true);
+      });
+    });
     loadMoreBtn.style.display = 'none';
     return;
   }
@@ -664,12 +685,121 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // Re-render when language changes
-  document.addEventListener('languageChange', () => {
-    loadDocuments(false);
-  });
+  // In-Page Academic Citation Generator Modal
+  function initCitationModal() {
+    let modal = document.getElementById('cite-modal-backdrop');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'cite-modal-backdrop';
+      modal.className = 'cmd-backdrop';
+      modal.setAttribute('role', 'presentation');
+      modal.innerHTML = `
+        <div class="cmd-dialog card" role="dialog" aria-modal="true" aria-labelledby="cite-modal-title" style="max-width:620px;">
+          <div class="cmd-inner card-inner" style="padding:var(--space-6);">
+            <div class="flex-between items-center" style="margin-bottom:var(--space-4);border-bottom:1px solid var(--border);padding-bottom:var(--space-3);">
+              <div class="flex gap-2 items-center">
+                <span style="font-size:1.3rem;">🖋️</span>
+                <h3 id="cite-modal-title" style="font-size:1.1rem;font-weight:700;color:var(--text);font-family:var(--font-display);margin:0;">
+                  Academic Citation Generator
+                </h3>
+              </div>
+              <button id="cite-modal-close" class="btn btn-ghost btn-sm" style="padding:4px 8px;" aria-label="Close citation modal">✕</button>
+            </div>
+
+            <p id="cite-doc-title" style="font-size:0.88rem;color:var(--gold-light);font-weight:600;margin-bottom:var(--space-4);"></p>
+
+            <div class="flex flex-col gap-3" id="cite-formats-list"></div>
+
+            <div class="flex-between items-center" style="margin-top:var(--space-5);padding-top:var(--space-3);border-top:1px solid var(--border);font-size:0.75rem;color:var(--text-muted);">
+              <span>Education Department, Government of Maharashtra (BAWS)</span>
+              <span><kbd>ESC</kbd> to close</span>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+
+      const closeArchiveCite = (e) => {
+        if (e) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+        modal.classList.remove('cmd-active');
+      };
+
+      const closeBtn = modal.querySelector('#cite-modal-close');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', closeArchiveCite);
+        closeBtn.addEventListener('touchend', closeArchiveCite);
+      }
+
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeArchiveCite(e);
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('cmd-active')) {
+          closeArchiveCite(e);
+        }
+      });
+    }
+
+    // Event delegation for .btn-cite clicks
+    document.addEventListener('click', (e) => {
+      const citeBtn = e.target.closest('.btn-cite');
+      if (!citeBtn) return;
+      const docId = citeBtn.getAttribute('data-id');
+      const doc = CLIENT_BAWS_CATALOG.find(d => d._id === docId);
+      if (!doc) return;
+
+      const year = doc.year || 1989;
+      const vol = doc.volumeNo;
+      const title = doc.title;
+
+      // 4 Citation Styles
+      const citations = {
+        'APA (7th Ed.)': `Ambedkar, B. R. (${year}). ${title}. In Dr. Babasaheb Ambedkar: Writings and Speeches (Vol. ${vol}). Education Department, Government of Maharashtra.`,
+        'MLA (9th Ed.)': `Ambedkar, B. R. "${title}." Dr. Babasaheb Ambedkar: Writings and Speeches, vol. ${vol}, Education Department, Government of Maharashtra, ${year}.`,
+        'Chicago (Notes & Bibliography)': `Ambedkar, B. R. ${title}. Vol. ${vol} of Dr. Babasaheb Ambedkar: Writings and Speeches. Mumbai: Government of Maharashtra, ${year}.`,
+        'BibTeX': `@incollection{ambedkar_vol_${vol},\n  author    = {Ambedkar, Bhimrao Ramji},\n  title     = {${title}},\n  booktitle = {Dr. Babasaheb Ambedkar: Writings and Speeches},\n  volume    = {${vol}},\n  year      = {${year}},\n  publisher = {Education Department, Government of Maharashtra}\n}`
+      };
+
+      document.getElementById('cite-doc-title').textContent = `Volume ${vol}: ${title}`;
+      const listEl = document.getElementById('cite-formats-list');
+      listEl.innerHTML = Object.entries(citations).map(([styleName, citText]) => `
+        <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:var(--space-3) var(--space-4);">
+          <div class="flex-between items-center" style="margin-bottom:6px;">
+            <span style="font-size:0.75rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;">${styleName}</span>
+            <button class="btn btn-secondary btn-sm copy-cite-btn" data-text="${encodeURIComponent(citText)}" style="padding:2px 8px;font-size:0.75rem;">
+              📋 Copy
+            </button>
+          </div>
+          <pre style="margin:0;font-size:0.8rem;white-space:pre-wrap;word-break:break-word;font-family:${styleName === 'BibTeX' ? 'var(--font-mono)' : 'inherit'};color:var(--text);line-height:1.5;">${citText}</pre>
+        </div>
+      `).join('');
+
+      // Wire copy buttons
+      listEl.querySelectorAll('.copy-cite-btn').forEach(b => {
+        b.addEventListener('click', () => {
+          const text = decodeURIComponent(b.getAttribute('data-text'));
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(text).then(() => {
+              b.textContent = '✓ Copied!';
+              if (window.toast && typeof window.toast.success === 'function') {
+                window.toast.success('Citation copied to clipboard!');
+              }
+              setTimeout(() => { b.textContent = '📋 Copy'; }, 2000);
+            });
+          }
+        });
+      });
+
+      modal.classList.add('cmd-active');
+    });
+  }
 
   // Fetch progress and do initial render
+  initCitationModal();
   await fetchUserProgress();
   loadDocuments(true);
 });

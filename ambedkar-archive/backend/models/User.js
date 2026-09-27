@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: [true, 'Password is required'],
-      minlength: [6, 'Password must be at least 6 characters'],
+      minlength: [8, 'Password must be at least 8 characters'],
       select: false, // never return password in queries
     },
     role: {
@@ -54,8 +54,16 @@ const userSchema = new mongoose.Schema(
     },
     authProvider: {
       type: String,
-      enum: ['local', 'google', 'phone', 'email_otp'],
+      enum: ['local', 'google', 'phone', 'email_otp', 'whatsapp_otp', 'telegram_otp'],
       default: 'local',
+    },
+    email_verified: {
+      type: Boolean,
+      default: false,
+    },
+    phone_verified: {
+      type: Boolean,
+      default: false,
     },
     googleId: {
       type: String,
@@ -65,14 +73,21 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    passwordChangedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );
 
-// Hash password before saving (with SHA-256 pre-hashing)
+// Hash password before saving (with SHA-256 pre-hashing) and record passwordChangedAt
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   this.password = await cryptoUtil.hashPassword(this.password, 12);
+  if (!this.isNew) {
+    this.passwordChangedAt = new Date(Date.now() - 1000); // 1s buffer for clock skew / token issuance
+  }
   next();
 });
 

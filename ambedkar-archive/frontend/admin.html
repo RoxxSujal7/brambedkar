@@ -370,7 +370,7 @@ Ensure equal protection applies to all persons regardless of citizenship status.
     });
 
     async function checkAdminAuth() {
-      const token = localStorage.getItem('token');
+      const token = (window.getToken ? window.getToken() : (localStorage.getItem('auth_token') || localStorage.getItem('token')));
       const gate = document.getElementById('admin-auth-gate');
       const portal = document.getElementById('admin-main-portal');
 
@@ -485,7 +485,7 @@ Ensure equal protection applies to all persons regardless of citizenship status.
 
     async function handleIngest(e) {
       e.preventDefault();
-      const token = localStorage.getItem('token');
+      const token = (window.getToken ? window.getToken() : (localStorage.getItem('auth_token') || localStorage.getItem('token')));
       const title = document.getElementById('ingest-title').value;
       const category = document.getElementById('ingest-category').value;
       const volumeNo = document.getElementById('ingest-volume').value;
@@ -518,7 +518,7 @@ Ensure equal protection applies to all persons regardless of citizenship status.
     }
 
     async function handlePublishToggle(id, publish) {
-      const token = localStorage.getItem('token');
+      const token = (window.getToken ? window.getToken() : (localStorage.getItem('auth_token') || localStorage.getItem('token')));
       try {
         const res = await fetch(`/api/admin/documents/${id}/publish`, {
           method: 'PATCH',
@@ -537,7 +537,7 @@ Ensure equal protection applies to all persons regardless of citizenship status.
 
     async function handleDeleteRecord(id) {
       if (!confirm(`Are you sure you want to permanently delete record ${id}?`)) return;
-      const token = localStorage.getItem('token');
+      const token = (window.getToken ? window.getToken() : (localStorage.getItem('auth_token') || localStorage.getItem('token')));
       try {
         const res = await fetch(`/api/admin/documents/${id}`, {
           method: 'DELETE',
@@ -551,7 +551,7 @@ Ensure equal protection applies to all persons regardless of citizenship status.
     }
 
     async function handleVerifyOcr(manuscriptId) {
-      const token = localStorage.getItem('token');
+      const token = (window.getToken ? window.getToken() : (localStorage.getItem('auth_token') || localStorage.getItem('token')));
       const text = document.getElementById('ocr-corrected-text').value;
       try {
         const res = await fetch('/api/admin/ocr/verify', {
@@ -570,7 +570,7 @@ Ensure equal protection applies to all persons regardless of citizenship status.
     }
 
     async function loadUsersTable() {
-      const token = localStorage.getItem('token');
+      const token = (window.getToken ? window.getToken() : (localStorage.getItem('auth_token') || localStorage.getItem('token')));
       const tbody = document.getElementById('user-table-tbody');
       try {
         const res = await fetch('/api/admin/users', {
@@ -600,7 +600,7 @@ Ensure equal protection applies to all persons regardless of citizenship status.
     }
 
     async function handleRoleChange(userId, newRole) {
-      const token = localStorage.getItem('token');
+      const token = (window.getToken ? window.getToken() : (localStorage.getItem('auth_token') || localStorage.getItem('token')));
       try {
         const res = await fetch(`/api/admin/users/${userId}/role`, {
           method: 'PATCH',
@@ -640,5 +640,6 @@ Ensure equal protection applies to all persons regardless of citizenship status.
   <script src="js/toast.js"></script>
   <script src="js/navigation-system.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/command-palette.js"></script>
 </body>
 </html>

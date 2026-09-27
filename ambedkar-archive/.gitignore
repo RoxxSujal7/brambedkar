@@ -8,3 +8,4 @@ coverage/
 .agents
 backend/uploads/*
 !backend/uploads/.gitkeep
+backend/data/telegram_contacts.json

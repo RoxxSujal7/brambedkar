@@ -103,7 +103,7 @@
 
         <div class="nav-links" role="list">
           ${NAV_CONFIG.topLinks.map(link => {
-            const isAct = currentPath === link.href || 
+            const isAct = currentPath === link.href ||
               (link.id === 'archive' && ['archive.html', 'reader.html', 'learning.html', 'quotes.html'].includes(currentPath)) ||
               (link.id === 'assistant' && currentPath === 'assistant.html');
             return `<a href="${link.href}" class="nav-link ${isAct ? 'active' : ''}" role="listitem">${link.label}</a>`;
@@ -125,11 +125,11 @@
             <button class="lang-btn" data-lang="mr" aria-pressed="false">मराठी</button>
           </div>
 
-          <!-- Quick Search Trigger -->
-          <a href="archive.html#search" class="btn btn-outline btn-sm" title="Search Library (Press /)">
+          <!-- Quick Search & Command Palette Trigger -->
+          <button type="button" class="btn btn-outline btn-sm nav-cmd-search" title="Open Command Palette (Ctrl+K or ⌘K)" aria-label="Open Command Palette (Press Ctrl+K)">
             <span>🔍 Search</span>
-            <span class="btn-icon-bubble">/</span>
-          </a>
+            <kbd class="kbd-badge" style="font-size:0.65rem;padding:2px 5px;border-radius:4px;background:var(--surface-2);border:1px solid var(--border);color:var(--text-muted);font-family:var(--font-mono);font-weight:600;margin-left:2px;">⌘K</kbd>
+          </button>
 
           <!-- Auth State Actions -->
           <a id="nav-login-btn" href="login.html" class="btn btn-primary btn-sm">Sign In</a>
@@ -170,9 +170,28 @@
     const currentPath = getCurrentPath();
     let menu = document.getElementById('mobile-menu');
 
+    // Detect user auth state
+    const isLoggedIn = (window.AppState && AppState.isLoggedIn && AppState.isLoggedIn()) || !!localStorage.getItem('auth_token');
+    let userName = 'Researcher';
+    try {
+      const stored = localStorage.getItem('auth_user');
+      if (stored) {
+        const u = JSON.parse(stored);
+        if (u && u.name) userName = u.name.split(' ')[0];
+      }
+    } catch (_) {}
+
     const menuHtml = `
-      <div class="mobile-theme-row flex-between items-center" style="padding:var(--space-2) var(--space-3);margin-bottom:var(--space-2);border-bottom:1px solid var(--border);">
-        <span style="font-size:0.8rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Atmosphere</span>
+      <div class="mobile-drawer-header flex-between items-center">
+        <span class="mobile-drawer-title">
+          <span>🏛️</span> <span>Menu Navigation</span>
+        </span>
+        <button id="mobile-menu-close-btn" class="btn btn-ghost btn-sm" type="button" aria-label="Close menu" style="padding:4px 8px;font-size:1.1rem;cursor:pointer;color:var(--text-muted);line-height:1;">✕</button>
+      </div>
+
+      <!-- Atmosphere Selection -->
+      <div class="mobile-drawer-section">
+        <span class="mobile-drawer-label">Atmosphere</span>
         <div class="nav-theme" role="group" aria-label="Atmosphere selection">
           <button class="theme-toggle-btn active" data-theme="dark" title="Dark Slate">🌙</button>
           <button class="theme-toggle-btn" data-theme="paper" title="Ivory Paper">📜</button>
@@ -180,8 +199,9 @@
         </div>
       </div>
 
-      <div class="mobile-theme-row flex-between items-center" style="padding:var(--space-2) var(--space-3);margin-bottom:var(--space-2);border-bottom:1px solid var(--border);">
-        <span style="font-size:0.8rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Language</span>
+      <!-- Language Selection -->
+      <div class="mobile-drawer-section">
+        <span class="mobile-drawer-label">Language</span>
         <div class="nav-lang" role="group" aria-label="Language selection">
           <button class="lang-btn active" data-lang="en">EN</button>
           <button class="lang-btn" data-lang="hi">हिन्दी</button>
@@ -189,21 +209,45 @@
         </div>
       </div>
 
-      ${NAV_CONFIG.drawerLinks.map(link => {
-        const isAct = currentPath === link.href || 
-          (link.id === 'archive' && ['archive.html', 'reader.html', 'learning.html', 'quotes.html'].includes(currentPath)) ||
-          (link.id === 'assistant' && currentPath === 'assistant.html');
-        return `<a href="${link.href}" class="nav-link ${isAct ? 'active' : ''}">
-          <span style="margin-right:6px;">${link.icon}</span> ${link.label}
-          ${link.badge ? `<span class="badge-16-9" style="margin-left:6px;">${link.badge}</span>` : ''}
-        </a>`;
-      }).join('')}
+      <!-- Quick Spotlight Search -->
+      <div style="margin-bottom:var(--space-3);margin-top:2px;">
+        <button type="button" class="btn btn-secondary btn-full nav-cmd-search flex-between items-center" style="font-size:0.88rem;padding:10px 14px;border-radius:var(--radius-lg);width:100%;">
+          <span style="display:flex;align-items:center;gap:8px;"><span>🔍</span> <span>Quick Spotlight Search</span></span>
+          <kbd class="kbd-badge" style="font-size:0.65rem;padding:2px 6px;border-radius:4px;background:var(--surface-3);border:1px solid var(--border);color:var(--text-muted);font-family:var(--font-mono);font-weight:600;">⌘K</kbd>
+        </button>
+      </div>
 
-      <div style="height:1px;background:rgba(255,255,255,0.08);margin:var(--space-4) 0;"></div>
-      <button id="drawer-reset-dock-btn" class="btn btn-secondary btn-full btn-sm" style="margin-bottom:var(--space-3);display:flex;align-items:center;justify-content:center;gap:6px;">
+      <!-- Scrollable Navigation Links -->
+      <div class="mobile-drawer-links">
+        ${NAV_CONFIG.drawerLinks.map(link => {
+          const isAct = currentPath === link.href ||
+            (link.id === 'archive' && ['archive.html', 'reader.html', 'learning.html', 'quotes.html'].includes(currentPath)) ||
+            (link.id === 'assistant' && currentPath === 'assistant.html');
+          return `<a href="${link.href}" class="mobile-drawer-link ${isAct ? 'active' : ''}">
+            <span class="drawer-link-icon">${link.icon}</span>
+            <span class="drawer-link-label">${link.label}</span>
+            ${link.badge ? `<span class="badge-16-9" style="margin-left:6px;">${link.badge}</span>` : ''}
+            <span class="drawer-link-arrow">→</span>
+          </a>`;
+        }).join('')}
+      </div>
+
+      <div style="height:1px;background:var(--border);margin:var(--space-4) 0 var(--space-3);"></div>
+
+      <button id="drawer-reset-dock-btn" class="btn btn-secondary btn-full btn-sm" style="margin-bottom:var(--space-3);display:flex;align-items:center;justify-content:center;gap:6px;width:100%;">
         <span>↺</span> <span>Reset Dock Position</span>
       </button>
-      <a href="login.html" class="btn btn-primary btn-full">Sign In</a>
+
+      ${isLoggedIn ? `
+        <div style="display:flex;gap:8px;align-items:center;">
+          <a href="dashboard.html" class="btn btn-primary btn-sm" style="flex:1;border-radius:var(--radius-full);justify-content:center;">
+            <span>👤</span> <span>Dashboard (${userName})</span>
+          </a>
+          <button data-action="logout" class="btn btn-secondary btn-sm" style="white-space:nowrap;border-radius:var(--radius-full);">Logout</button>
+        </div>
+      ` : `
+        <a href="login.html" class="btn btn-primary btn-full" style="border-radius:var(--radius-full);justify-content:center;">Sign In to Archive →</a>
+      `}
     `;
 
     if (!menu) {
@@ -233,7 +277,7 @@
     let bar = document.querySelector('.bottom-bar');
 
     const barHtml = NAV_CONFIG.bottomTabs.map(tab => {
-      const isAct = currentPath === tab.href || 
+      const isAct = currentPath === tab.href ||
         (tab.id === 'archive' && ['archive.html', 'reader.html', 'learning.html', 'quotes.html'].includes(currentPath)) ||
         (tab.id === 'assistant' && currentPath === 'assistant.html');
       return `
@@ -653,9 +697,26 @@
 
   // ── 7. Core Interactivity Wiring (Self-contained) ────────
   function wireCoreNavActions() {
-    // 1. Mobile Hamburger Toggle
+    // 1. Mobile Hamburger Toggle with Backdrop
     const hamburger = document.getElementById('hamburger');
     const mobileMenu = document.getElementById('mobile-menu');
+    let backdrop = document.getElementById('mobile-menu-backdrop');
+    if (!backdrop) {
+      backdrop = document.createElement('div');
+      backdrop.id = 'mobile-menu-backdrop';
+      backdrop.className = 'mobile-menu-backdrop';
+      document.body.appendChild(backdrop);
+    }
+
+    const setMenuOpen = (open) => {
+      if (!mobileMenu) return;
+      mobileMenu.classList.toggle('open', open);
+      if (backdrop) backdrop.classList.toggle('open', open);
+      document.body.classList.toggle('menu-open', open);
+      if (hamburger) hamburger.setAttribute('aria-expanded', String(open));
+      document.body.style.overflow = open ? 'hidden' : '';
+    };
+
     if (hamburger && mobileMenu && !hamburger.__navWired) {
       hamburger.__navWired = true;
       hamburger.addEventListener('click', (e) => {
@@ -664,30 +725,60 @@
           e.stopPropagation();
         }
         const isOpen = mobileMenu.classList.contains('open');
-        const nextState = !isOpen;
-        hamburger.setAttribute('aria-expanded', String(nextState));
-        mobileMenu.classList.toggle('open', nextState);
-        document.body.style.overflow = nextState ? 'hidden' : '';
+        setMenuOpen(!isOpen);
       });
+
+      // Close on backdrop click
+      backdrop.addEventListener('click', () => setMenuOpen(false));
 
       // Close on navigation link click
       mobileMenu.querySelectorAll('a').forEach((el) => {
-        el.addEventListener('click', () => {
-          hamburger.setAttribute('aria-expanded', 'false');
-          mobileMenu.classList.remove('open');
-          document.body.style.overflow = '';
-        });
+        el.addEventListener('click', () => setMenuOpen(false));
       });
 
       // Close on Escape key
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
-          hamburger.setAttribute('aria-expanded', 'false');
-          mobileMenu.classList.remove('open');
-          document.body.style.overflow = '';
+          setMenuOpen(false);
+        }
+      });
+
+      // Close on dedicated close button click
+      const menuCloseBtn = mobileMenu.querySelector('#mobile-menu-close-btn');
+      if (menuCloseBtn) {
+        menuCloseBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          setMenuOpen(false);
+        });
+      }
+
+      // Close on outside click
+      document.addEventListener('click', (e) => {
+        if (mobileMenu.classList.contains('open') && !mobileMenu.contains(e.target) && !hamburger.contains(e.target)) {
+          setMenuOpen(false);
         }
       });
     }
+
+    // 1.5 Quick Search Command Palette Trigger
+    document.querySelectorAll('.nav-cmd-search').forEach((btn) => {
+      if (!btn.__navCmdWired) {
+        btn.__navCmdWired = true;
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const drawer = document.getElementById('mobile-menu');
+          if (drawer && drawer.classList.contains('open')) {
+            drawer.classList.remove('open');
+            document.body.style.overflow = '';
+          }
+          if (window.CommandPalette && typeof window.CommandPalette.open === 'function') {
+            window.CommandPalette.open();
+          } else {
+            window.location.href = 'archive.html#search';
+          }
+        });
+      }
+    });
 
     // 2. Reading Atmosphere Buttons
     document.querySelectorAll('.theme-toggle-btn').forEach((btn) => {
@@ -708,24 +799,140 @@
       }
     });
 
-    // 3. Language Selector Buttons
+    // 3. Multilingual Archival Dictionary & Synchronization
+    const I18N_NAV = {
+      en: {
+        home: 'Home',
+        archive: 'Complete Works (60 Vol)',
+        letters: 'Letters (361)',
+        vows: '22 Vows',
+        timeline: 'Timeline',
+        assistant: 'AI Assistant',
+        memorials: 'Memorials',
+        debates: 'Debates',
+        kiosk: 'Kiosk',
+        exhibition: 'Display',
+        slides: 'Deck 16:9',
+        constitution: 'Constitution',
+        ideas: 'Ideas',
+        media: 'Speeches',
+        ocr: 'OCR',
+        about: 'About',
+        curatedHubs: 'Curated Hubs'
+      },
+      hi: {
+        home: 'मुखपृष्ठ',
+        archive: 'समग्र साहित्य (६० खंड)',
+        letters: 'पत्र (३६१)',
+        vows: '२२ प्रतिज्ञा',
+        timeline: 'कालक्रम',
+        assistant: 'एआई सहायक',
+        memorials: 'स्मारक',
+        debates: 'संविधान वाद-विवाद',
+        kiosk: 'कियोस्क',
+        exhibition: 'डिस्प्ले',
+        slides: 'प्रदर्शनी डेक',
+        constitution: 'संविधान',
+        ideas: 'विचार',
+        media: 'भाषण',
+        ocr: 'ओसीआर',
+        about: 'परिचय',
+        curatedHubs: 'विशेष संग्रह'
+      },
+      mr: {
+        home: 'मुख्यपृष्ठ',
+        archive: 'संपूर्ण साहित्य (६० खंड)',
+        letters: 'पत्रे (३६१)',
+        vows: '२२ प्रतिज्ञा',
+        timeline: 'घटनाक्रम',
+        assistant: 'एआय सहाय्यक',
+        memorials: 'स्मारके',
+        debates: 'घटनात्मक वाद-संवाद',
+        kiosk: 'किऑस्क',
+        exhibition: 'डिस्प्ले',
+        slides: 'प्रदर्शन डेक',
+        constitution: 'संविधान',
+        ideas: 'विचारधारा',
+        media: 'भाषणे',
+        ocr: 'ओसीआर',
+        about: 'परिचय',
+        curatedHubs: 'विशेष दालने'
+      }
+    };
+
+    function syncNavigationLanguage(lang) {
+      if (!I18N_NAV[lang]) lang = 'en';
+      const dict = I18N_NAV[lang];
+
+      // Sync button active states
+      document.querySelectorAll('.lang-btn').forEach(b => {
+        const match = b.dataset.lang === lang;
+        b.classList.toggle('active', match);
+        b.setAttribute('aria-pressed', String(match));
+      });
+
+      // Top navigation links
+      document.querySelectorAll('.nav-links .nav-link').forEach(link => {
+        const href = link.getAttribute('href');
+        if (href === 'index.html' && dict.home) link.textContent = dict.home;
+        else if (href === 'archive.html' && dict.archive) link.textContent = dict.archive;
+        else if (href === 'letters.html' && dict.letters) link.textContent = dict.letters;
+        else if (href === 'vows.html' && dict.vows) link.textContent = dict.vows;
+        else if (href === 'timeline.html' && dict.timeline) link.textContent = dict.timeline;
+        else if (href === 'assistant.html' && dict.assistant) link.textContent = dict.assistant;
+      });
+
+      // Curated Hubs Dock Items
+      document.querySelectorAll('.dock-item').forEach(item => {
+        const page = item.getAttribute('data-page');
+        const labelEl = item.querySelector('.dock-label');
+        if (page && dict[page] && labelEl) {
+          const badge = item.querySelector('.badge-16-9');
+          labelEl.textContent = dict[page];
+          if (badge) labelEl.appendChild(badge);
+        }
+      });
+
+      const dockBadge = document.querySelector('.dock-badge');
+      if (dockBadge && dict.curatedHubs) {
+        dockBadge.textContent = dict.curatedHubs;
+      }
+
+      document.documentElement.setAttribute('lang', lang);
+      localStorage.setItem('lang', lang);
+    }
+
+    // Language Selector Buttons
     document.querySelectorAll('.lang-btn').forEach((btn) => {
       if (!btn.__navWired) {
         btn.__navWired = true;
         btn.addEventListener('click', () => {
           const lang = btn.dataset.lang;
+          syncNavigationLanguage(lang);
           if (window.AppState && typeof window.AppState.setLanguage === 'function') {
             window.AppState.setLanguage(lang);
           } else {
-            document.querySelectorAll('.lang-btn').forEach(b => {
-              const match = b.dataset.lang === lang;
-              b.classList.toggle('active', match);
-              b.setAttribute('aria-pressed', String(match));
-            });
+            document.dispatchEvent(new CustomEvent('languageChange', { detail: { lang } }));
           }
         });
       }
     });
+
+    // Listen for languageChange from Command Palette or other modules
+    if (!document.__navLangListening) {
+      document.__navLangListening = true;
+      document.addEventListener('languageChange', (e) => {
+        if (e && e.detail && e.detail.lang) {
+          syncNavigationLanguage(e.detail.lang);
+        }
+      });
+    }
+
+    // Apply saved language on startup
+    const savedLang = localStorage.getItem('lang') || 'en';
+    if (savedLang && savedLang !== 'en') {
+      syncNavigationLanguage(savedLang);
+    }
   }
 
   // ── 7B. Lenis Inertial Smooth Scrolling & GSAP Scrollytelling ─
@@ -770,11 +977,31 @@
         touchMultiplier: 1.5,
         prevent: (node) => {
           if (!node) return false;
-          return !!(node.closest && node.closest('.floating-dock, .modal, .chat-messages, .reader-panel, #mobile-menu'));
+          return !!(node.closest && node.closest('.floating-dock, .modal, .chat-messages, .reader-panel, #mobile-menu, [data-lenis-prevent], .cmd-backdrop, .cmd-palette-backdrop, .cmd-dialog, .cmd-palette-modal, .dialog, .drawer, #reader-content, pre, code, .overflow-y-auto, .terminal-body'));
         }
       });
 
       window.lenis = lenis;
+
+      // Keep Lenis scroll dimensions synced whenever dynamic content loads via API/DOM
+      if (typeof window.ResizeObserver !== 'undefined' && document.body) {
+        const ro = new ResizeObserver(() => {
+          lenis.resize();
+          if (window.ScrollTrigger && typeof window.ScrollTrigger.refresh === 'function') {
+            window.ScrollTrigger.refresh();
+          }
+        });
+        ro.observe(document.body);
+      }
+
+      window.refreshLenis = () => {
+        if (lenis && typeof lenis.resize === 'function') {
+          lenis.resize();
+        }
+        if (window.ScrollTrigger && typeof window.ScrollTrigger.refresh === 'function') {
+          window.ScrollTrigger.refresh();
+        }
+      };
 
       // Handle anchor hash smooth jumps
       document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -906,8 +1133,10 @@
     updateProgress();
   }
 
-  // ── 7D. Apple Glass Command Palette (Cmd+K / ? Trigger) ───
+  // ── 7D. Apple Glass Command Palette (Cmd+K Trigger) ───────
   function initCommandPalette() {
+    // If the dedicated Spotlight Command Palette (command-palette.js) is active, defer to it
+    if (window.CommandPalette || document.getElementById('cmd-palette-backdrop')) return;
     if (document.getElementById('command-palette-backdrop')) return;
 
     const COMMAND_ITEMS = [
@@ -968,6 +1197,7 @@
           <span class="command-palette-icon">⌘</span>
           <input type="text" id="command-palette-input" class="command-palette-input" placeholder="Type a destination, volume, or atmosphere..." autocomplete="off" spellcheck="false" />
           <kbd class="command-palette-kbd">ESC</kbd>
+          <button id="nav-cmd-close-btn" class="btn btn-ghost btn-sm" type="button" aria-label="Close command palette" style="padding:2px 8px;font-size:1.1rem;cursor:pointer;color:var(--text-muted);border-radius:var(--radius-sm);line-height:1;margin-left:4px;">✕</button>
         </div>
         <div id="command-palette-results" class="command-palette-results" role="listbox"></div>
         <div class="command-palette-footer">
@@ -1037,6 +1267,15 @@
       if (e.target === backdrop) closePalette();
     });
 
+    const navCloseBtn = backdrop.querySelector('#nav-cmd-close-btn');
+    if (navCloseBtn) {
+      navCloseBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closePalette();
+      });
+    }
+
     input.addEventListener('input', () => {
       selectedIndex = 0;
       renderResults(input.value);
@@ -1075,14 +1314,11 @@
       }
       const activeEl = document.activeElement;
       const isInput = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.isContentEditable);
-      
+
       if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         if (backdrop.classList.contains('open')) closePalette();
         else openPalette();
-      } else if (e.key === '?' && !isInput && !e.metaKey && !e.ctrlKey && !e.altKey) {
-        e.preventDefault();
-        openPalette();
       }
     });
 

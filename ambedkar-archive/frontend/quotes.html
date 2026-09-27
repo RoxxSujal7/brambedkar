@@ -692,7 +692,7 @@ function renderQuotes() {
 
   const filtered = VERIFIED_QUOTES.filter(q => {
     const matchTheme = currentFilter === 'all' || q.theme === currentFilter;
-    const matchSearch = !currentSearch || 
+    const matchSearch = !currentSearch ||
       q.text.toLowerCase().includes(currentSearch) ||
       q.source.toLowerCase().includes(currentSearch) ||
       q.citation.toLowerCase().includes(currentSearch);
@@ -733,7 +733,13 @@ function renderQuotes() {
       </div>
       <div class="quote-actions">
         <button class="quote-btn quote-btn-copy" data-quote-id="${q.id}" aria-label="Copy quote with citation">
-          📋 Copy with Citation
+          📋 Copy
+        </button>
+        <button class="quote-btn quote-btn-speak" data-quote-id="${q.id}" aria-label="Listen to quote narration">
+          🔊 Listen
+        </button>
+        <button class="quote-btn quote-btn-cite" data-quote-id="${q.id}" aria-label="Generate citation">
+          🖋️ Cite
         </button>
         <a href="reader.html?id=${q.docId}" class="quote-btn quote-btn-ghost" aria-label="Read in archive">
           📖 Read in Archive (Vol. ${q.volNo})
@@ -754,7 +760,7 @@ function renderQuotes() {
         btn.classList.add('copied');
         if (window.showToast) window.showToast('Quote + citation copied to clipboard!');
         setTimeout(() => {
-          btn.textContent = '📋 Copy with Citation';
+          btn.textContent = '📋 Copy';
           btn.classList.remove('copied');
         }, 2200);
       }).catch(() => {
@@ -762,6 +768,140 @@ function renderQuotes() {
       });
     });
   });
+  // Attach Speech Synthesis (Listen) handlers
+  grid.querySelectorAll('.quote-btn-speak').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const quoteId = btn.dataset.quoteId;
+      const q = VERIFIED_QUOTES.find(x => x.id === quoteId);
+      if (!q || !('speechSynthesis' in window)) return;
+
+      if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+        btn.textContent = '🔊 Listen';
+        return;
+      }
+
+      const utter = new SpeechSynthesisUtterance(q.text);
+      utter.rate = 0.95;
+      utter.pitch = 1.0;
+      utter.onstart = () => { btn.textContent = '⏹️ Stop'; };
+      utter.onend = () => { btn.textContent = '🔊 Listen'; };
+      utter.onerror = () => { btn.textContent = '🔊 Listen'; };
+      window.speechSynthesis.speak(utter);
+    });
+  });
+
+  // Attach Citation modal handlers
+  grid.querySelectorAll('.quote-btn-cite').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const quoteId = btn.dataset.quoteId;
+      const q = VERIFIED_QUOTES.find(x => x.id === quoteId);
+      if (!q) return;
+      openQuoteCitationModal(q);
+    });
+  });
+}
+
+function openQuoteCitationModal(q) {
+  let modal = document.getElementById('cite-modal-backdrop');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'cite-modal-backdrop';
+    modal.className = 'cmd-backdrop';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Academic Citation Generator');
+    modal.innerHTML = `
+      <div class="cmd-dialog card" style="max-width:680px;">
+        <div class="cmd-inner card-inner" style="padding:var(--space-6);">
+          <div class="flex-between items-center" style="margin-bottom:var(--space-4);padding-bottom:var(--space-3);border-bottom:1px solid var(--border);">
+            <div class="flex items-center gap-2">
+              <span style="font-size:1.25rem;">🖋️</span>
+              <h3 style="margin:0;font-size:1.15rem;color:var(--text);">Academic Citation Generator</h3>
+            </div>
+            <button id="cite-modal-close" class="btn btn-ghost btn-sm" type="button" aria-label="Close citation modal" style="padding:4px 10px;font-size:1.15rem;cursor:pointer;line-height:1;border-radius:var(--radius-sm);color:var(--text-muted);display:flex;align-items:center;justify-content:center;">✕</button>
+          </div>
+
+          <p id="cite-doc-title" style="font-size:0.88rem;color:var(--gold-light);font-weight:600;margin-bottom:var(--space-4);"></p>
+
+          <div class="flex flex-col gap-3" id="cite-formats-list"></div>
+
+          <div class="flex-between items-center" style="margin-top:var(--space-5);padding-top:var(--space-3);border-top:1px solid var(--border);font-size:0.75rem;color:var(--text-muted);">
+            <span>Education Department, Government of Maharashtra (BAWS)</span>
+            <span><kbd>ESC</kbd> to close</span>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    const closeCite = (e) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      modal.classList.remove('cmd-active');
+    };
+
+    const closeBtn = modal.querySelector('#cite-modal-close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', closeCite);
+      closeBtn.addEventListener('touchend', closeCite);
+    }
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeCite(e);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('cmd-active')) {
+        closeCite(e);
+      }
+    });
+  }
+
+  const vol = q.volNo || 1;
+  const source = q.source;
+  const citation = q.citation;
+  const year = 1989;
+
+  const citations = {
+    'APA (7th Ed.)': `Ambedkar, B. R. (${year}). [Quotation: "${q.text.slice(0, 80)}..."]. In Dr. Babasaheb Ambedkar: Writings and Speeches (Vol. ${vol}, ${citation}). Education Department, Government of Maharashtra.`,
+    'MLA (9th Ed.)': `Ambedkar, B. R. "${source}." Dr. Babasaheb Ambedkar: Writings and Speeches, vol. ${vol}, Education Department, Government of Maharashtra, ${year}, ${citation}.`,
+    'Chicago (Notes & Bibliography)': `Ambedkar, B. R. "${source}." Vol. ${vol} of Dr. Babasaheb Ambedkar: Writings and Speeches, ${citation}. Mumbai: Government of Maharashtra, ${year}.`,
+    'BibTeX': `@incollection{ambedkar_quote_${q.id},\n  author    = {Ambedkar, Bhimrao Ramji},\n  title     = {${source}},\n  booktitle = {Dr. Babasaheb Ambedkar: Writings and Speeches},\n  volume    = {${vol}},\n  note      = {${citation}},\n  year      = {${year}},\n  publisher = {Education Department, Government of Maharashtra}\n}`
+  };
+
+  document.getElementById('cite-doc-title').textContent = `Volume ${vol}: ${source} (${citation})`;
+  const listEl = document.getElementById('cite-formats-list');
+  listEl.innerHTML = Object.entries(citations).map(([styleName, citText]) => `
+    <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:var(--space-3) var(--space-4);">
+      <div class="flex-between items-center" style="margin-bottom:6px;">
+        <span style="font-size:0.75rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;">${styleName}</span>
+        <button class="btn btn-secondary btn-sm copy-cite-btn" data-text="${encodeURIComponent(citText)}" style="padding:2px 8px;font-size:0.75rem;">
+          📋 Copy
+        </button>
+      </div>
+      <pre style="margin:0;font-size:0.8rem;white-space:pre-wrap;word-break:break-word;font-family:${styleName === 'BibTeX' ? 'var(--font-mono)' : 'inherit'};color:var(--text);line-height:1.5;">${citText}</pre>
+    </div>
+  `).join('');
+
+  listEl.querySelectorAll('.copy-cite-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      const text = decodeURIComponent(b.getAttribute('data-text'));
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+          b.textContent = '✓ Copied!';
+          if (window.toast && typeof window.toast.success === 'function') {
+            window.toast.success('Citation copied to clipboard!');
+          }
+          setTimeout(() => { b.textContent = '📋 Copy'; }, 2000);
+        });
+      }
+    });
+  });
+
+  modal.classList.add('cmd-active');
 }
 
 // ── Filter chip listeners ──

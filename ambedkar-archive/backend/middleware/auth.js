@@ -23,6 +23,17 @@ const protect = async (req, res, next) => {
       return res.status(401).json({ success: false, message: 'User no longer exists or account is deactivated.' });
     }
 
+    // Session invalidation: reject tokens issued before password change
+    if (user.passwordChangedAt && decoded.iat) {
+      const changedTimestamp = Math.floor(new Date(user.passwordChangedAt).getTime() / 1000);
+      if (decoded.iat < changedTimestamp) {
+        return res.status(401).json({
+          success: false,
+          message: 'Password was recently changed. Please log in again with your new credentials.'
+        });
+      }
+    }
+
     req.user = user;
     next();
   } catch (err) {

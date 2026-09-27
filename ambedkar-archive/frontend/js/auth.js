@@ -29,9 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── Initialize Components ─────────────────────
   initAuthTabs();
   initPasswordLogin();
-  initPhoneOtpLogin();
+  initTelegramOtpLogin();
   initEmailOtpLogin();
   initRegistration();
+  initPasswordReset();
   initGoogleAuth();
 });
 
@@ -158,13 +159,13 @@ function initPhoneOtpLogin() {
 
     try {
       const fullTarget = '+91' + rawNum;
-      const res = await api.auth.sendOtp({ target: fullTarget, type: 'phone' });
+      const res = await api.auth.sendOtp({ target: fullTarget, channel: 'whatsapp', type: 'whatsapp' });
 
       // Reveal OTP inputs
       otpBox.style.display = 'block';
       verifyBtn.disabled = false;
       statusWrap.style.display = 'flex';
-      statusMsg.textContent = `OTP code dispatched to ${fullTarget}.`;
+      statusMsg.textContent = res.message || `Code dispatched to WhatsApp (${res.target || fullTarget}).`;
 
       // Show dev demo quick-fill chip if code received
       if (res.demoCode && chipContainer) {
@@ -181,18 +182,18 @@ function initPhoneOtpLogin() {
       }
 
       if (window.AppState && AppState.showToast) {
-        AppState.showToast(`OTP dispatched! Check console or mobile.`, 'info');
+        AppState.showToast(`WhatsApp OTP dispatched to ${fullTarget}!`, 'info');
       }
 
       startCountdown(sendBtn, timerText, 60);
       otpInput.focus();
     } catch (err) {
       if (errBanner) {
-        errText.textContent = err.message || 'Failed to dispatch OTP.';
+        errText.textContent = err.message || 'Failed to dispatch WhatsApp OTP.';
         errBanner.classList.add('show');
       }
       sendBtn.disabled = false;
-      sendBtn.textContent = 'Send OTP';
+      sendBtn.textContent = 'Send Code';
     }
   });
 
@@ -220,9 +221,10 @@ function initPhoneOtpLogin() {
       const res = await api.auth.verifyOtp({
         target: '+91' + rawNum,
         otp,
-        type: 'phone',
+        channel: 'whatsapp',
+        type: 'whatsapp',
       });
-      onAuthSuccess(res, 'Phone verified! Welcome 🎉');
+      onAuthSuccess(res, 'WhatsApp verified! Welcome 🎉');
     } catch (err) {
       if (errBanner) {
         errText.textContent = err.message || 'Invalid or expired OTP code.';
@@ -270,13 +272,13 @@ function initEmailOtpLogin() {
     sendBtn.textContent = 'Sending…';
 
     try {
-      const res = await api.auth.sendOtp({ target: email, type: 'email' });
+      const res = await api.auth.sendOtp({ target: email, channel: 'email', type: 'email' });
 
       // Reveal OTP inputs
       otpBox.style.display = 'block';
       verifyBtn.disabled = false;
       statusWrap.style.display = 'flex';
-      statusMsg.textContent = `OTP code dispatched to ${email}.`;
+      statusMsg.textContent = res.message || `Code dispatched to ${email}.`;
 
       // Show dev demo quick-fill chip
       if (res.demoCode && chipContainer) {
@@ -304,7 +306,7 @@ function initEmailOtpLogin() {
         errBanner.classList.add('show');
       }
       sendBtn.disabled = false;
-      sendBtn.textContent = 'Send OTP';
+      sendBtn.textContent = 'Send Code';
     }
   });
 
@@ -332,6 +334,7 @@ function initEmailOtpLogin() {
       const res = await api.auth.verifyOtp({
         target: email,
         otp,
+        channel: 'email',
         type: 'email',
       });
       onAuthSuccess(res, 'Email verified! Welcome 🎉');
@@ -347,7 +350,125 @@ function initEmailOtpLogin() {
 }
 
 /* ═══════════════════════════════════════════════════
-   5. REGISTRATION FLOW
+   5. TELEGRAM OTP LOGIN (100% FREE PRODUCTION)
+   ═══════════════════════════════════════════════════ */
+function initTelegramOtpLogin() {
+  const form = document.getElementById('telegram-otp-form');
+  if (!form) return;
+
+  const targetInput = document.getElementById('telegram-target');
+  const sendBtn = document.getElementById('send-telegram-otp-btn');
+  const otpBox = document.getElementById('telegram-otp-box');
+  const otpInput = document.getElementById('telegram-otp-code');
+  const verifyBtn = document.getElementById('verify-telegram-otp-btn');
+  const statusWrap = document.getElementById('telegram-otp-status');
+  const statusMsg = document.getElementById('telegram-otp-status-msg');
+  const timerText = document.getElementById('telegram-otp-timer');
+  const chipContainer = document.getElementById('telegram-demo-chip');
+  const errBanner = document.getElementById('login-error');
+  const errText = document.getElementById('login-error-text') || errBanner;
+
+  // Send Telegram OTP
+  sendBtn?.addEventListener('click', async () => {
+    const rawTarget = targetInput.value.trim();
+    if (!rawTarget) {
+      if (errBanner) {
+        errText.textContent = 'Please enter your 10-digit mobile number or Telegram @username.';
+        errBanner.classList.add('show');
+      }
+      targetInput.focus();
+      return;
+    }
+    if (errBanner) errBanner.classList.remove('show');
+
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'Sending…';
+
+    try {
+      const res = await api.auth.sendOtp({ target: rawTarget, channel: 'telegram', type: 'telegram' });
+
+      // Reveal OTP inputs
+      otpBox.style.display = 'block';
+      verifyBtn.disabled = false;
+      statusWrap.style.display = 'flex';
+      statusMsg.textContent = res.message || `Code dispatched to Telegram (${res.target || rawTarget}).`;
+
+      // Show dev demo quick-fill chip
+      if (res.demoCode && chipContainer) {
+        chipContainer.style.display = 'block';
+        chipContainer.innerHTML = `
+          <button type="button" class="otp-chip-badge" id="tg-quick-fill-btn">
+            ⚡ Quick-fill received OTP: <strong>${res.demoCode}</strong>
+          </button>
+        `;
+        document.getElementById('tg-quick-fill-btn')?.addEventListener('click', () => {
+          otpInput.value = res.demoCode;
+          verifyBtn.focus();
+        });
+      }
+
+      if (window.AppState && AppState.showToast) {
+        AppState.showToast(`Telegram code dispatched to ${res.target || rawTarget}!`, 'info');
+      }
+
+      startCountdown(sendBtn, timerText, 60);
+      otpInput.focus();
+    } catch (err) {
+      if (errBanner) {
+        const rawMsg = err.message || 'Failed to dispatch Telegram OTP.';
+        // Render rich clickable links if user needs to open bot
+        errText.innerHTML = rawMsg.replace(
+          /(https:\/\/t\.me\/[a-zA-Z0-9_]+)/g,
+          '<a href="$1" target="_blank" rel="noopener" style="color:var(--gold-light);text-decoration:underline;font-weight:600;">$1</a>'
+        );
+        errBanner.classList.add('show');
+      }
+      sendBtn.disabled = false;
+      sendBtn.textContent = 'Send Code';
+    }
+  });
+
+  // Verify Telegram OTP
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const rawTarget = targetInput.value.trim();
+    const otp = otpInput.value.trim();
+
+    if (!otp || otp.length < 4) {
+      if (errBanner) {
+        errText.textContent = 'Please enter the 6-digit verification code.';
+        errBanner.classList.add('show');
+      }
+      otpInput.focus();
+      return;
+    }
+
+    verifyBtn.disabled = true;
+    const origHtml = verifyBtn.innerHTML;
+    verifyBtn.innerHTML = '<span class="spinner spinner-sm"></span> Verifying OTP…';
+    if (errBanner) errBanner.classList.remove('show');
+
+    try {
+      const res = await api.auth.verifyOtp({
+        target: rawTarget,
+        otp,
+        channel: 'telegram',
+        type: 'telegram',
+      });
+      onAuthSuccess(res, 'Telegram verified! Welcome 🎉');
+    } catch (err) {
+      if (errBanner) {
+        errText.textContent = err.message || 'Invalid or expired OTP code.';
+        errBanner.classList.add('show');
+      }
+      verifyBtn.disabled = false;
+      verifyBtn.innerHTML = origHtml;
+    }
+  });
+}
+
+/* ═══════════════════════════════════════════════════
+   6. REGISTRATION FLOW WITH REAL-TIME STRENGTH
    ═══════════════════════════════════════════════════ */
 function initRegistration() {
   const form = document.getElementById('register-form');
@@ -355,6 +476,71 @@ function initRegistration() {
 
   initPasswordToggle('password', 'toggle-password');
   initPasswordToggle('confirm-password', 'toggle-confirm-password');
+
+  const pwdInput = form.querySelector('#password');
+  const confirmPwdInput = form.querySelector('#confirm-password');
+  const matchHint = document.getElementById('confirm-password-match');
+
+  const reqLength = document.getElementById('req-length');
+  const reqUpper = document.getElementById('req-upper');
+  const reqLower = document.getElementById('req-lower');
+  const reqNumber = document.getElementById('req-number');
+  const reqSymbol = document.getElementById('req-symbol');
+
+  function checkItem(el, passed) {
+    if (!el) return;
+    const icon = el.querySelector('.req-icon');
+    if (passed) {
+      el.classList.add('valid');
+      el.classList.remove('invalid');
+      if (icon) icon.textContent = '✓';
+    } else {
+      el.classList.remove('valid');
+      el.classList.add('invalid');
+      if (icon) icon.textContent = '○';
+    }
+  }
+
+  function validateStrength(pwd) {
+    const hasLen = pwd.length >= 8;
+    const hasUp = /[A-Z]/.test(pwd);
+    const hasLow = /[a-z]/.test(pwd);
+    const hasNum = /[0-9]/.test(pwd);
+    const hasSym = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(pwd);
+
+    checkItem(reqLength, hasLen);
+    checkItem(reqUpper, hasUp);
+    checkItem(reqLower, hasLow);
+    checkItem(reqNumber, hasNum);
+    checkItem(reqSymbol, hasSym);
+
+    return hasLen && hasUp && hasLow && hasNum && hasSym;
+  }
+
+  function checkConfirmMatch() {
+    if (!confirmPwdInput || !matchHint) return;
+    const p1 = pwdInput?.value || '';
+    const p2 = confirmPwdInput.value;
+    if (!p2) {
+      matchHint.style.display = 'none';
+      return;
+    }
+    matchHint.style.display = 'block';
+    if (p1 === p2) {
+      matchHint.className = 'password-match-hint match';
+      matchHint.textContent = '✓ Passwords match';
+    } else {
+      matchHint.className = 'password-match-hint mismatch';
+      matchHint.textContent = '✗ Passwords do not match';
+    }
+  }
+
+  pwdInput?.addEventListener('input', () => {
+    validateStrength(pwdInput.value);
+    checkConfirmMatch();
+  });
+
+  confirmPwdInput?.addEventListener('input', checkConfirmMatch);
 
   // Role selection
   document.querySelectorAll('.role-option').forEach((opt) => {
@@ -383,11 +569,21 @@ function initRegistration() {
 
     if (errBanner) errBanner.classList.remove('show');
 
+    if (!validateStrength(password)) {
+      if (errBanner) {
+        errBanner.textContent = 'Password must meet all 5 requirements: 8+ characters, uppercase, lowercase, number, and special symbol.';
+        errBanner.classList.add('show');
+      }
+      pwdInput?.focus();
+      return;
+    }
+
     if (password !== confirmPassword) {
       if (errBanner) {
         errBanner.textContent = 'Passwords do not match.';
         errBanner.classList.add('show');
       }
+      confirmPwdInput?.focus();
       return;
     }
 
@@ -410,40 +606,326 @@ function initRegistration() {
 }
 
 /* ═══════════════════════════════════════════════════
-   6. REAL GOOGLE SIGN-IN & FALLBACK MODAL
+   7. PASSWORD RESET MODAL & FLOW
    ═══════════════════════════════════════════════════ */
-function initGoogleAuth() {
-  const loginGoogleBtn = document.getElementById('google-login-btn');
-  const registerGoogleBtn = document.getElementById('google-register-btn');
-  const targetBtn = loginGoogleBtn || registerGoogleBtn;
-  if (!targetBtn) return;
+function initPasswordReset() {
+  const forgotLink = document.getElementById('forgot-password-link');
+  const modal = document.getElementById('reset-password-modal');
+  const closeBtn = document.getElementById('close-reset-modal');
+  if (!forgotLink || !modal) return;
 
-  // Initialize Google Identity Services if client library loaded
-  if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
-    try {
-      google.accounts.id.initialize({
-        client_id: '1088481439247-demoarchive.apps.googleusercontent.com',
-        callback: window.handleGoogleCredentialResponse,
-        auto_select: false,
-        cancel_on_tap_outside: true,
-      });
+  const reqForm = document.getElementById('forgot-request-form');
+  const verifyForm = document.getElementById('forgot-verify-form');
+  const resetEmailInput = document.getElementById('reset-email');
+  const resetCodeInput = document.getElementById('reset-code');
+  const resetNewPwdInput = document.getElementById('reset-new-password');
+  const resetConfirmPwdInput = document.getElementById('reset-confirm-password');
+  const errBanner = document.getElementById('reset-error-banner');
+  const succBanner = document.getElementById('reset-success-banner');
+  const demoChip = document.getElementById('reset-demo-chip');
+  const matchHint = document.getElementById('reset-confirm-match');
 
-      const gsiContainer = document.getElementById('google-gsi-container');
-      if (gsiContainer) {
-        google.accounts.id.renderButton(gsiContainer, {
-          theme: 'outline',
-          size: 'large',
-          width: 320,
-          text: 'signin_with',
-          shape: 'pill',
-        });
-      }
-    } catch (e) {
-      console.warn('Google Identity Services SDK note:', e);
+  const reqLength = document.getElementById('reset-req-length');
+  const reqUpper = document.getElementById('reset-req-upper');
+  const reqLower = document.getElementById('reset-req-lower');
+  const reqNumber = document.getElementById('reset-req-number');
+  const reqSymbol = document.getElementById('reset-req-symbol');
+
+  initPasswordToggle('reset-new-password', 'toggle-reset-new-pwd');
+
+  function openModal() {
+    modal.classList.add('active');
+    errBanner.style.display = 'none';
+    succBanner.style.display = 'none';
+    reqForm.style.display = 'block';
+    verifyForm.style.display = 'none';
+    const loginEmail = document.getElementById('email')?.value?.trim();
+    if (loginEmail && loginEmail.includes('@')) {
+      resetEmailInput.value = loginEmail;
+    }
+    resetEmailInput.focus();
+  }
+
+  function closeModal() {
+    modal.classList.remove('active');
+  }
+
+  forgotLink.addEventListener('click', openModal);
+  closeBtn?.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  function checkItem(el, passed) {
+    if (!el) return;
+    const icon = el.querySelector('.req-icon');
+    if (passed) {
+      el.classList.add('valid');
+      el.classList.remove('invalid');
+      if (icon) icon.textContent = '✓';
+    } else {
+      el.classList.remove('valid');
+      el.classList.add('invalid');
+      if (icon) icon.textContent = '○';
     }
   }
 
-  // Build Interactive Fallback Modal
+  function validateResetStrength(pwd) {
+    const hasLen = pwd.length >= 8;
+    const hasUp = /[A-Z]/.test(pwd);
+    const hasLow = /[a-z]/.test(pwd);
+    const hasNum = /[0-9]/.test(pwd);
+    const hasSym = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(pwd);
+
+    checkItem(reqLength, hasLen);
+    checkItem(reqUpper, hasUp);
+    checkItem(reqLower, hasLow);
+    checkItem(reqNumber, hasNum);
+    checkItem(reqSymbol, hasSym);
+
+    return hasLen && hasUp && hasLow && hasNum && hasSym;
+  }
+
+  function checkResetMatch() {
+    if (!resetConfirmPwdInput || !matchHint) return;
+    const p1 = resetNewPwdInput.value;
+    const p2 = resetConfirmPwdInput.value;
+    if (!p2) {
+      matchHint.style.display = 'none';
+      return;
+    }
+    matchHint.style.display = 'block';
+    if (p1 === p2) {
+      matchHint.className = 'password-match-hint match';
+      matchHint.textContent = '✓ Passwords match';
+    } else {
+      matchHint.className = 'password-match-hint mismatch';
+      matchHint.textContent = '✗ Passwords do not match';
+    }
+  }
+
+  resetNewPwdInput?.addEventListener('input', () => {
+    validateResetStrength(resetNewPwdInput.value);
+    checkResetMatch();
+  });
+
+  resetConfirmPwdInput?.addEventListener('input', checkResetMatch);
+
+  // Step 1: Send reset code
+  reqForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = resetEmailInput.value.trim().toLowerCase();
+    if (!email || !email.includes('@')) {
+      errBanner.textContent = 'Please enter a valid email address.';
+      errBanner.style.display = 'block';
+      return;
+    }
+
+    errBanner.style.display = 'none';
+    const btn = document.getElementById('send-reset-code-btn');
+    btn.disabled = true;
+    const origHtml = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner spinner-sm"></span> Sending code…';
+
+    try {
+      const res = await api.auth.forgotPassword({ email });
+      succBanner.textContent = res.message || 'Verification code sent to your email!';
+      succBanner.style.display = 'block';
+
+      reqForm.style.display = 'none';
+      verifyForm.style.display = 'block';
+
+      // Dev quick-fill chip
+      if (res.demoCode && demoChip) {
+        demoChip.style.display = 'block';
+        demoChip.innerHTML = `
+          <button type="button" class="otp-chip-badge" id="reset-chip-btn">
+            ⚡ Quick-fill received reset code: <strong>${res.demoCode}</strong>
+          </button>
+        `;
+        document.getElementById('reset-chip-btn')?.addEventListener('click', () => {
+          resetCodeInput.value = res.demoCode;
+          resetNewPwdInput.focus();
+        });
+      }
+
+      resetCodeInput.focus();
+    } catch (err) {
+      errBanner.textContent = err.message || 'Failed to dispatch reset code.';
+      errBanner.style.display = 'block';
+      btn.disabled = false;
+      btn.innerHTML = origHtml;
+    }
+  });
+
+  // Step 2: Verify & Reset Password
+  verifyForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = resetEmailInput.value.trim().toLowerCase();
+    const token = resetCodeInput.value.trim();
+    const newPassword = resetNewPwdInput.value;
+    const confirmPassword = resetConfirmPwdInput.value;
+
+    errBanner.style.display = 'none';
+
+    if (!token || token.length < 4) {
+      errBanner.textContent = 'Please enter the verification code.';
+      errBanner.style.display = 'block';
+      resetCodeInput.focus();
+      return;
+    }
+
+    if (!validateResetStrength(newPassword)) {
+      errBanner.textContent = 'Password must meet all 5 requirements: 8+ characters, uppercase, lowercase, number, and special symbol.';
+      errBanner.style.display = 'block';
+      resetNewPwdInput.focus();
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      errBanner.textContent = 'Passwords do not match.';
+      errBanner.style.display = 'block';
+      resetConfirmPwdInput.focus();
+      return;
+    }
+
+    const btn = document.getElementById('submit-new-password-btn');
+    btn.disabled = true;
+    const origHtml = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner spinner-sm"></span> Updating password…';
+
+    try {
+      const res = await api.auth.resetPassword({ email, token, newPassword });
+      succBanner.textContent = res.message || 'Password successfully updated! You can now log in.';
+      succBanner.style.display = 'block';
+
+      if (window.AppState && AppState.showToast) {
+        AppState.showToast('Password updated! Sign in with your new password.', 'success');
+      }
+
+      // Pre-fill login email field
+      const loginEmailField = document.getElementById('email');
+      if (loginEmailField) loginEmailField.value = email;
+
+      setTimeout(() => {
+        closeModal();
+      }, 1500);
+    } catch (err) {
+      errBanner.textContent = err.message || 'Failed to reset password.';
+      errBanner.style.display = 'block';
+      btn.disabled = false;
+      btn.innerHTML = origHtml;
+    }
+  });
+}
+
+/* ═══════════════════════════════════════════════════
+   8. REAL GOOGLE SIGN-IN & FALLBACK MODAL
+   ═══════════════════════════════════════════════════ */
+async function initGoogleAuth() {
+  const loginGoogleBtn = document.getElementById('google-login-btn');
+  const registerGoogleBtn = document.getElementById('google-register-btn');
+  const gsiContainer = document.getElementById('google-gsi-container');
+  const targetBtn = loginGoogleBtn || registerGoogleBtn;
+  if (!targetBtn && !gsiContainer) return;
+
+  const isRegister = !!registerGoogleBtn;
+  let clientId = '';
+
+  // 1. Fetch real Google Client ID from backend
+  try {
+    const cfgRes = await fetch('/api/auth/config');
+    const cfgData = await cfgRes.json();
+    if (cfgData.success && cfgData.googleClientId && !cfgData.googleClientId.includes('demoarchive')) {
+      clientId = cfgData.googleClientId;
+    }
+  } catch (err) {
+    console.warn('Could not fetch auth config:', err);
+  }
+
+  // 2. Helper to poll for Google Identity Services SDK until loaded
+  const waitForGoogleSdk = () => {
+    return new Promise((resolve) => {
+      if (window.google && window.google.accounts) {
+        return resolve(window.google);
+      }
+      let elapsed = 0;
+      const interval = setInterval(() => {
+        elapsed += 50;
+        if (window.google && window.google.accounts) {
+          clearInterval(interval);
+          resolve(window.google);
+        } else if (elapsed > 4000) {
+          clearInterval(interval);
+          resolve(null);
+        }
+      }, 50);
+    });
+  };
+
+  const google = await waitForGoogleSdk();
+  let tokenClient = null;
+
+  if (clientId && google && google.accounts) {
+    // A. Initialize Google Identity Services (official rendered button + ID token)
+    try {
+      google.accounts.id.initialize({
+        client_id: clientId,
+        callback: window.handleGoogleCredentialResponse,
+        auto_select: false,
+        cancel_on_tap_outside: true,
+        context: isRegister ? 'signup' : 'signin',
+      });
+
+      if (gsiContainer) {
+        google.accounts.id.renderButton(gsiContainer, {
+          type: 'standard',
+          theme: 'outline',
+          size: 'large',
+          text: isRegister ? 'signup_with' : 'signin_with',
+          shape: 'pill',
+          logo_alignment: 'left',
+          width: 320,
+        });
+
+        // Hide custom button so there is only one official Google button
+        if (loginGoogleBtn) loginGoogleBtn.style.display = 'none';
+        if (registerGoogleBtn) registerGoogleBtn.style.display = 'none';
+      }
+    } catch (gsiErr) {
+      console.warn('Google GSI renderButton:', gsiErr);
+    }
+
+    // B. Initialize Google OAuth2 Token Client (opens real Google OAuth popup on custom button click)
+    try {
+      if (google.accounts.oauth2) {
+        tokenClient = google.accounts.oauth2.initTokenClient({
+          client_id: clientId,
+          scope: 'email profile openid',
+          callback: async (tokenResponse) => {
+            if (tokenResponse.error) {
+              const banner = document.getElementById('login-error') || document.getElementById('register-error');
+              if (banner) {
+                banner.textContent = tokenResponse.error_description || 'Google sign-in was cancelled or failed.';
+                banner.classList.add('show');
+              }
+              return;
+            }
+            if (tokenResponse.access_token) {
+              await submitGoogleAccessToken(tokenResponse.access_token);
+            }
+          },
+          error_callback: (err) => {
+            console.error('Google OAuth popup error:', err);
+          },
+        });
+      }
+    } catch (oauthErr) {
+      console.warn('Google OAuth2 initTokenClient:', oauthErr);
+    }
+  }
+
+  // 3. Fallback Account Modal (for local offline testing or when Google Cloud Console origin is not yet configured)
   let modalOverlay = document.getElementById('google-auth-modal');
   if (!modalOverlay) {
     modalOverlay = document.createElement('div');
@@ -459,34 +941,34 @@ function initGoogleAuth() {
             <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
             <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
           </svg>
-          <h2 id="google-modal-title" style="font-family:var(--font-display);font-size:1.35rem;margin-bottom:4px;color:var(--text);">Sign in with Google</h2>
-          <p style="font-size:0.85rem;color:var(--text-muted);">Choose a verified account or enter your Gmail to continue</p>
+          <h2 id="google-modal-title" style="font-family:var(--font-display);font-size:1.35rem;margin-bottom:4px;color:var(--text);">Google Sign-In Fallback</h2>
+          <p style="font-size:0.85rem;color:var(--text-muted);">Choose a verified test account or enter your Gmail to continue</p>
         </div>
 
         <div class="google-account-list">
-          <button type="button" class="google-account-item" data-email="dr.sujal.pawar@gmail.com" data-name="Dr. Sujal Pawar">
-            <div class="google-avatar" style="background:#1a73e8;">SP</div>
+          <button type="button" class="google-account-item" data-email="researcher@ambedkar-archive.in" data-name="Archival Researcher">
+            <div class="google-avatar" style="background:#1a73e8;">AR</div>
             <div style="flex:1;">
-              <div style="font-weight:600;font-size:0.95rem;color:var(--text);">Dr. Sujal Pawar</div>
-              <div style="font-size:0.8rem;color:var(--text-muted);">dr.sujal.pawar@gmail.com</div>
+              <div style="font-weight:600;font-size:0.95rem;color:var(--text);">Archival Researcher</div>
+              <div style="font-size:0.8rem;color:var(--text-muted);">researcher@ambedkar-archive.in</div>
             </div>
             <span style="color:var(--gold-light);font-size:1.1rem;">→</span>
           </button>
 
-          <button type="button" class="google-account-item" data-email="scholar.ambedkar@gmail.com" data-name="Babasaheb Archival Scholar">
-            <div class="google-avatar" style="background:#ea4335;">BS</div>
+          <button type="button" class="google-account-item" data-email="admin@ambedkar-archive.in" data-name="Archive Administrator">
+            <div class="google-avatar" style="background:#ea4335;">AA</div>
             <div style="flex:1;">
-              <div style="font-weight:600;font-size:0.95rem;color:var(--text);">Babasaheb Archival Scholar</div>
-              <div style="font-size:0.8rem;color:var(--text-muted);">scholar.ambedkar@gmail.com</div>
+              <div style="font-weight:600;font-size:0.95rem;color:var(--text);">Archive Administrator</div>
+              <div style="font-size:0.8rem;color:var(--text-muted);">admin@ambedkar-archive.in</div>
             </div>
             <span style="color:var(--gold-light);font-size:1.1rem;">→</span>
           </button>
 
-          <button type="button" class="google-account-item" data-email="heritage.visitor@gmail.com" data-name="Heritage Archive Visitor">
+          <button type="button" class="google-account-item" data-email="visitor@ambedkar-archive.in" data-name="Heritage Archive Visitor">
             <div class="google-avatar" style="background:#34a853;">HV</div>
             <div style="flex:1;">
               <div style="font-weight:600;font-size:0.95rem;color:var(--text);">Heritage Archive Visitor</div>
-              <div style="font-size:0.8rem;color:var(--text-muted);">heritage.visitor@gmail.com</div>
+              <div style="font-size:0.8rem;color:var(--text-muted);">visitor@ambedkar-archive.in</div>
             </div>
             <span style="color:var(--gold-light);font-size:1.1rem;">→</span>
           </button>
@@ -533,19 +1015,45 @@ function initGoogleAuth() {
     });
   }
 
-  // Trigger Google prompt or modal
-  [loginGoogleBtn, registerGoogleBtn].filter(Boolean).forEach((btn) => {
-    btn.addEventListener('click', () => {
-      if (typeof google !== 'undefined' && google.accounts && google.accounts.id && typeof google.accounts.id.prompt === 'function') {
-        google.accounts.id.prompt((notification) => {
-          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-            modalOverlay.classList.add('active');
-          }
-        });
-      } else {
-        modalOverlay.classList.add('active');
+  // 4. Custom button click handler — triggers real Google OAuth popup
+  const handleGoogleClick = (e) => {
+    e.preventDefault();
+
+    // If OAuth2 token client is initialized, request real Google sign-in popup
+    if (tokenClient) {
+      try {
+        tokenClient.requestAccessToken({ prompt: 'select_account' });
+        return;
+      } catch (err) {
+        console.warn('OAuth2 requestAccessToken failed, trying fallback:', err);
       }
-    });
+    }
+
+    // If Google accounts is present, try dynamic tokenClient
+    if (clientId && window.google?.accounts?.oauth2) {
+      try {
+        const dynamicClient = google.accounts.oauth2.initTokenClient({
+          client_id: clientId,
+          scope: 'email profile openid',
+          callback: async (resp) => {
+            if (resp.access_token) {
+              await submitGoogleAccessToken(resp.access_token);
+            }
+          },
+        });
+        dynamicClient.requestAccessToken({ prompt: 'select_account' });
+        return;
+      } catch (err) {
+        console.warn('Dynamic OAuth2 client failed:', err);
+      }
+    }
+
+    // Fallback modal if Google SDK or Client ID is completely unavailable
+    modalOverlay?.classList.add('active');
+  };
+
+  [loginGoogleBtn, registerGoogleBtn].filter(Boolean).forEach((btn) => {
+    btn.addEventListener('click', handleGoogleClick);
   });
 }
 
@@ -571,12 +1079,31 @@ async function submitGoogleCredential(credential) {
   }
 }
 
+async function submitGoogleAccessToken(accessToken) {
+  const banner = document.getElementById('login-error') || document.getElementById('register-error');
+  if (banner) banner.classList.remove('show');
+
+  if (window.AppState && AppState.showToast) {
+    AppState.showToast('Verifying Google authorization…', 'info');
+  }
+
+  try {
+    const res = await api.auth.googleLogin({ accessToken });
+    onAuthSuccess(res, `Welcome, ${res.user.name.split(' ')[0]}! Signed in with Google 🎉`);
+  } catch (err) {
+    if (banner) {
+      banner.textContent = err.message || 'Google authorization failed.';
+      banner.classList.add('show');
+    }
+  }
+}
+
 async function submitGoogleProfile({ email, name }) {
   const banner = document.getElementById('login-error') || document.getElementById('register-error');
   if (banner) banner.classList.remove('show');
 
   if (window.AppState && AppState.showToast) {
-    AppState.showToast('Authenticating with Google account…', 'info');
+    AppState.showToast('Authenticating with account…', 'info');
   }
 
   try {
@@ -586,10 +1113,10 @@ async function submitGoogleProfile({ email, name }) {
       googleId: 'g_' + Math.random().toString(36).substring(2, 12),
       picture: '',
     });
-    onAuthSuccess(res, `Welcome, ${res.user.name.split(' ')[0]}! Signed in with Google 🎉`);
+    onAuthSuccess(res, `Welcome, ${res.user.name.split(' ')[0]}! Signed in 🎉`);
   } catch (err) {
     if (banner) {
-      banner.textContent = err.message || 'Google authentication failed.';
+      banner.textContent = err.message || 'Authentication failed.';
       banner.classList.add('show');
     }
   }

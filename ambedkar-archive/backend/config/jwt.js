@@ -1,18 +1,14 @@
 const jwt = require('jsonwebtoken');
 
 const getJwtSecret = () => {
-  let secret = process.env.JWT_SECRET;
-  if (!secret || secret.length < 32) {
-    if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
-      throw new Error(
-        'FATAL: JWT_SECRET environment variable is not set. ' +
-        'Copy .env.example to .env and set a strong random secret (min 32 chars).'
-      );
-    }
-    // Safe resilient default for Vercel preview / serverless deployments
-    secret = 'ambedkar_digital_heritage_archive_secure_jwt_key_2026_ver_prod_safe';
+  const secret = process.env.JWT_SECRET;
+  if (!secret || typeof secret !== 'string' || secret.trim().length < 32) {
+    throw new Error(
+      'FATAL CONFIGURATION ERROR: JWT_SECRET environment variable is missing, empty, or insecure. ' +
+      'A cryptographically strong secret of at least 32 characters is strictly required.'
+    );
   }
-  return secret;
+  return secret.trim();
 };
 
 const signToken = (userId) => {

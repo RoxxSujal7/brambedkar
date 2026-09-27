@@ -48,13 +48,6 @@
 
           <!-- Google Sign-In Option -->
           <div style="margin-bottom: var(--space-4);">
-            <div id="g_id_onload"
-                 data-client_id="1088481439247-demoarchive.apps.googleusercontent.com"
-                 data-context="signup"
-                 data-ux_mode="popup"
-                 data-callback="handleGoogleCredentialResponse"
-                 data-auto_prompt="false">
-            </div>
             <button type="button" class="btn btn-google" id="google-register-btn">
               <svg class="google-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -74,7 +67,7 @@
               <label class="form-label" for="name" style="display:block;margin-bottom:6px;font-size:0.825rem;color:var(--text-muted);font-weight:600;">Full Name</label>
               <div class="input-with-icon">
                 <span class="input-icon" aria-hidden="true">👤</span>
-                <input id="name" name="name" type="text" class="input" placeholder="Dr. Sujal Pawar"
+                <input id="name" name="name" type="text" class="input" placeholder="Dr. Sujal Roxx"
                   autocomplete="name" required aria-required="true" minlength="2" />
               </div>
             </div>
@@ -103,13 +96,38 @@
             <!-- Password -->
             <div class="form-group">
               <label class="form-label" for="password" style="display:block;margin-bottom:6px;font-size:0.825rem;color:var(--text-muted);font-weight:600;">
-                Password <span style="font-size:0.75rem;color:var(--text-faint);">(min 6 characters)</span>
+                Create Password
               </label>
               <div class="input-with-icon">
                 <span class="input-icon" aria-hidden="true">🔒</span>
-                <input id="password" name="password" type="password" class="input" placeholder="Create a password"
-                  autocomplete="new-password" required aria-required="true" minlength="6" />
+                <input id="password" name="password" type="password" class="input" placeholder="•••••••••••••••"
+                  autocomplete="new-password" required aria-required="true" minlength="8" />
                 <button id="toggle-password" class="input-eye" type="button" aria-label="Show password">👁</button>
+              </div>
+
+              <!-- Real-time Password Requirements Checklist -->
+              <div id="password-requirements" class="password-req-box" aria-live="polite">
+                <div class="password-req-title">Password must contain:</div>
+                <div class="req-item" id="req-length">
+                  <span class="req-icon" aria-hidden="true">○</span>
+                  <span class="req-text">At least 8 characters</span>
+                </div>
+                <div class="req-item" id="req-upper">
+                  <span class="req-icon" aria-hidden="true">○</span>
+                  <span class="req-text">1 uppercase letter</span>
+                </div>
+                <div class="req-item" id="req-lower">
+                  <span class="req-icon" aria-hidden="true">○</span>
+                  <span class="req-text">1 lowercase letter</span>
+                </div>
+                <div class="req-item" id="req-number">
+                  <span class="req-icon" aria-hidden="true">○</span>
+                  <span class="req-text">1 number</span>
+                </div>
+                <div class="req-item" id="req-symbol">
+                  <span class="req-icon" aria-hidden="true">○</span>
+                  <span class="req-text">1 special symbol</span>
+                </div>
               </div>
             </div>
 
@@ -119,9 +137,10 @@
               <div class="input-with-icon">
                 <span class="input-icon" aria-hidden="true">🔒</span>
                 <input id="confirm-password" name="confirm-password" type="password" class="input"
-                  placeholder="Repeat password" autocomplete="new-password" required />
+                  placeholder="•••••••••••••••" autocomplete="new-password" required />
                 <button id="toggle-confirm-password" class="input-eye" type="button" aria-label="Show password">👁</button>
               </div>
+              <div id="confirm-password-match" class="password-match-hint" style="display:none;"></div>
             </div>
 
             <!-- Language -->
@@ -183,7 +202,7 @@
   <script src="js/api.js"></script>
   <script src="js/toast.js"></script>
   <script src="js/navigation-system.js"></script>
-<script src="js/app.js"></script>
+  <script src="js/app.js"></script>
   <script src="js/command-palette.js"></script>
   <script src="js/auth.js"></script>
 </body>

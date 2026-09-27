@@ -1256,12 +1256,14 @@ body.mode-sepia #reading-progress-bar {
   padding: 10vh 16px 24px;
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
   transition: opacity 0.22s ease, visibility 0.22s ease;
 }
 
 .command-palette-backdrop.open {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
 }
 
 .command-palette-modal {
@@ -1480,4 +1482,160 @@ body.mode-sepia .command-palette-item.active {
 body.mode-sepia .command-palette-footer {
   border-top-color: rgba(92, 64, 34, 0.12) !important;
   color: #6d543c !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   APPLE GLASS FLOATING BACK-TO-TOP BUTTON WITH PROGRESS RING
+   ═══════════════════════════════════════════════════════════════════════ */
+.back-to-top-btn {
+  position: fixed;
+  bottom: 84px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--glass-bg, rgba(15, 23, 42, 0.85));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.12));
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 990;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px) scale(0.9);
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 0.3s,
+              background-color 0.2s,
+              border-color 0.2s,
+              box-shadow 0.2s;
+  padding: 0;
+  color: var(--text, #f8fafc);
+  outline: none;
+}
+
+.back-to-top-btn.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.back-to-top-btn:hover {
+  transform: translateY(-2px) scale(1.08);
+  border-color: rgba(212, 175, 55, 0.5);
+  box-shadow: 0 12px 35px rgba(212, 175, 55, 0.25), 0 0 15px rgba(212, 175, 55, 0.15);
+  color: var(--gold, #d4af37);
+}
+
+.back-to-top-btn:focus-visible {
+  box-shadow: 0 0 0 2px var(--gold, #d4af37), 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+.back-to-top-btn .progress-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: rotate(-90deg);
+  pointer-events: none;
+}
+
+.back-to-top-btn .progress-ring-bg {
+  stroke: var(--text-muted, rgba(255, 255, 255, 0.2));
+}
+
+.back-to-top-btn .progress-ring-circle {
+  transition: stroke-dashoffset 0.15s linear;
+}
+
+.back-to-top-btn .back-to-top-arrow {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  transform: translateY(-1px);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.back-to-top-btn:hover .back-to-top-arrow {
+  transform: translateY(-3px);
+}
+
+/* Theme overrides for Back-to-Top */
+[data-theme="paper"] .back-to-top-btn,
+body.mode-paper .back-to-top-btn {
+  background: rgba(250, 248, 245, 0.92) !important;
+  border-color: rgba(0, 0, 0, 0.15) !important;
+  color: #2b2319 !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12) !important;
+}
+
+[data-theme="sepia"] .back-to-top-btn,
+body.mode-sepia .back-to-top-btn {
+  background: rgba(241, 233, 218, 0.94) !important;
+  border-color: rgba(130, 79, 17, 0.3) !important;
+  color: #3b2817 !important;
+  box-shadow: 0 8px 25px rgba(60, 40, 20, 0.18) !important;
+}
+
+@media (max-width: 768px) {
+  .back-to-top-btn {
+    bottom: 92px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+  }
+  .back-to-top-btn svg {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   PWA INSTALL BANNER (APPLE GLASS TOAST)
+   ═══════════════════════════════════════════════════════════════════════ */
+.pwa-install-banner {
+  position: fixed;
+  bottom: 84px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  z-index: 998;
+  max-width: 500px;
+  width: calc(100% - 32px);
+  background: var(--glass-bg, rgba(15, 23, 42, 0.92));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--gold-border, rgba(212, 175, 55, 0.35));
+  border-radius: var(--radius-lg, 16px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 0 0 25px rgba(212, 175, 55, 0.12);
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pwa-install-banner.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+[data-theme="paper"] .pwa-install-banner {
+  background: rgba(250, 248, 245, 0.95);
+  border-color: rgba(140, 100, 30, 0.35);
+  color: #2b2319;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="sepia"] .pwa-install-banner {
+  background: rgba(241, 233, 218, 0.96);
+  border-color: rgba(130, 79, 17, 0.35);
+  color: #3b2817;
+  box-shadow: 0 16px 40px rgba(60, 40, 20, 0.2);
 }

@@ -731,21 +731,42 @@ router.get('/audit-log', requireRole('super_admin', 'admin'), (req, res) => {
 // ═════════════════════════════════════════════════════════════════════════════
 
 const DEFAULT_USER_REGISTRY = [
-  { id: 'user-000', name: 'Public Visitor', email: 'visitor@ambedkar-archive.in', role: 'visitor', status: 'active' },
-  { id: 'user-001', name: 'Archival Researcher', email: 'researcher@ambedkar-archive.in', role: 'researcher', status: 'active' },
-  { id: 'user-003', name: 'Content Editor', email: 'editor@ambedkar-archive.in', role: 'content_editor', status: 'active' },
-  { id: 'user-004', name: 'Senior Archivist', email: 'archivist@ambedkar-archive.in', role: 'archivist', status: 'active' },
-  { id: 'user-002', name: 'Archive Administrator', email: 'admin@ambedkar-archive.in', role: 'admin', status: 'active' },
-  { id: 'user-005', name: 'Super Administrator', email: 'superadmin@ambedkar-archive.in', role: 'super_admin', status: 'active' }
+  { id: 'mock-user-visitor-000', name: 'Public Visitor', email: 'visitor@ambedkar-archive.in', role: 'visitor', status: 'active' },
+  { id: 'mock-user-researcher-001', name: 'Archival Researcher', email: 'researcher@ambedkar-archive.in', role: 'researcher', status: 'active' },
+  { id: 'mock-user-editor-003', name: 'Content Editor', email: 'editor@ambedkar-archive.in', role: 'content_editor', status: 'active' },
+  { id: 'mock-user-archivist-004', name: 'Senior Archivist', email: 'archivist@ambedkar-archive.in', role: 'archivist', status: 'active' },
+  { id: 'mock-user-admin-002', name: 'Archive Administrator', email: 'admin@ambedkar-archive.in', role: 'admin', status: 'active' },
+  { id: 'mock-user-superadmin-005', name: 'Super Administrator', email: 'superadmin@ambedkar-archive.in', role: 'super_admin', status: 'active' }
 ];
 
 // GET /api/admin/users
 router.get('/users', requirePermission('manage_users'), async (req, res) => {
   try {
+    let allUsers = [];
+    if (typeof userService.isDbConnected === 'function' && userService.isDbConnected()) {
+      try {
+        const User = require('../models/User');
+        const dbUsers = await User.find({}).select('-password').sort('-createdAt');
+        allUsers = dbUsers.map(u => ({
+          id: String(u._id),
+          name: u.name,
+          email: u.email,
+          role: u.role,
+          status: u.isActive ? 'active' : 'suspended'
+        }));
+      } catch (e) {
+        // fallback
+      }
+    }
+
+    if (allUsers.length === 0) {
+      allUsers = DEFAULT_USER_REGISTRY;
+    }
+
     res.json({
       success: true,
-      count: DEFAULT_USER_REGISTRY.length,
-      users: DEFAULT_USER_REGISTRY
+      count: allUsers.length,
+      users: allUsers
     });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Failed to retrieve user registry.' });
@@ -753,44 +774,77 @@ router.get('/users', requirePermission('manage_users'), async (req, res) => {
 });
 
 // PATCH /api/admin/users/:id/role
-router.patch('/users/:id/role', requirePermission('manage_roles'), (req, res) => {
-  const { id } = req.params;
-  const { role } = req.body;
-  const validRoles = ['visitor', 'user', 'public', 'researcher', 'content_editor', 'editor', 'archivist', 'admin', 'super_admin'];
+router.patch('/users/:id/role', requirePermission('manage_roles'), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { role } = req.body;
+    const validRoles = ['visitor', 'user', 'public', 'researcher', 'content_editor', 'editor', 'archivist', 'admin', 'super_admin'];
 
-  if (!role || !validRoles.includes(role)) {
-    return res.status(400).json({
-      success: false,
-      message: `Invalid role. Must be one of: ${validRoles.join(', ')}`
+    if (!role || !validRoles.includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: `Invalid role. Must be one of: ${validRoles.join(', ')}`
+      });
+    }
+
+    // Self-escalation prevention
+    if (String(req.user._id) === String(id) || req.user.email === id) {
+      return res.status(403).json({
+        success: false,
+        message: 'Access denied: Administrators cannot modify their own institutional role.'
+      });
+    }
+
+    // Resolve target user from database / userService
+    let targetUser = await userService.findById(id);
+    if (!targetUser && id.includes('@')) {
+      targetUser = await userService.findByEmail(id);
+    }
+    if (!targetUser) {
+      targetUser = DEFAULT_USER_REGISTRY.find(u => u.id === id || u.email === id || u.id === `mock-user-${id.replace('user-', '')}`);
+    }
+
+    const actorRole = req.user.role;
+    const actualTargetRole = targetUser ? targetUser.role : (req.body.currentTargetRole || 'visitor');
+
+    const allowed = canManageRole(actorRole, actualTargetRole, role);
+
+    if (!allowed) {
+      return res.status(403).json({
+        success: false,
+        message: `Access denied: Role "${actorRole}" cannot assign or modify role "${role}" on target account.`
+      });
+    }
+
+    // Persist to MongoDB / userService
+    if (targetUser && targetUser._id) {
+      await userService.updateUser(targetUser._id, { role });
+    } else {
+      await userService.updateUser(id, { role });
+    }
+
+    // Also sync in-memory default registry if present
+    const regItem = DEFAULT_USER_REGISTRY.find(u =>
+      u.id === id ||
+      u.email === id ||
+      u.id === `mock-user-${id.replace('user-', '')}` ||
+      (id.startsWith('user-') && u.id.includes(id.replace('user-', '')))
+    );
+    if (regItem) {
+      regItem.role = role;
+    }
+
+    logAdminAction(req, 'ROLE_MODIFY', `Changed role of user ${id} to ${role}`, 'user', id);
+
+    res.json({
+      success: true,
+      message: `Role for user ${id} updated to "${role}".`,
+      userId: id,
+      newRole: role
     });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Failed to update user role.' });
   }
-
-  // Hierarchy enforcement: prevent privilege escalation by resolving real target user role from server registry
-  const actorRole = req.user.role;
-  const targetUser = DEFAULT_USER_REGISTRY.find(u => u.id === id || u.email === id);
-  const actualTargetRole = targetUser ? targetUser.role : (req.body.currentTargetRole || 'visitor');
-
-  const allowed = canManageRole(actorRole, actualTargetRole, role);
-
-  if (!allowed) {
-    return res.status(403).json({
-      success: false,
-      message: `Access denied: Role "${actorRole}" cannot assign or modify role "${role}" on target account.`
-    });
-  }
-
-  if (targetUser) {
-    targetUser.role = role;
-  }
-
-  logAdminAction(req, 'ROLE_MODIFY', `Changed role of user ${id} to ${role}`, 'user', id);
-
-  res.json({
-    success: true,
-    message: `Role for user ${id} updated to "${role}".`,
-    userId: id,
-    newRole: role
-  });
 });
 
 // PATCH /api/admin/users/:id/status — Suspend / Activate user

@@ -118,6 +118,18 @@ function calculateFileSHA256(filePath) {
   });
 }
 
+function timingSafeEqualStr(aStr, bStr) {
+  if (typeof aStr !== 'string' || typeof bStr !== 'string') return false;
+  try {
+    const a = Buffer.from(aStr, 'utf8');
+    const b = Buffer.from(bStr, 'utf8');
+    if (a.length !== b.length) return false;
+    return crypto.timingSafeEqual(a, b);
+  } catch (e) {
+    return false;
+  }
+}
+
 module.exports = {
   sha256,
   sha512,
@@ -126,5 +138,6 @@ module.exports = {
   comparePassword,
   hashOtp,
   verifyOtp,
+  timingSafeEqualStr,
   calculateFileSHA256,
 };

@@ -17,7 +17,8 @@ const getApiBase = () => {
 
 const API_BASE = getApiBase();
 
-const getToken = () => localStorage.getItem('auth_token');
+const getToken = () => localStorage.getItem('auth_token') || localStorage.getItem('token');
+window.getToken = getToken;
 
 const apiFetch = async (endpoint, options = {}) => {
   const token = getToken();
@@ -207,6 +208,8 @@ const api = {
     googleLogin: (body) => apiFetch('/auth/google', { method: 'POST', body: JSON.stringify(body) }),
     sendOtp: (body) => apiFetch('/auth/send-otp', { method: 'POST', body: JSON.stringify(body) }),
     verifyOtp: (body) => apiFetch('/auth/verify-otp', { method: 'POST', body: JSON.stringify(body) }),
+    forgotPassword: (body) => apiFetch('/auth/forgot-password', { method: 'POST', body: JSON.stringify(body) }),
+    resetPassword: (body) => apiFetch('/auth/reset-password', { method: 'POST', body: JSON.stringify(body) }),
     me: () => apiFetch('/auth/me'),
     updateProfile: (body) => apiFetch('/auth/profile', { method: 'PATCH', body: JSON.stringify(body) }),
   },

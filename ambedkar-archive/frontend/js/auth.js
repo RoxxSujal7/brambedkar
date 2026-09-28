@@ -26,6 +26,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // ── Handle Google OAuth redirect callback early (before async initGoogleAuth) ──
+  // This fires when returning from the redirect-based mobile OAuth flow.
+  if (window.location.hash?.includes('access_token=')) {
+    handleGoogleOAuthRedirectCallback();
+    return; // token will trigger onAuthSuccess and redirect
+  }
+
   // ── Initialize Components ─────────────────────
   initAuthTabs();
   initPasswordLogin();
@@ -821,7 +828,32 @@ function initPasswordReset() {
 
 /* ═══════════════════════════════════════════════════
    8. REAL GOOGLE SIGN-IN & FALLBACK MODAL
+   Mobile fix: pre-initialise token client eagerly before click,
+   use One Tap bottom-sheet on mobile, redirect OAuth fallback.
    ═══════════════════════════════════════════════════ */
+
+// Handles the implicit-grant access_token returned in the URL hash
+// after launchGoogleOAuthRedirect() completes.
+function handleGoogleOAuthRedirectCallback() {
+  const hash = window.location.hash;
+  if (!hash || !hash.includes('access_token=')) return;
+  const params = new URLSearchParams(hash.slice(1));
+  const accessToken = params.get('access_token');
+  if (!accessToken) return;
+  // Clean the token out of the address bar
+  history.replaceState(null, '', window.location.pathname + window.location.search);
+  submitGoogleAccessToken(accessToken);
+}
+
+// Detect mobile / touch-primary devices
+function isMobileDevice() {
+  return (
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+    (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) ||
+    ('ontouchstart' in window && navigator.maxTouchPoints > 0)
+  );
+}
+
 async function initGoogleAuth() {
   const loginGoogleBtn = document.getElementById('google-login-btn');
   const registerGoogleBtn = document.getElementById('google-register-btn');
@@ -832,7 +864,7 @@ async function initGoogleAuth() {
   const isRegister = !!registerGoogleBtn;
   let clientId = '';
 
-  // 1. Fetch real Google Client ID from backend
+  // 1. Fetch real Google Client ID from backend (or fallback to window / meta config)
   try {
     const cfgRes = await fetch('/api/auth/config');
     const cfgData = await cfgRes.json();
@@ -841,6 +873,23 @@ async function initGoogleAuth() {
     }
   } catch (err) {
     console.warn('Could not fetch auth config:', err);
+  }
+
+  if (!clientId && typeof window !== 'undefined') {
+    if (window.GOOGLE_CLIENT_ID && !window.GOOGLE_CLIENT_ID.includes('demoarchive')) {
+      clientId = window.GOOGLE_CLIENT_ID;
+    } else {
+      const metaClient = document.querySelector('meta[name="google-signin-client_id"]')?.getAttribute('content');
+      if (metaClient && !metaClient.includes('YOUR_CLIENT_ID')) {
+        clientId = metaClient;
+      }
+    }
+  }
+
+  // Guaranteed project client ID fallback if environment variables are not yet propagated
+  const DEFAULT_GOOGLE_CLIENT_ID = '782338228221-an7aut37hhgl908gi18tqro637g57eir.apps.googleusercontent.com';
+  if (!clientId) {
+    clientId = DEFAULT_GOOGLE_CLIENT_ID;
   }
 
   // 2. Helper to poll for Google Identity Services SDK until loaded
@@ -866,7 +915,12 @@ async function initGoogleAuth() {
   const google = await waitForGoogleSdk();
   let tokenClient = null;
 
-  if (clientId && google && google.accounts) {
+  // Diagnostic logging for Google Auth pipeline
+  console.log("[Google Auth] GIS loaded:", !!window.google?.accounts?.id);
+  console.log("[Google Auth] Client ID:", clientId ? "present" : "missing");
+  console.log("[Google Auth] Container:", !!document.getElementById("google-gsi-container"));
+
+  if (clientId && google && google.accounts && google.accounts.id) {
     // A. Initialize Google Identity Services (official rendered button + ID token)
     try {
       google.accounts.id.initialize({
@@ -875,9 +929,12 @@ async function initGoogleAuth() {
         auto_select: false,
         cancel_on_tap_outside: true,
         context: isRegister ? 'signup' : 'signin',
+        use_fedcm_for_prompt: true, // required for Chrome ≥ 115 mobile One Tap
       });
 
       if (gsiContainer) {
+        console.log("[Google Auth] Rendering official Google button");
+        const btnWidth = Math.min(320, Math.max(220, (gsiContainer.clientWidth || 300)));
         google.accounts.id.renderButton(gsiContainer, {
           type: 'standard',
           theme: 'outline',
@@ -885,10 +942,10 @@ async function initGoogleAuth() {
           text: isRegister ? 'signup_with' : 'signin_with',
           shape: 'pill',
           logo_alignment: 'left',
-          width: 320,
+          width: btnWidth,
         });
 
-        // Hide custom button so there is only one official Google button
+        // Hide custom button so only Google's official rendered button is shown
         if (loginGoogleBtn) loginGoogleBtn.style.display = 'none';
         if (registerGoogleBtn) registerGoogleBtn.style.display = 'none';
       }
@@ -1015,40 +1072,59 @@ async function initGoogleAuth() {
     });
   }
 
-  // 4. Custom button click handler — triggers real Google OAuth popup
+  // 4. Handle implicit-grant redirect callback (fires if we came back from launchGoogleOAuthRedirect)
+  handleGoogleOAuthRedirectCallback();
+
+  // 5. Redirect-based OAuth — works on every mobile browser without popups
+  const launchGoogleOAuthRedirect = () => {
+    if (!clientId) { modalOverlay?.classList.add('active'); return; }
+    const params = new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: window.location.origin + window.location.pathname,
+      response_type: 'token',
+      scope: 'email profile openid',
+      prompt: 'select_account',
+      state: isRegister ? 'register' : 'login',
+    });
+    sessionStorage.setItem('google_oauth_return', window.location.href);
+    window.location.href = 'https://accounts.google.com/o/oauth2/v2/auth?' + params.toString();
+  };
+
+  // 6. Button click handler — MUST stay synchronous so mobile gesture chain is intact
   const handleGoogleClick = (e) => {
     e.preventDefault();
 
-    // If OAuth2 token client is initialized, request real Google sign-in popup
+    // ── Mobile: One Tap bottom-sheet (no popup, works on all mobile browsers) ──
+    if (isMobileDevice() && clientId && google?.accounts?.id) {
+      try {
+        google.accounts.id.prompt((notification) => {
+          // One Tap not shown or dismissed — fall through to redirect
+          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+            launchGoogleOAuthRedirect();
+          }
+        });
+        return;
+      } catch (promptErr) {
+        console.warn('One Tap prompt failed, redirecting:', promptErr);
+        launchGoogleOAuthRedirect();
+        return;
+      }
+    }
+
+    // ── Desktop: pre-initialised token client popup ──
     if (tokenClient) {
       try {
         tokenClient.requestAccessToken({ prompt: 'select_account' });
         return;
       } catch (err) {
-        console.warn('OAuth2 requestAccessToken failed, trying fallback:', err);
+        console.warn('OAuth2 requestAccessToken failed, falling back to redirect:', err);
       }
     }
 
-    // If Google accounts is present, try dynamic tokenClient
-    if (clientId && window.google?.accounts?.oauth2) {
-      try {
-        const dynamicClient = google.accounts.oauth2.initTokenClient({
-          client_id: clientId,
-          scope: 'email profile openid',
-          callback: async (resp) => {
-            if (resp.access_token) {
-              await submitGoogleAccessToken(resp.access_token);
-            }
-          },
-        });
-        dynamicClient.requestAccessToken({ prompt: 'select_account' });
-        return;
-      } catch (err) {
-        console.warn('Dynamic OAuth2 client failed:', err);
-      }
-    }
+    // ── Universal fallback: redirect (works everywhere) ──
+    if (clientId) { launchGoogleOAuthRedirect(); return; }
 
-    // Fallback modal if Google SDK or Client ID is completely unavailable
+    // ── Offline / no client ID: show fallback account picker ──
     modalOverlay?.classList.add('active');
   };
 

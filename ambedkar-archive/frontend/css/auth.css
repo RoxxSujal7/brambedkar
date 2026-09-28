@@ -269,11 +269,25 @@
   transform: translateY(-1px);
 }
 
-.google-gsi-wrapper {
-  display: flex;
-  justify-content: center;
-  margin-bottom: var(--space-4);
-  min-height: 44px;
+.google-gsi-wrapper,
+#google-gsi-container {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  margin-bottom: var(--space-4) !important;
+  min-height: 44px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: visible !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+#google-gsi-container iframe {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  margin: 0 auto !important;
 }
 
 

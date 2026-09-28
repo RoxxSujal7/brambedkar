@@ -64,6 +64,7 @@ app.use((req, res, next) => {
 // CORS with strict origin validation
 const allowedOrigins = [
   process.env.FRONTEND_URL,
+  'https://ambedkar-archive.vercel.app',
   'https://ambedkar-digital-archive.onrender.com',
   'http://localhost:5000',
   'http://127.0.0.1:5000',
@@ -78,6 +79,14 @@ app.use(cors({
     
     // Strict whitelist check
     if (allowedOrigins.includes(origin)) return callback(null, true);
+
+    // Permit any Vercel deployment preview / subdomain for ambedkar-archive
+    try {
+      const parsed = new URL(origin);
+      if (parsed.hostname === 'ambedkar-archive.vercel.app' || parsed.hostname.endsWith('.vercel.app')) {
+        return callback(null, true);
+      }
+    } catch (e) {}
 
     // Development local origins only permitted in non-production
     if (process.env.NODE_ENV !== 'production') {

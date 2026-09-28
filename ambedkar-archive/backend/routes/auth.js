@@ -471,7 +471,7 @@ router.post('/google', authLimiter, async (req, res, next) => {
 const otpMemoryStore = new Map();
 
 function generateOTP() {
-  return Math.floor(100000 + crypto.randomInt(0, 900000)).toString();
+  return (100000 + crypto.randomInt(0, 900000)).toString();
 }
 
 function maskTarget(target, type) {

@@ -25,7 +25,7 @@
 <br/>
 
 ### 🌐 Live Production Deployment
-**[🚀 Explore Live Web Platform](https://ambedkar-digital-archive.onrender.com)** · **[🎨 Institutional Brand Kit & Design System](ambedkar-archive/docs/BRANDKIT.md)** · **[📖 Archify Interactive Architecture](ambedkar-archive/docs/architecture.html)** · **[🛡️ Cryptographic Preservation Manifest](https://ambedkar-digital-archive.onrender.com/api/preservation/manifest)** · **[🎬 Video Launch Kit](brag-output-2026-09-28-013500/brag-plan.md)**
+**[🚀 Explore Live Web Platform](https://ambedkar-archive.vercel.app)** · **[🎨 Institutional Brand Kit & Design System](ambedkar-archive/docs/BRANDKIT.md)** · **[📖 Archify Interactive Architecture](ambedkar-archive/docs/architecture.html)** · **[🛡️ Cryptographic Preservation Manifest](https://ambedkar-archive.vercel.app/api/preservation/manifest)** · **[🎬 Video Launch Kit](brag-output-2026-09-28-013500/brag-plan.md)**
 
 <br/>
 

@@ -283,11 +283,39 @@
   opacity: 1 !important;
 }
 
+.google-gsi-wrapper:empty,
+#google-gsi-container:empty {
+  display: none !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
 #google-gsi-container iframe {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
   margin: 0 auto !important;
+}
+
+/* Spinner for async connecting states */
+.spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: authSpin 0.75s linear infinite;
+  vertical-align: middle;
+}
+.spinner-sm {
+  width: 14px;
+  height: 14px;
+  border-width: 2px;
+}
+@keyframes authSpin {
+  to { transform: rotate(360deg); }
 }
 
 

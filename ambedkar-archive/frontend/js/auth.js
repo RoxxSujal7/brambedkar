@@ -854,7 +854,55 @@ function isMobileDevice() {
   );
 }
 
-async function initGoogleAuth() {
+// Track Google initialization state across the page lifecycle
+let isGoogleInitialized = false;
+let googleTokenClient = null;
+let isGoogleAuthProcessing = false;
+
+function getGoogleClientId() {
+  if (typeof window !== 'undefined' && window.GOOGLE_CLIENT_ID && !window.GOOGLE_CLIENT_ID.includes('demoarchive')) {
+    return window.GOOGLE_CLIENT_ID;
+  }
+  const metaClient = document.querySelector('meta[name="google-signin-client_id"]')?.getAttribute('content');
+  if (metaClient && !metaClient.includes('YOUR_CLIENT_ID')) {
+    return metaClient;
+  }
+  return '782338228221-an7aut37hhgl908gi18tqro637g57eir.apps.googleusercontent.com';
+}
+
+function setGoogleButtonConnecting(btn) {
+  if (!btn) return;
+  btn.disabled = true;
+  if (!btn.dataset.originalHtml) {
+    btn.dataset.originalHtml = btn.innerHTML;
+  }
+  btn.innerHTML = `
+    <span class="spinner spinner-sm" aria-hidden="true"></span>
+    <span>Connecting to Google…</span>
+  `;
+  if (window.AppState && AppState.showToast) {
+    AppState.showToast('Connecting to Google…', 'info');
+  }
+}
+
+function resetGoogleButtonState(btn, errorMessage) {
+  isGoogleAuthProcessing = false;
+  const activeBtn = btn || document.getElementById('google-login-btn') || document.getElementById('google-register-btn');
+  if (activeBtn) {
+    activeBtn.disabled = false;
+    if (activeBtn.dataset.originalHtml) {
+      activeBtn.innerHTML = activeBtn.dataset.originalHtml;
+    }
+  }
+  if (errorMessage) {
+    const banner = document.getElementById('login-error') || document.getElementById('register-error');
+    const textEl = document.getElementById('login-error-text') || banner;
+    if (textEl) textEl.textContent = errorMessage;
+    if (banner) banner.classList.add('show');
+  }
+}
+
+function initGoogleAuth() {
   const loginGoogleBtn = document.getElementById('google-login-btn');
   const registerGoogleBtn = document.getElementById('google-register-btn');
   const gsiContainer = document.getElementById('google-gsi-container');
@@ -862,38 +910,20 @@ async function initGoogleAuth() {
   if (!targetBtn && !gsiContainer) return;
 
   const isRegister = !!registerGoogleBtn;
-  let clientId = '';
+  let clientId = getGoogleClientId();
 
-  // 1. Fetch real Google Client ID from backend (or fallback to window / meta config)
-  try {
-    const cfgRes = await fetch('/api/auth/config');
-    const cfgData = await cfgRes.json();
-    if (cfgData.success && cfgData.googleClientId && !cfgData.googleClientId.includes('demoarchive')) {
-      clientId = cfgData.googleClientId;
-    }
-  } catch (err) {
-    console.warn('Could not fetch auth config:', err);
-  }
-
-  if (!clientId && typeof window !== 'undefined') {
-    if (window.GOOGLE_CLIENT_ID && !window.GOOGLE_CLIENT_ID.includes('demoarchive')) {
-      clientId = window.GOOGLE_CLIENT_ID;
-    } else {
-      const metaClient = document.querySelector('meta[name="google-signin-client_id"]')?.getAttribute('content');
-      if (metaClient && !metaClient.includes('YOUR_CLIENT_ID')) {
-        clientId = metaClient;
+  // Non-blocking background fetch to sync client ID from backend if available
+  fetch('/api/auth/config')
+    .then((r) => r.json())
+    .then((cfgData) => {
+      if (cfgData.success && cfgData.googleClientId && !cfgData.googleClientId.includes('demoarchive')) {
+        clientId = cfgData.googleClientId;
       }
-    }
-  }
+    })
+    .catch(() => {});
 
-  // Guaranteed project client ID fallback if environment variables are not yet propagated
-  const DEFAULT_GOOGLE_CLIENT_ID = '782338228221-an7aut37hhgl908gi18tqro637g57eir.apps.googleusercontent.com';
-  if (!clientId) {
-    clientId = DEFAULT_GOOGLE_CLIENT_ID;
-  }
-
-  // 2. Helper to poll for Google Identity Services SDK until loaded
-  const waitForGoogleSdk = () => {
+  // Polling helper for Google Identity Services SDK
+  const waitForGoogleSdk = (timeoutMs = 4000) => {
     return new Promise((resolve) => {
       if (window.google && window.google.accounts) {
         return resolve(window.google);
@@ -904,7 +934,7 @@ async function initGoogleAuth() {
         if (window.google && window.google.accounts) {
           clearInterval(interval);
           resolve(window.google);
-        } else if (elapsed > 4000) {
+        } else if (elapsed >= timeoutMs) {
           clearInterval(interval);
           resolve(null);
         }
@@ -912,30 +942,29 @@ async function initGoogleAuth() {
     });
   };
 
-  const google = await waitForGoogleSdk();
-  let tokenClient = null;
+  // Helper to initialize GIS exactly once and render official button
+  const setupGoogleServices = (googleSdk) => {
+    if (isGoogleInitialized) return;
+    if (!googleSdk || !googleSdk.accounts || !googleSdk.accounts.id) return;
+    isGoogleInitialized = true;
 
-  // Diagnostic logging for Google Auth pipeline
-  console.log("[Google Auth] GIS loaded:", !!window.google?.accounts?.id);
-  console.log("[Google Auth] Client ID:", clientId ? "present" : "missing");
-  console.log("[Google Auth] Container:", !!document.getElementById("google-gsi-container"));
-
-  if (clientId && google && google.accounts && google.accounts.id) {
     // A. Initialize Google Identity Services (official rendered button + ID token)
     try {
-      google.accounts.id.initialize({
+      googleSdk.accounts.id.initialize({
         client_id: clientId,
-        callback: window.handleGoogleCredentialResponse,
+        callback: async (response) => {
+          resetGoogleButtonState();
+          await window.handleGoogleCredentialResponse(response);
+        },
         auto_select: false,
         cancel_on_tap_outside: true,
         context: isRegister ? 'signup' : 'signin',
-        use_fedcm_for_prompt: true, // required for Chrome ≥ 115 mobile One Tap
+        use_fedcm_for_prompt: true,
       });
 
       if (gsiContainer) {
-        console.log("[Google Auth] Rendering official Google button");
         const btnWidth = Math.min(320, Math.max(220, (gsiContainer.clientWidth || 300)));
-        google.accounts.id.renderButton(gsiContainer, {
+        googleSdk.accounts.id.renderButton(gsiContainer, {
           type: 'standard',
           theme: 'outline',
           size: 'large',
@@ -945,7 +974,8 @@ async function initGoogleAuth() {
           width: btnWidth,
         });
 
-        // Hide custom button so only Google's official rendered button is shown
+        // Make official container visible and hide fallback button
+        gsiContainer.style.display = 'flex';
         if (loginGoogleBtn) loginGoogleBtn.style.display = 'none';
         if (registerGoogleBtn) registerGoogleBtn.style.display = 'none';
       }
@@ -953,19 +983,15 @@ async function initGoogleAuth() {
       console.warn('Google GSI renderButton:', gsiErr);
     }
 
-    // B. Initialize Google OAuth2 Token Client (opens real Google OAuth popup on custom button click)
+    // B. Initialize Google OAuth2 Token Client (direct OAuth popup on button click)
     try {
-      if (google.accounts.oauth2) {
-        tokenClient = google.accounts.oauth2.initTokenClient({
+      if (googleSdk.accounts.oauth2) {
+        googleTokenClient = googleSdk.accounts.oauth2.initTokenClient({
           client_id: clientId,
           scope: 'email profile openid',
           callback: async (tokenResponse) => {
             if (tokenResponse.error) {
-              const banner = document.getElementById('login-error') || document.getElementById('register-error');
-              if (banner) {
-                banner.textContent = tokenResponse.error_description || 'Google sign-in was cancelled or failed.';
-                banner.classList.add('show');
-              }
+              resetGoogleButtonState(null, tokenResponse.error_description || 'Google sign-in was cancelled.');
               return;
             }
             if (tokenResponse.access_token) {
@@ -973,16 +999,27 @@ async function initGoogleAuth() {
             }
           },
           error_callback: (err) => {
-            console.error('Google OAuth popup error:', err);
+            console.warn('Google OAuth popup error, falling back to redirect:', err);
+            resetGoogleButtonState();
+            launchGoogleOAuthRedirect();
           },
         });
       }
     } catch (oauthErr) {
       console.warn('Google OAuth2 initTokenClient:', oauthErr);
     }
+  };
+
+  // Start checking for Google SDK immediately in background
+  if (window.google && window.google.accounts) {
+    setupGoogleServices(window.google);
+  } else {
+    waitForGoogleSdk().then((googleSdk) => {
+      if (googleSdk) setupGoogleServices(googleSdk);
+    });
   }
 
-  // 3. Fallback Account Modal (for local offline testing or when Google Cloud Console origin is not yet configured)
+  // Fallback Account Modal (for local offline testing or unconfigured origins)
   let modalOverlay = document.getElementById('google-auth-modal');
   if (!modalOverlay) {
     modalOverlay = document.createElement('div');
@@ -1072,12 +1109,16 @@ async function initGoogleAuth() {
     });
   }
 
-  // 4. Handle implicit-grant redirect callback (fires if we came back from launchGoogleOAuthRedirect)
+  // Handle implicit-grant redirect callback (fires if we came back from launchGoogleOAuthRedirect)
   handleGoogleOAuthRedirectCallback();
 
-  // 5. Redirect-based OAuth — works on every mobile browser without popups
+  // Redirect-based OAuth — works on every mobile browser without popups
   const launchGoogleOAuthRedirect = () => {
-    if (!clientId) { modalOverlay?.classList.add('active'); return; }
+    if (!clientId) {
+      resetGoogleButtonState();
+      modalOverlay?.classList.add('active');
+      return;
+    }
     const params = new URLSearchParams({
       client_id: clientId,
       redirect_uri: window.location.origin + window.location.pathname,
@@ -1090,44 +1131,45 @@ async function initGoogleAuth() {
     window.location.href = 'https://accounts.google.com/o/oauth2/v2/auth?' + params.toString();
   };
 
-  // 6. Button click handler — MUST stay synchronous so mobile gesture chain is intact
-  const handleGoogleClick = (e) => {
+  // Button click handler — ATTACHED SYNCHRONOUSLY, IMMEDIATE ONE-TAP FLOW
+  const handleGoogleClick = async (e) => {
     e.preventDefault();
+    if (isGoogleAuthProcessing) return; // Prevent duplicate multi-taps
+    isGoogleAuthProcessing = true;
 
-    // ── Mobile: One Tap bottom-sheet (no popup, works on all mobile browsers) ──
-    if (isMobileDevice() && clientId && google?.accounts?.id) {
-      try {
-        google.accounts.id.prompt((notification) => {
-          // One Tap not shown or dismissed — fall through to redirect
-          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-            launchGoogleOAuthRedirect();
-          }
-        });
+    const activeBtn = e.currentTarget;
+    setGoogleButtonConnecting(activeBtn);
+
+    try {
+      // If Google SDK is not yet ready, wait briefly for it (up to 2s)
+      let googleSdk = window.google && window.google.accounts ? window.google : await waitForGoogleSdk(2000);
+
+      if (googleSdk) {
+        setupGoogleServices(googleSdk);
+      }
+
+      // If tokenClient is ready, invoke immediate OAuth flow
+      if (googleTokenClient) {
+        googleTokenClient.requestAccessToken({ prompt: 'select_account' });
         return;
-      } catch (promptErr) {
-        console.warn('One Tap prompt failed, redirecting:', promptErr);
+      }
+
+      // If token client is not available, launch redirect immediately
+      if (clientId) {
         launchGoogleOAuthRedirect();
         return;
       }
+
+      // Offline fallback modal
+      resetGoogleButtonState(activeBtn);
+      modalOverlay?.classList.add('active');
+    } catch (err) {
+      console.error('Google Sign-In click error:', err);
+      resetGoogleButtonState(activeBtn, err.message || 'Could not connect to Google.');
     }
-
-    // ── Desktop: pre-initialised token client popup ──
-    if (tokenClient) {
-      try {
-        tokenClient.requestAccessToken({ prompt: 'select_account' });
-        return;
-      } catch (err) {
-        console.warn('OAuth2 requestAccessToken failed, falling back to redirect:', err);
-      }
-    }
-
-    // ── Universal fallback: redirect (works everywhere) ──
-    if (clientId) { launchGoogleOAuthRedirect(); return; }
-
-    // ── Offline / no client ID: show fallback account picker ──
-    modalOverlay?.classList.add('active');
   };
 
+  // ATTACH CLICK LISTENERS IMMEDIATELY AND SYNCHRONOUSLY
   [loginGoogleBtn, registerGoogleBtn].filter(Boolean).forEach((btn) => {
     btn.addEventListener('click', handleGoogleClick);
   });

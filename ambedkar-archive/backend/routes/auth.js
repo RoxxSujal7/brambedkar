@@ -678,6 +678,18 @@ router.post(
       if (!record && !cleanTarget.startsWith('+') && cleanTarget.length === 10) {
         record = await getOtpRecord('+91' + cleanTarget);
       }
+      if (!record && cleanTarget.startsWith('@')) {
+        record = await getOtpRecord(cleanTarget.slice(1));
+      }
+      if (!record && !cleanTarget.startsWith('@')) {
+        record = await getOtpRecord('@' + cleanTarget);
+      }
+      if (!record) {
+        record = await getOtpRecord(cleanTarget.toLowerCase());
+      }
+      if (!record && cleanTarget.startsWith('@')) {
+        record = await getOtpRecord(cleanTarget.slice(1).toLowerCase());
+      }
 
       if (!record) {
         return res.status(400).json({ success: false, message: 'No active OTP found. Please request a new code.' });

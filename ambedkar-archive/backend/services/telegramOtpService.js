@@ -6,53 +6,127 @@
 
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 
-const CONTACTS_FILE = path.join(__dirname, '..', 'data', 'telegram_contacts.json');
+const DEFAULT_CONTACTS_FILE = path.join(__dirname, '..', 'data', 'telegram_contacts.json');
+const TMP_CONTACTS_FILE = path.join(os.tmpdir(), 'telegram_contacts.json');
 
 // Memory caches
 const phoneChatMap = new Map();
 const usernameChatMap = new Map();
+const knownChatIds = new Set();
+const greetedChatIds = new Set();
+const acknowledgedContacts = new Set();
+
+// Verified seed contacts to guarantee baseline linkage across serverless cold starts
+const SEED_CONTACTS = {
+  phones: {
+    '9334705234': 7637296797,
+    '+919334705234': 7637296797,
+  },
+  usernames: {
+    'sujalroxx7': 7637296797,
+  },
+  chatIds: ['7637296797'],
+};
 
 /**
- * Load contacts from local JSON file
+ * Load contacts from seed, local JSON file, and /tmp fallback
  */
 function loadContacts() {
+  // 1. Seed baseline
+  if (SEED_CONTACTS.phones) {
+    Object.entries(SEED_CONTACTS.phones).forEach(([k, v]) => phoneChatMap.set(k, v));
+  }
+  if (SEED_CONTACTS.usernames) {
+    Object.entries(SEED_CONTACTS.usernames).forEach(([k, v]) => usernameChatMap.set(k, v));
+  }
+  if (SEED_CONTACTS.chatIds) {
+    SEED_CONTACTS.chatIds.forEach((id) => {
+      knownChatIds.add(String(id));
+      knownChatIds.add(Number(id));
+    });
+  }
+
+  // 2. Load from default file if present
   try {
-    if (fs.existsSync(CONTACTS_FILE)) {
-      const data = JSON.parse(fs.readFileSync(CONTACTS_FILE, 'utf8'));
+    if (fs.existsSync(DEFAULT_CONTACTS_FILE)) {
+      const data = JSON.parse(fs.readFileSync(DEFAULT_CONTACTS_FILE, 'utf8'));
       if (data.phones) {
         Object.entries(data.phones).forEach(([k, v]) => phoneChatMap.set(k, v));
       }
       if (data.usernames) {
         Object.entries(data.usernames).forEach(([k, v]) => usernameChatMap.set(k, v));
       }
+      if (Array.isArray(data.chatIds)) {
+        data.chatIds.forEach((id) => {
+          knownChatIds.add(String(id));
+          knownChatIds.add(Number(id));
+        });
+      }
     }
   } catch (err) {
-    console.warn('Could not read telegram_contacts.json:', err.message);
+    console.warn('Could not read default telegram_contacts.json:', err.message);
+  }
+
+  // 3. Load from /tmp fallback (serverless persistence)
+  try {
+    if (fs.existsSync(TMP_CONTACTS_FILE)) {
+      const data = JSON.parse(fs.readFileSync(TMP_CONTACTS_FILE, 'utf8'));
+      if (data.phones) {
+        Object.entries(data.phones).forEach(([k, v]) => phoneChatMap.set(k, v));
+      }
+      if (data.usernames) {
+        Object.entries(data.usernames).forEach(([k, v]) => usernameChatMap.set(k, v));
+      }
+      if (Array.isArray(data.chatIds)) {
+        data.chatIds.forEach((id) => {
+          knownChatIds.add(String(id));
+          knownChatIds.add(Number(id));
+        });
+      }
+    }
+  } catch (err) {
+    // Non-fatal
   }
 }
 
 /**
- * Save contacts to local JSON file
+ * Save contacts to local JSON file or /tmp
  */
 function saveContacts() {
+  const phonesObj = {};
+  phoneChatMap.forEach((v, k) => { phonesObj[k] = v; });
+
+  const usernamesObj = {};
+  usernameChatMap.forEach((v, k) => { usernamesObj[k] = v; });
+
+  const payload = JSON.stringify({
+    updatedAt: new Date().toISOString(),
+    phones: phonesObj,
+    usernames: usernamesObj,
+    chatIds: Array.from(knownChatIds),
+  }, null, 2);
+
+  // Try saving to default directory first
+  let saved = false;
   try {
-    const dir = path.dirname(CONTACTS_FILE);
+    const dir = path.dirname(DEFAULT_CONTACTS_FILE);
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-
-    const phonesObj = {};
-    phoneChatMap.forEach((v, k) => { phonesObj[k] = v; });
-
-    const usernamesObj = {};
-    usernameChatMap.forEach((v, k) => { usernamesObj[k] = v; });
-
-    fs.writeFileSync(CONTACTS_FILE, JSON.stringify({
-      updatedAt: new Date().toISOString(),
-      phones: phonesObj,
-      usernames: usernamesObj,
-    }, null, 2), 'utf8');
+    fs.writeFileSync(DEFAULT_CONTACTS_FILE, payload, 'utf8');
+    saved = true;
   } catch (err) {
-    console.warn('Could not save telegram_contacts.json:', err.message);
+    // EROFS on serverless (AWS Lambda / Vercel)
+  }
+
+  // Also save to /tmp for serverless container reuse
+  try {
+    fs.writeFileSync(TMP_CONTACTS_FILE, payload, 'utf8');
+    saved = true;
+  } catch (err) {
+    if (!saved) {
+      console.warn('Could not save telegram_contacts to /tmp:', err.message);
+    }
   }
 }
 
@@ -73,10 +147,69 @@ function parsePhoneNumber(raw) {
     const ten = digits.slice(2);
     return { isPhone: true, digits, e164: `+${digits}`, tenDigits: ten };
   }
-  if (digits.length > 7 && digits.length <= 15 && (raw.startsWith('+') || raw.startsWith('0') || /^\d+$/.test(raw))) {
+  if (digits.length > 7 && digits.length <= 15 && (String(raw).startsWith('+') || String(raw).startsWith('0') || /^\d+$/.test(raw))) {
     return { isPhone: true, digits, e164: `+${digits}`, tenDigits: digits.slice(-10) };
   }
   return { isPhone: false, digits: '', e164: '', tenDigits: '' };
+}
+
+/**
+ * Send interactive greeting back to Telegram user if they just pressed /start
+ * @param {string} token
+ * @param {number|string} chatId
+ * @param {string} username
+ */
+async function sendStartGreeting(token, chatId, username) {
+  if (greetedChatIds.has(chatId)) return;
+  greetedChatIds.add(chatId);
+
+  try {
+    const userLabel = username ? `@${username}` : 'User';
+    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: `🏛️ *Dr. B. R. Ambedkar Digital Heritage Archive*\n\n✅ *Telegram Account Connected!*\n\n• Username: *${userLabel}*\n• Telegram ID: \`${chatId}\`\n\n👉 You can now log in at https://ambedkar-archive.vercel.app/login.html using your username (*${userLabel}*) or your Telegram ID (*${chatId}*).\n\n📱 *To log in with your phone number, tap 'Share Phone Number' below:*`,
+        parse_mode: 'Markdown',
+        reply_markup: {
+          keyboard: [
+            [{ text: '📱 Share Phone Number', request_contact: true }],
+          ],
+          resize_keyboard: true,
+          one_time_keyboard: true,
+        },
+      }),
+    });
+  } catch (e) {
+    // Non-fatal
+  }
+}
+
+/**
+ * Send contact confirmation back to Telegram user
+ * @param {string} token
+ * @param {number|string} chatId
+ * @param {string} phoneE164
+ */
+async function sendContactConfirmation(token, chatId, phoneE164) {
+  if (acknowledgedContacts.has(chatId)) return;
+  acknowledgedContacts.add(chatId);
+
+  try {
+    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: `✅ *Mobile number linked successfully!*\n\nYour mobile number *${phoneE164}* is now linked to your archive account.\n\nYou can now log in at https://ambedkar-archive.vercel.app/login.html using your mobile number.`,
+        parse_mode: 'Markdown',
+        reply_markup: { remove_keyboard: true },
+      }),
+    });
+  } catch (e) {
+    // Non-fatal
+  }
 }
 
 /**
@@ -85,6 +218,7 @@ function parsePhoneNumber(raw) {
  * @param {string} botUsername
  */
 async function syncUpdates(token, botUsername) {
+  if (!token) return;
   try {
     const res = await fetch(`https://api.telegram.org/bot${token}/getUpdates`);
     const data = await res.json();
@@ -98,6 +232,20 @@ async function syncUpdates(token, botUsername) {
       const chatId = msg.chat?.id || msg.from?.id;
       if (!chatId) continue;
 
+      knownChatIds.add(String(chatId));
+      knownChatIds.add(Number(chatId));
+
+      const fromUser = msg.from?.username?.toLowerCase();
+      const chatUser = msg.chat?.username?.toLowerCase();
+      if (fromUser) {
+        usernameChatMap.set(fromUser, chatId);
+        hasNew = true;
+      }
+      if (chatUser) {
+        usernameChatMap.set(chatUser, chatId);
+        hasNew = true;
+      }
+
       // 1. Check for shared contact (from "Share Phone Number" button)
       if (msg.contact && msg.contact.phone_number) {
         const rawPhone = msg.contact.phone_number;
@@ -106,6 +254,7 @@ async function syncUpdates(token, botUsername) {
           phoneChatMap.set(parsed.tenDigits, chatId);
           phoneChatMap.set(parsed.e164, chatId);
           hasNew = true;
+          sendContactConfirmation(token, chatId, parsed.e164);
         }
       }
 
@@ -119,16 +268,9 @@ async function syncUpdates(token, botUsername) {
         }
       }
 
-      // 3. Check for username
-      const fromUser = msg.from?.username?.toLowerCase();
-      const chatUser = msg.chat?.username?.toLowerCase();
-      if (fromUser) {
-        usernameChatMap.set(fromUser, chatId);
-        hasNew = true;
-      }
-      if (chatUser) {
-        usernameChatMap.set(chatUser, chatId);
-        hasNew = true;
+      // 3. Acknowledge /start command with interactive reply
+      if (msg.text && msg.text.startsWith('/start')) {
+        sendStartGreeting(token, chatId, fromUser || chatUser);
       }
     }
 
@@ -149,13 +291,11 @@ async function syncUpdates(token, botUsername) {
  */
 async function resolveChatId(token, target, botUsername) {
   const cleanTarget = String(target || '').trim();
-
-  // A. Check if already a pure Telegram numeric chat ID (and not a 10-digit mobile)
-  if (/^-?\d+$/.test(cleanTarget) && cleanTarget.length < 10) {
-    return cleanTarget;
+  if (!cleanTarget) {
+    throw new Error('Telegram destination identifier is required.');
   }
 
-  // B. Check if target is an Indian or international phone number
+  // 1. Direct match in phone mapping (e.g. 10-digit mobile or E.164)
   const parsed = parsePhoneNumber(cleanTarget);
   if (parsed.isPhone) {
     if (phoneChatMap.has(parsed.tenDigits)) {
@@ -164,41 +304,53 @@ async function resolveChatId(token, target, botUsername) {
     if (phoneChatMap.has(parsed.e164)) {
       return phoneChatMap.get(parsed.e164);
     }
+  }
 
-    // Try live sync
-    await syncUpdates(token, botUsername);
+  // 2. Direct match in username mapping
+  const cleanUser = cleanTarget.replace(/^@/, '').toLowerCase();
+  if (usernameChatMap.has(cleanUser)) {
+    return usernameChatMap.get(cleanUser);
+  }
 
+  // 3. Match against known Telegram numeric user/chat ID
+  if (knownChatIds.has(cleanTarget) || knownChatIds.has(Number(cleanTarget))) {
+    return cleanTarget;
+  }
+
+  // 4. Try live sync from Telegram API
+  await syncUpdates(token, botUsername);
+
+  // Check mappings again after live sync
+  if (parsed.isPhone) {
     if (phoneChatMap.has(parsed.tenDigits)) {
       return phoneChatMap.get(parsed.tenDigits);
     }
     if (phoneChatMap.has(parsed.e164)) {
       return phoneChatMap.get(parsed.e164);
     }
+  }
 
+  if (usernameChatMap.has(cleanUser)) {
+    return usernameChatMap.get(cleanUser);
+  }
+
+  if (knownChatIds.has(cleanTarget) || knownChatIds.has(Number(cleanTarget))) {
+    return cleanTarget;
+  }
+
+  // 5. If it is a numeric ID and NOT a mobile phone number, treat as direct chat ID
+  if (/^-?\d{7,14}$/.test(cleanTarget) && !cleanTarget.startsWith('+') && !parsed.isPhone) {
+    return cleanTarget;
+  }
+
+  // 6. Otherwise report accurate, helpful unlinked error
+  if (parsed.isPhone) {
     const err = new Error(
       `Mobile number ${parsed.e164} is not yet linked to Telegram. Open https://t.me/${botUsername} in Telegram and tap 'Share Phone Number' to link it.`
     );
     err.statusCode = 400;
     err.code = 'TELEGRAM_NOT_LINKED';
     throw err;
-  }
-
-  // C. Target is a Telegram username (@username or username)
-  const cleanUser = cleanTarget.replace(/^@/, '').toLowerCase();
-  if (usernameChatMap.has(cleanUser)) {
-    return usernameChatMap.get(cleanUser);
-  }
-
-  // Try live sync
-  await syncUpdates(token, botUsername);
-
-  if (usernameChatMap.has(cleanUser)) {
-    return usernameChatMap.get(cleanUser);
-  }
-
-  // D. If numeric ID (9-10 digits telegram user ID)
-  if (/^\d{8,11}$/.test(cleanTarget)) {
-    return cleanTarget;
   }
 
   const err = new Error(
@@ -294,4 +446,5 @@ module.exports = {
   sendTelegramOtp,
   syncUpdates,
   parsePhoneNumber,
+  resolveChatId,
 };

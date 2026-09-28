@@ -380,7 +380,7 @@ function initTelegramOtpLogin() {
     const rawTarget = targetInput.value.trim();
     if (!rawTarget) {
       if (errBanner) {
-        errText.textContent = 'Please enter your 10-digit mobile number or Telegram @username.';
+        errText.textContent = 'Please enter your Telegram @username, Chat ID, or mobile number.';
         errBanner.classList.add('show');
       }
       targetInput.focus();

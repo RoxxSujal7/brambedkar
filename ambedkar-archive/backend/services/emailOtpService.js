@@ -134,8 +134,34 @@ async function sendEmailOtp(toEmail, otp) {
       };
     } catch (smtpErr) {
       console.error('⚠️ SMTP Dispatch Failure:', smtpErr.message);
-      // Never pretend delivery succeeded when SMTP rejected the email
-      throw new Error('Failed to dispatch email verification code via Gmail SMTP.');
+      // Fallback to Resend API if available
+      const fallbackKey = process.env.RESEND_API_KEY || resendApiKey;
+      if (fallbackKey) {
+        try {
+          const fallbackResend = new Resend(fallbackKey);
+          const fallbackFrom = process.env.EMAIL_FROM || fromEmail;
+          const { data, error } = await fallbackResend.emails.send({
+            from: fallbackFrom,
+            to: [cleanEmail],
+            subject: `${otp} is your Ambedkar Digital Archive verification code`,
+            html: buildOtpEmailHtml(otp, cleanEmail),
+            text: `Your Dr. B. R. Ambedkar Digital Heritage Archive verification code is: ${otp}\n\nValid for 5 minutes. Never share this code with anyone.`,
+          });
+          if (!error && data) {
+            return {
+              success: true,
+              messageId: data.id,
+              provider: 'resend_fallback',
+            };
+          }
+        } catch (fbErr) {
+          console.warn('⚠️ Resend fallback failed:', fbErr.message);
+        }
+      }
+      const err = new Error('Failed to dispatch email verification code via Gmail SMTP.');
+      err.statusCode = 400;
+      err.code = 'EMAIL_DISPATCH_FAILED';
+      throw err;
     }
   }
 
@@ -146,7 +172,10 @@ async function sendEmailOtp(toEmail, otp) {
     const activeFrom = process.env.EMAIL_FROM || fromEmail;
 
     if (!activeResend || !activeKey) {
-      throw new Error('Resend provider selected but RESEND_API_KEY is missing.');
+      const err = new Error('Resend provider selected but RESEND_API_KEY is missing.');
+      err.statusCode = 400;
+      err.code = 'EMAIL_CONFIG_MISSING';
+      throw err;
     }
 
     try {
@@ -160,8 +189,10 @@ async function sendEmailOtp(toEmail, otp) {
 
       if (error) {
         console.error('⚠️ Resend Dispatch Failure:', error.message || error.name);
-        // Never return success:true on Resend sandbox or delivery rejection
-        throw new Error(error.message || 'Failed to dispatch email verification code via Resend.');
+        const err = new Error(error.message || 'Failed to dispatch email verification code via Resend.');
+        err.statusCode = 400;
+        err.code = 'EMAIL_DISPATCH_FAILED';
+        throw err;
       }
 
       return {
@@ -171,6 +202,10 @@ async function sendEmailOtp(toEmail, otp) {
       };
     } catch (apiErr) {
       console.error('⚠️ Resend Exception:', apiErr.message);
+      if (!apiErr.statusCode) {
+        apiErr.statusCode = 400;
+        apiErr.code = 'EMAIL_DISPATCH_FAILED';
+      }
       throw apiErr;
     }
   }

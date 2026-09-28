@@ -630,6 +630,10 @@ router.post(
         provider: dispatchInfo ? dispatchInfo.provider : undefined,
       });
     } catch (err) {
+      if (!err.statusCode) {
+        err.statusCode = 400;
+        err.code = err.code || 'DISPATCH_ERROR';
+      }
       next(err);
     }
   }

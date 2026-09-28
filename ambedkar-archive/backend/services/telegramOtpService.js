@@ -175,9 +175,12 @@ async function resolveChatId(token, target, botUsername) {
       return phoneChatMap.get(parsed.e164);
     }
 
-    throw new Error(
+    const err = new Error(
       `Mobile number ${parsed.e164} is not yet linked to Telegram. Open https://t.me/${botUsername} in Telegram and tap 'Share Phone Number' to link it.`
     );
+    err.statusCode = 400;
+    err.code = 'TELEGRAM_NOT_LINKED';
+    throw err;
   }
 
   // C. Target is a Telegram username (@username or username)
@@ -198,9 +201,12 @@ async function resolveChatId(token, target, botUsername) {
     return cleanTarget;
   }
 
-  throw new Error(
+  const err = new Error(
     `No Telegram chat found for @${cleanUser}. Please open https://t.me/${botUsername} in Telegram, click START, and try again.`
   );
+  err.statusCode = 400;
+  err.code = 'TELEGRAM_NOT_LINKED';
+  throw err;
 }
 
 /**
@@ -240,9 +246,15 @@ async function sendTelegramOtp(target, otp) {
       if (!response.ok || !data.ok) {
         console.warn('⚠️ Telegram API returned error:', data.description);
         if (data.description && data.description.includes('chat not found')) {
-          throw new Error(`Please open https://t.me/${botUsername} in Telegram and click START first, then request your code.`);
+          const err = new Error(`Please open https://t.me/${botUsername} in Telegram and click START first, then request your code.`);
+          err.statusCode = 400;
+          err.code = 'TELEGRAM_NOT_LINKED';
+          throw err;
         }
-        throw new Error(data.description || 'Failed to dispatch Telegram message.');
+        const err = new Error(data.description || 'Failed to dispatch Telegram message.');
+        err.statusCode = 400;
+        err.code = 'TELEGRAM_SEND_FAILED';
+        throw err;
       }
 
       return {

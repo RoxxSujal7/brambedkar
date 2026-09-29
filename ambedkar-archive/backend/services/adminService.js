@@ -35,9 +35,16 @@ const DATA_DIR = path.join(__dirname, '../data');
 const UPLOADS_DIR = path.join(__dirname, '../uploads');
 const ARCHIVE_UPLOADS_DIR = path.join(UPLOADS_DIR, 'archive');
 
-if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
-if (!fs.existsSync(ARCHIVE_UPLOADS_DIR)) fs.mkdirSync(ARCHIVE_UPLOADS_DIR, { recursive: true });
+// Safe directory initialization for serverless read-only filesystems
+try {
+  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+} catch (_) {}
+try {
+  if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+} catch (_) {}
+try {
+  if (!fs.existsSync(ARCHIVE_UPLOADS_DIR)) fs.mkdirSync(ARCHIVE_UPLOADS_DIR, { recursive: true });
+} catch (_) {}
 
 // JSON persistence file paths
 const FILES = {

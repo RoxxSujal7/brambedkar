@@ -31,6 +31,16 @@ const app = express();
 // Connect to MongoDB
 connectDB();
 
+// Serverless DB connection middleware (reuses cached connection or connects on cold start)
+app.use(async (req, res, next) => {
+  if (req.path.startsWith('/api')) {
+    try {
+      await connectDB();
+    } catch (_) {}
+  }
+  next();
+});
+
 // Security headers
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },

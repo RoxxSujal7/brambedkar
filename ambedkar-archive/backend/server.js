@@ -174,6 +174,8 @@ app.get('/api/health', async (req, res) => {
     : (isProd ? 'unavailable' : 'offline_fallback');
 
   const healthy = isProd ? dbConnected : true;
+  const dbModule = require('./config/db');
+  const dbInfo = typeof dbModule.getDbStatus === 'function' ? dbModule.getDbStatus() : {};
 
   res.status(healthy ? 200 : 503).json({
     success: healthy,
@@ -182,6 +184,8 @@ app.get('/api/health', async (req, res) => {
     database: {
       status: dbStatus,
       mode: dbConnected ? 'MongoDB' : (isProd ? 'none' : 'JSON_Storage_Fallback'),
+      configured: Boolean(process.env.MONGO_URI || process.env.MONGODB_URI),
+      error: dbInfo.error ? String(dbInfo.error).replace(/\/\/[^@]*@/, '//****@') : null,
     },
     timestamp: new Date().toISOString(),
     version: '1.0.0',

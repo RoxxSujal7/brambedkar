@@ -189,7 +189,40 @@ async function sendEmailOtp(toEmail, otp) {
 
       if (error) {
         console.error('⚠️ Resend Dispatch Failure:', error.message || error.name);
-        const err = new Error(error.message || 'Failed to dispatch email verification code via Resend.');
+        const isDomainRestriction = error.message && (
+          error.message.includes('only send testing emails') ||
+          error.message.includes('verify a domain') ||
+          error.message.includes('testing emails to your own email address')
+        );
+
+        // Fallback to Gmail SMTP if Resend fails with recipient domain restriction
+        const smtpTransport = getSmtpTransporter();
+        if (isDomainRestriction && smtpTransport) {
+          console.log('🔄 Falling back to Gmail SMTP for external recipient:', cleanEmail);
+          try {
+            const gmailSender = process.env.GMAIL_USER ? `Ambedkar Digital Archive <${process.env.GMAIL_USER}>` : fromEmail;
+            const info = await smtpTransport.sendMail({
+              from: process.env.EMAIL_FROM || gmailSender,
+              to: cleanEmail,
+              subject: `${otp} is your Ambedkar Digital Archive verification code`,
+              html: buildOtpEmailHtml(otp, cleanEmail),
+              text: `Your Dr. B. R. Ambedkar Digital Heritage Archive verification code is: ${otp}\n\nValid for 5 minutes. Never share this code with anyone.`,
+            });
+            return {
+              success: true,
+              messageId: info.messageId || 'smtp-fb-' + Date.now(),
+              provider: 'gmail_smtp_fallback',
+            };
+          } catch (smtpErr) {
+            console.error('⚠️ Gmail SMTP Fallback also failed:', smtpErr.message);
+          }
+        }
+
+        const err = new Error(
+          isDomainRestriction
+            ? 'Email verification in production requires Gmail SMTP or a verified domain on Resend. (Provider restriction: Resend sandbox can only deliver to the account owner).'
+            : (error.message || 'Failed to dispatch email verification code via Resend.')
+        );
         err.statusCode = 400;
         err.code = 'EMAIL_DISPATCH_FAILED';
         throw err;
@@ -202,6 +235,34 @@ async function sendEmailOtp(toEmail, otp) {
       };
     } catch (apiErr) {
       console.error('⚠️ Resend Exception:', apiErr.message);
+      const isDomainRestriction = apiErr.message && (
+        apiErr.message.includes('only send testing emails') ||
+        apiErr.message.includes('verify a domain') ||
+        apiErr.message.includes('testing emails to your own email address')
+      );
+
+      const smtpTransport = getSmtpTransporter();
+      if (isDomainRestriction && smtpTransport) {
+        console.log('🔄 Falling back to Gmail SMTP on exception for external recipient:', cleanEmail);
+        try {
+          const gmailSender = process.env.GMAIL_USER ? `Ambedkar Digital Archive <${process.env.GMAIL_USER}>` : fromEmail;
+          const info = await smtpTransport.sendMail({
+            from: process.env.EMAIL_FROM || gmailSender,
+            to: cleanEmail,
+            subject: `${otp} is your Ambedkar Digital Archive verification code`,
+            html: buildOtpEmailHtml(otp, cleanEmail),
+            text: `Your Dr. B. R. Ambedkar Digital Heritage Archive verification code is: ${otp}\n\nValid for 5 minutes. Never share this code with anyone.`,
+          });
+          return {
+            success: true,
+            messageId: info.messageId || 'smtp-fb-' + Date.now(),
+            provider: 'gmail_smtp_fallback',
+          };
+        } catch (smtpErr) {
+          console.error('⚠️ Gmail SMTP Fallback on exception also failed:', smtpErr.message);
+        }
+      }
+
       if (!apiErr.statusCode) {
         apiErr.statusCode = 400;
         apiErr.code = 'EMAIL_DISPATCH_FAILED';

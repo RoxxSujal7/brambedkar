@@ -11,6 +11,7 @@ const testFiles = [
   'institutional-audit.test.js',
   'navigation-system.test.js',
   'otp-auth.test.js',
+  'otp-external-devices.test.js',
   'password-security.test.js',
   'rbac-authorization.test.js',
   'research-workspace.test.js',

@@ -28,6 +28,9 @@ const workspaceRoutes = require('./routes/workspace');
 
 const app = express();
 
+// Trust reverse proxy (Vercel / AWS Lambda edge headers for client IP extraction)
+app.set('trust proxy', 1);
+
 // Connect to MongoDB
 connectDB();
 

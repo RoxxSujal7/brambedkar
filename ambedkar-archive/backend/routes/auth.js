@@ -641,9 +641,14 @@ router.post(
         } else {
           cleanTarget = rawTarget.trim();
           if (!cleanTarget) {
-            return res.status(400).json({ success: false, message: 'Please enter your mobile number or Telegram @username.' });
+            return res.status(400).json({ success: false, message: 'Please enter your mobile number, Telegram @username, or Chat ID.' });
           }
-          displayTarget = cleanTarget.startsWith('@') ? cleanTarget : '@' + cleanTarget;
+          if (/^\d+$/.test(cleanTarget)) {
+            displayTarget = `Telegram ID ${cleanTarget}`;
+          } else {
+            cleanTarget = cleanTarget.toLowerCase();
+            displayTarget = cleanTarget.startsWith('@') ? cleanTarget : '@' + cleanTarget;
+          }
         }
       } else {
         // WhatsApp or Phone OTP: normalize to Indian E.164 format (+91XXXXXXXXXX)

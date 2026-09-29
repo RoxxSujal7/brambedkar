@@ -2,11 +2,22 @@
  * telegramOtpService.js — 100% Free Official Telegram Phone & Username OTP Delivery Service
  * Uses official Telegram Bot API (https://api.telegram.org)
  * Permanent $0 cost, unlimited messages, zero ban risk.
+ * Integrated with MongoDB Atlas for serverless persistence across Vercel instances.
  */
 
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const mongoose = require('mongoose');
+
+let TelegramContact = null;
+try {
+  TelegramContact = require('../models/TelegramContact');
+} catch (_) {}
+
+function isDbConnected() {
+  return mongoose.connection && mongoose.connection.readyState === 1;
+}
 
 const DEFAULT_CONTACTS_FILE = path.join(__dirname, '..', 'data', 'telegram_contacts.json');
 const TMP_CONTACTS_FILE = path.join(os.tmpdir(), 'telegram_contacts.json');
@@ -31,9 +42,9 @@ const SEED_CONTACTS = {
 };
 
 /**
- * Load contacts from seed, local JSON file, and /tmp fallback
+ * Load contacts from seed, local JSON file, /tmp fallback, and MongoDB Atlas
  */
-function loadContacts() {
+async function loadContacts() {
   // 1. Seed baseline
   if (SEED_CONTACTS.phones) {
     Object.entries(SEED_CONTACTS.phones).forEach(([k, v]) => phoneChatMap.set(k, v));
@@ -52,33 +63,8 @@ function loadContacts() {
   try {
     if (fs.existsSync(DEFAULT_CONTACTS_FILE)) {
       const data = JSON.parse(fs.readFileSync(DEFAULT_CONTACTS_FILE, 'utf8'));
-      if (data.phones) {
-        Object.entries(data.phones).forEach(([k, v]) => phoneChatMap.set(k, v));
-      }
-      if (data.usernames) {
-        Object.entries(data.usernames).forEach(([k, v]) => usernameChatMap.set(k, v));
-      }
-      if (Array.isArray(data.chatIds)) {
-        data.chatIds.forEach((id) => {
-          knownChatIds.add(String(id));
-          knownChatIds.add(Number(id));
-        });
-      }
-    }
-  } catch (err) {
-    console.warn('Could not read default telegram_contacts.json:', err.message);
-  }
-
-  // 3. Load from /tmp fallback (serverless persistence)
-  try {
-    if (fs.existsSync(TMP_CONTACTS_FILE)) {
-      const data = JSON.parse(fs.readFileSync(TMP_CONTACTS_FILE, 'utf8'));
-      if (data.phones) {
-        Object.entries(data.phones).forEach(([k, v]) => phoneChatMap.set(k, v));
-      }
-      if (data.usernames) {
-        Object.entries(data.usernames).forEach(([k, v]) => usernameChatMap.set(k, v));
-      }
+      if (data.phones) Object.entries(data.phones).forEach(([k, v]) => phoneChatMap.set(k, v));
+      if (data.usernames) Object.entries(data.usernames).forEach(([k, v]) => usernameChatMap.set(k, v));
       if (Array.isArray(data.chatIds)) {
         data.chatIds.forEach((id) => {
           knownChatIds.add(String(id));
@@ -88,6 +74,93 @@ function loadContacts() {
     }
   } catch (err) {
     // Non-fatal
+  }
+
+  // 3. Load from /tmp fallback
+  try {
+    if (fs.existsSync(TMP_CONTACTS_FILE)) {
+      const data = JSON.parse(fs.readFileSync(TMP_CONTACTS_FILE, 'utf8'));
+      if (data.phones) Object.entries(data.phones).forEach(([k, v]) => phoneChatMap.set(k, v));
+      if (data.usernames) Object.entries(data.usernames).forEach(([k, v]) => usernameChatMap.set(k, v));
+      if (Array.isArray(data.chatIds)) {
+        data.chatIds.forEach((id) => {
+          knownChatIds.add(String(id));
+          knownChatIds.add(Number(id));
+        });
+      }
+    }
+  } catch (err) {
+    // Non-fatal
+  }
+
+  // 4. Load from MongoDB Atlas (guaranteed persistence across all serverless lambdas)
+  if (isDbConnected() && TelegramContact) {
+    try {
+      const docs = await TelegramContact.find({}).lean();
+      docs.forEach((doc) => {
+        if (doc.chatId) {
+          knownChatIds.add(String(doc.chatId));
+          knownChatIds.add(Number(doc.chatId));
+        }
+        if (doc.username) {
+          usernameChatMap.set(doc.username.toLowerCase(), doc.chatId);
+        }
+        if (doc.phone) {
+          phoneChatMap.set(doc.phone, doc.chatId);
+        }
+        if (doc.tenDigits) {
+          phoneChatMap.set(doc.tenDigits, doc.chatId);
+        }
+      });
+    } catch (e) {
+      // Non-fatal MongoDB load error
+    }
+  }
+}
+
+/**
+ * Persist contact to memory, file, and MongoDB Atlas
+ */
+async function persistContact({ chatId, username, phone, tenDigits, firstName }) {
+  if (!chatId) return;
+  const strChatId = String(chatId);
+
+  knownChatIds.add(strChatId);
+  knownChatIds.add(Number(chatId));
+
+  if (username) {
+    usernameChatMap.set(username.toLowerCase(), chatId);
+  }
+  if (phone) {
+    phoneChatMap.set(phone, chatId);
+  }
+  if (tenDigits) {
+    phoneChatMap.set(tenDigits, chatId);
+  }
+
+  // Also sync to file /tmp fallback
+  saveContacts();
+
+  // Save to MongoDB Atlas
+  if (isDbConnected() && TelegramContact) {
+    try {
+      const updateData = {
+        chatId: strChatId,
+        lastSeenAt: new Date(),
+      };
+      if (username) updateData.username = username.toLowerCase();
+      if (phone) updateData.phone = phone;
+      if (tenDigits) updateData.tenDigits = tenDigits;
+      if (firstName) updateData.firstName = firstName;
+
+      await TelegramContact.findOneAndUpdate(
+        { chatId: strChatId },
+        { $set: updateData },
+        { upsert: true, new: true }
+      );
+    } catch (e) {
+      // Non-fatal
+    }
   }
 }
 
@@ -131,26 +204,45 @@ function saveContacts() {
 }
 
 // Initial load
-loadContacts();
+loadContacts().catch(() => {});
 
 /**
- * Extract clean 10-digit Indian phone suffix if applicable
+ * Extract clean 10-digit Indian phone suffix or international phone if applicable
+ * Accurately distinguishes between phone numbers and Telegram Chat IDs.
  * @param {string} raw
  * @returns {{ isPhone: boolean, digits: string, e164: string, tenDigits: string }}
  */
 function parsePhoneNumber(raw) {
-  const digits = String(raw || '').replace(/\D/g, '');
-  if (digits.length === 10) {
+  const clean = String(raw || '').trim();
+  const digits = clean.replace(/\D/g, '');
+
+  // 1. Explicit E.164 phone starting with +
+  if (clean.startsWith('+')) {
+    if (digits.length >= 10 && digits.length <= 15) {
+      const tenDigits = digits.length >= 10 ? digits.slice(-10) : digits;
+      return { isPhone: true, digits, e164: `+${digits}`, tenDigits };
+    }
+  }
+
+  // 2. Standard 10-digit Indian Mobile (starts with 6, 7, 8, 9)
+  if (digits.length === 10 && /^[6-9]/.test(digits)) {
     return { isPhone: true, digits, e164: `+91${digits}`, tenDigits: digits };
   }
-  if (digits.length === 12 && digits.startsWith('91')) {
+
+  // 3. 12-digit Indian Mobile with 91 prefix (91[6-9]XXXXXXXX)
+  if (digits.length === 12 && /^91[6-9]/.test(digits)) {
     const ten = digits.slice(2);
     return { isPhone: true, digits, e164: `+${digits}`, tenDigits: ten };
   }
-  if (digits.length > 7 && digits.length <= 15 && (String(raw).startsWith('+') || String(raw).startsWith('0') || /^\d+$/.test(raw))) {
-    return { isPhone: true, digits, e164: `+${digits}`, tenDigits: digits.slice(-10) };
+
+  // 4. Raw digits starting with 0 followed by 10 digits starting with [6-9]
+  if (digits.length === 11 && digits.startsWith('0') && /^[6-9]/.test(digits.slice(1))) {
+    const ten = digits.slice(1);
+    return { isPhone: true, digits: ten, e164: `+91${ten}`, tenDigits: ten };
   }
-  return { isPhone: false, digits: '', e164: '', tenDigits: '' };
+
+  // Not an unambiguous phone number — could be a Telegram username, numeric Chat ID, etc.
+  return { isPhone: false, digits, e164: '', tenDigits: '' };
 }
 
 /**
@@ -214,6 +306,7 @@ async function sendContactConfirmation(token, chatId, phoneE164) {
 
 /**
  * Sync updates from Telegram Bot API to discover users and contacts
+ * Persists all newly discovered contacts to MongoDB Atlas.
  * @param {string} token
  * @param {string} botUsername
  */
@@ -224,7 +317,6 @@ async function syncUpdates(token, botUsername) {
     const data = await res.json();
     if (!data.ok || !Array.isArray(data.result)) return;
 
-    let hasNew = false;
     for (const update of data.result) {
       const msg = update.message || update.edited_message || update.channel_post;
       if (!msg) continue;
@@ -232,28 +324,19 @@ async function syncUpdates(token, botUsername) {
       const chatId = msg.chat?.id || msg.from?.id;
       if (!chatId) continue;
 
-      knownChatIds.add(String(chatId));
-      knownChatIds.add(Number(chatId));
-
       const fromUser = msg.from?.username?.toLowerCase();
       const chatUser = msg.chat?.username?.toLowerCase();
-      if (fromUser) {
-        usernameChatMap.set(fromUser, chatId);
-        hasNew = true;
-      }
-      if (chatUser) {
-        usernameChatMap.set(chatUser, chatId);
-        hasNew = true;
-      }
+      const activeUser = fromUser || chatUser;
+      const firstName = msg.from?.first_name || msg.chat?.first_name;
+
+      let phoneInfo = null;
 
       // 1. Check for shared contact (from "Share Phone Number" button)
       if (msg.contact && msg.contact.phone_number) {
         const rawPhone = msg.contact.phone_number;
         const parsed = parsePhoneNumber(rawPhone);
         if (parsed.isPhone) {
-          phoneChatMap.set(parsed.tenDigits, chatId);
-          phoneChatMap.set(parsed.e164, chatId);
-          hasNew = true;
+          phoneInfo = parsed;
           sendContactConfirmation(token, chatId, parsed.e164);
         }
       }
@@ -262,20 +345,23 @@ async function syncUpdates(token, botUsername) {
       if (msg.text && !msg.text.startsWith('/')) {
         const parsed = parsePhoneNumber(msg.text);
         if (parsed.isPhone) {
-          phoneChatMap.set(parsed.tenDigits, chatId);
-          phoneChatMap.set(parsed.e164, chatId);
-          hasNew = true;
+          phoneInfo = parsed;
         }
       }
 
       // 3. Acknowledge /start command with interactive reply
       if (msg.text && msg.text.startsWith('/start')) {
-        sendStartGreeting(token, chatId, fromUser || chatUser);
+        sendStartGreeting(token, chatId, activeUser);
       }
-    }
 
-    if (hasNew) {
-      saveContacts();
+      // Persist contact across memory, local fallback, and MongoDB Atlas
+      await persistContact({
+        chatId,
+        username: activeUser,
+        phone: phoneInfo ? phoneInfo.e164 : undefined,
+        tenDigits: phoneInfo ? phoneInfo.tenDigits : undefined,
+        firstName,
+      });
     }
   } catch (err) {
     console.warn('Telegram syncUpdates error:', err.message);
@@ -295,39 +381,54 @@ async function resolveChatId(token, target, botUsername) {
     throw new Error('Telegram destination identifier is required.');
   }
 
-  // 1. Direct match in phone mapping (e.g. 10-digit mobile or E.164)
   const parsed = parsePhoneNumber(cleanTarget);
+  const cleanUser = cleanTarget.replace(/^@/, '').toLowerCase();
+
+  // 1. Check in-memory maps
   if (parsed.isPhone) {
-    if (phoneChatMap.has(parsed.tenDigits)) {
-      return phoneChatMap.get(parsed.tenDigits);
-    }
-    if (phoneChatMap.has(parsed.e164)) {
-      return phoneChatMap.get(parsed.e164);
-    }
+    if (phoneChatMap.has(parsed.tenDigits)) return phoneChatMap.get(parsed.tenDigits);
+    if (phoneChatMap.has(parsed.e164)) return phoneChatMap.get(parsed.e164);
   }
 
-  // 2. Direct match in username mapping
-  const cleanUser = cleanTarget.replace(/^@/, '').toLowerCase();
   if (usernameChatMap.has(cleanUser)) {
     return usernameChatMap.get(cleanUser);
   }
 
-  // 3. Match against known Telegram numeric user/chat ID
   if (knownChatIds.has(cleanTarget) || knownChatIds.has(Number(cleanTarget))) {
     return cleanTarget;
   }
 
-  // 4. Try live sync from Telegram API
+  // 2. Check MongoDB Atlas for persisted contacts (across serverless instances)
+  if (isDbConnected() && TelegramContact) {
+    try {
+      const orQueries = [{ chatId: cleanTarget }];
+      if (cleanUser) orQueries.push({ username: cleanUser });
+      if (parsed.isPhone) {
+        if (parsed.e164) orQueries.push({ phone: parsed.e164 });
+        if (parsed.tenDigits) orQueries.push({ tenDigits: parsed.tenDigits });
+      }
+
+      const existingDoc = await TelegramContact.findOne({ $or: orQueries }).lean();
+      if (existingDoc && existingDoc.chatId) {
+        // Cache in memory and return
+        knownChatIds.add(String(existingDoc.chatId));
+        if (existingDoc.username) usernameChatMap.set(existingDoc.username.toLowerCase(), existingDoc.chatId);
+        if (existingDoc.phone) phoneChatMap.set(existingDoc.phone, existingDoc.chatId);
+        if (existingDoc.tenDigits) phoneChatMap.set(existingDoc.tenDigits, existingDoc.chatId);
+        return existingDoc.chatId;
+      }
+    } catch (e) {
+      // Non-fatal MongoDB lookup error
+    }
+  }
+
+  // 3. Try live sync from Telegram API
   await syncUpdates(token, botUsername);
 
-  // Check mappings again after live sync
+  // Check in-memory mappings again after live sync
   if (parsed.isPhone) {
-    if (phoneChatMap.has(parsed.tenDigits)) {
-      return phoneChatMap.get(parsed.tenDigits);
-    }
-    if (phoneChatMap.has(parsed.e164)) {
-      return phoneChatMap.get(parsed.e164);
-    }
+    if (phoneChatMap.has(parsed.tenDigits)) return phoneChatMap.get(parsed.tenDigits);
+    if (phoneChatMap.has(parsed.e164)) return phoneChatMap.get(parsed.e164);
   }
 
   if (usernameChatMap.has(cleanUser)) {
@@ -338,12 +439,39 @@ async function resolveChatId(token, target, botUsername) {
     return cleanTarget;
   }
 
-  // 5. If it is a numeric ID and NOT a mobile phone number, treat as direct chat ID
-  if (/^-?\d{7,14}$/.test(cleanTarget) && !cleanTarget.startsWith('+') && !parsed.isPhone) {
-    return cleanTarget;
+  // Check MongoDB again after sync
+  if (isDbConnected() && TelegramContact) {
+    try {
+      const orQueries = [{ chatId: cleanTarget }];
+      if (cleanUser) orQueries.push({ username: cleanUser });
+      if (parsed.isPhone) {
+        if (parsed.e164) orQueries.push({ phone: parsed.e164 });
+        if (parsed.tenDigits) orQueries.push({ tenDigits: parsed.tenDigits });
+      }
+      const reDoc = await TelegramContact.findOne({ $or: orQueries }).lean();
+      if (reDoc && reDoc.chatId) return reDoc.chatId;
+    } catch (_) {}
   }
 
-  // 6. Otherwise report accurate, helpful unlinked error
+  // 4. If target is a numeric ID (7-14 digits) and user didn't explicitly format as international phone (+91...)
+  // Test if it is a direct valid Telegram Chat ID via official getChat API
+  if (/^-?\d{7,14}$/.test(cleanTarget) && !cleanTarget.startsWith('+')) {
+    try {
+      const chatRes = await fetch(`https://api.telegram.org/bot${token}/getChat?chat_id=${cleanTarget}`);
+      const chatData = await chatRes.json();
+      if (chatData && chatData.ok && chatData.result) {
+        // Active chat exists! Persist to MongoDB and return
+        await persistContact({
+          chatId: cleanTarget,
+          username: chatData.result.username,
+          firstName: chatData.result.first_name,
+        });
+        return cleanTarget;
+      }
+    } catch (e) {}
+  }
+
+  // 5. If it was an Indian / E.164 phone number, report clean helpful instructions
   if (parsed.isPhone) {
     const err = new Error(
       `Mobile number ${parsed.e164} is not yet linked to Telegram. Open https://t.me/${botUsername} in Telegram and tap 'Share Phone Number' to link it.`
@@ -353,8 +481,9 @@ async function resolveChatId(token, target, botUsername) {
     throw err;
   }
 
+  // 6. Otherwise report accurate, helpful unlinked error
   const err = new Error(
-    `No Telegram chat found for @${cleanUser}. Please open https://t.me/${botUsername} in Telegram, click START, and try again.`
+    `No Telegram chat found for ${cleanTarget.startsWith('@') ? cleanTarget : '@' + cleanTarget}. Please open https://t.me/${botUsername} in Telegram, click START, and try again.`
   );
   err.statusCode = 400;
   err.code = 'TELEGRAM_NOT_LINKED';
@@ -425,12 +554,6 @@ async function sendTelegramOtp(target, otp) {
 
   // 2. Resilient dev/test simulation when bot token is not yet configured
   if (process.env.NODE_ENV !== 'production' || process.env.DEV_AUTH_MODE === 'true') {
-    console.log(`\n======================================================`);
-    console.log(`✈️ [100% FREE TELEGRAM OTP DISPATCH — DEV CONSOLE SIMULATION]`);
-    console.log(`👤 Telegram Destination: ${rawTarget}`);
-    console.log(`🔑 Verification OTP: >>> ${otp} <<<`);
-    console.log(`⏳ Valid for: 5 Minutes (Expires: ${new Date(Date.now() + 300000).toLocaleTimeString()})`);
-    console.log(`======================================================\n`);
     return {
       success: true,
       provider: 'dev_console_simulation',
@@ -447,4 +570,6 @@ module.exports = {
   syncUpdates,
   parsePhoneNumber,
   resolveChatId,
+  loadContacts,
+  persistContact,
 };

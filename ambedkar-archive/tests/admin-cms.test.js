@@ -364,6 +364,19 @@ async function runPhase2Tests() {
     assert.strictEqual(res.status, 200);
     const json = await res.json();
     assert.strictEqual(json.newRole, 'archivist');
+
+    // Cleanup: restore user-001 back to researcher
+    await fetch(`${BASE_URL}/api/admin/users/user-001/role`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${superAdminToken}`
+      },
+      body: JSON.stringify({
+        role: 'researcher',
+        currentTargetRole: 'archivist'
+      })
+    });
   });
 
   console.log('\n═════════════════════════════════════════════════════════════════════');

@@ -117,7 +117,7 @@ if (process.env.NODE_ENV !== 'production') {
 // Global rate limiter (generous — tighter limits per sensitive route)
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 500,
+  max: process.env.NODE_ENV === 'production' ? 500 : 10000,
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -150,11 +150,29 @@ app.use(['/books', '/pdfs'], express.static(path.join(__dirname, '../frontend/pd
 
 
 // Health check
-app.get('/api/health', (req, res) => {
-  res.json({
-    success: true,
-    status: 'running',
+app.get('/api/health', async (req, res) => {
+  const isProd = process.env.NODE_ENV === 'production';
+  const mongoose = require('mongoose');
+  if (!mongoose.connection || mongoose.connection.readyState !== 1) {
+    try {
+      await connectDB();
+    } catch (_) {}
+  }
+  const dbConnected = mongoose.connection && mongoose.connection.readyState === 1;
+  const dbStatus = dbConnected
+    ? 'connected'
+    : (isProd ? 'unavailable' : 'offline_fallback');
+
+  const healthy = isProd ? dbConnected : true;
+
+  res.status(healthy ? 200 : 503).json({
+    success: healthy,
+    status: healthy ? 'running' : 'degraded',
     message: 'Ambedkar Digital Heritage Archive API',
+    database: {
+      status: dbStatus,
+      mode: dbConnected ? 'MongoDB' : (isProd ? 'none' : 'JSON_Storage_Fallback'),
+    },
     timestamp: new Date().toISOString(),
     version: '1.0.0',
   });

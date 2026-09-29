@@ -1,0 +1,564 @@
+[
+  {
+    "incidentId": "INC-2026-6301",
+    "title": "Minor optical scan distortion detected in Volume 4 page 112",
+    "description": "Human verifier detected skewed marginalia in secondary scan.",
+    "severity": "LOW",
+    "status": "OPEN",
+    "affectedSubsystems": [
+      "System"
+    ],
+    "createdBy": "superadmin@ambedkar-archive.in",
+    "assignedTo": "archivist@ambedkar-archive.in",
+    "timeline": [
+      {
+        "action": "CREATED",
+        "actor": "superadmin@ambedkar-archive.in",
+        "details": "Incident opened",
+        "timestamp": "2026-09-29T20:05:16.301Z"
+      }
+    ],
+    "internalNotes": [],
+    "resolvedAt": null,
+    "resolutionSummary": "",
+    "createdAt": "2026-09-29T20:05:16.301Z",
+    "updatedAt": "2026-09-29T20:05:16.301Z"
+  },
+  {
+    "incidentId": "INC-2026-1031",
+    "title": "Minor optical scan distortion detected in Volume 4 page 112",
+    "description": "Human verifier detected skewed marginalia in secondary scan.",
+    "severity": "LOW",
+    "status": "OPEN",
+    "affectedSubsystems": [
+      "System"
+    ],
+    "createdBy": "superadmin@ambedkar-archive.in",
+    "assignedTo": "archivist@ambedkar-archive.in",
+    "timeline": [
+      {
+        "action": "CREATED",
+        "actor": "superadmin@ambedkar-archive.in",
+        "details": "Incident opened",
+        "timestamp": "2026-09-29T19:53:11.031Z"
+      }
+    ],
+    "internalNotes": [],
+    "resolvedAt": null,
+    "resolutionSummary": "",
+    "createdAt": "2026-09-29T19:53:11.031Z",
+    "updatedAt": "2026-09-29T19:53:11.031Z"
+  },
+  {
+    "incidentId": "INC-2026-0350",
+    "title": "Minor optical scan distortion detected in Volume 4 page 112",
+    "description": "Human verifier detected skewed marginalia in secondary scan.",
+    "severity": "LOW",
+    "status": "OPEN",
+    "affectedSubsystems": [
+      "System"
+    ],
+    "createdBy": "superadmin@ambedkar-archive.in",
+    "assignedTo": "archivist@ambedkar-archive.in",
+    "timeline": [
+      {
+        "action": "CREATED",
+        "actor": "superadmin@ambedkar-archive.in",
+        "details": "Incident opened",
+        "timestamp": "2026-09-29T19:53:00.350Z"
+      }
+    ],
+    "internalNotes": [],
+    "resolvedAt": null,
+    "resolutionSummary": "",
+    "createdAt": "2026-09-29T19:53:00.350Z",
+    "updatedAt": "2026-09-29T19:53:00.350Z"
+  },
+  {
+    "incidentId": "INC-2026-5096",
+    "title": "Minor optical scan distortion detected in Volume 4 page 112",
+    "description": "Human verifier detected skewed marginalia in secondary scan.",
+    "severity": "LOW",
+    "status": "OPEN",
+    "affectedSubsystems": [
+      "System"
+    ],
+    "createdBy": "superadmin@ambedkar-archive.in",
+    "assignedTo": "archivist@ambedkar-archive.in",
+    "timeline": [
+      {
+        "action": "CREATED",
+        "actor": "superadmin@ambedkar-archive.in",
+        "details": "Incident opened",
+        "timestamp": "2026-09-29T19:52:05.096Z"
+      }
+    ],
+    "internalNotes": [],
+    "resolvedAt": null,
+    "resolutionSummary": "",
+    "createdAt": "2026-09-29T19:52:05.096Z",
+    "updatedAt": "2026-09-29T19:52:05.096Z"
+  },
+  {
+    "incidentId": "INC-2026-6039",
+    "title": "Minor optical scan distortion detected in Volume 4 page 112",
+    "description": "Human verifier detected skewed marginalia in secondary scan.",
+    "severity": "LOW",
+    "status": "OPEN",
+    "affectedSubsystems": [
+      "System"
+    ],
+    "createdBy": "superadmin@ambedkar-archive.in",
+    "assignedTo": "archivist@ambedkar-archive.in",
+    "timeline": [
+      {
+        "action": "CREATED",
+        "actor": "superadmin@ambedkar-archive.in",
+        "details": "Incident opened",
+        "timestamp": "2026-09-29T19:51:46.039Z"
+      }
+    ],
+    "internalNotes": [],
+    "resolvedAt": null,
+    "resolutionSummary": "",
+    "createdAt": "2026-09-29T19:51:46.039Z",
+    "updatedAt": "2026-09-29T19:51:46.039Z"
+  },
+  {
+    "incidentId": "INC-2026-0934",
+    "title": "Minor optical scan distortion detected in Volume 4 page 112",
+    "description": "Human verifier detected skewed marginalia in secondary scan.",
+    "severity": "LOW",
+    "status": "OPEN",
+    "affectedSubsystems": [
+      "System"
+    ],
+    "createdBy": "superadmin@ambedkar-archive.in",
+    "assignedTo": "archivist@ambedkar-archive.in",
+    "timeline": [
+      {
+        "action": "CREATED",
+        "actor": "superadmin@ambedkar-archive.in",
+        "details": "Incident opened",
+        "timestamp": "2026-09-29T19:22:20.934Z"
+      }
+    ],
+    "internalNotes": [],
+    "resolvedAt": null,
+    "resolutionSummary": "",
+    "createdAt": "2026-09-29T19:22:20.934Z",
+    "updatedAt": "2026-09-29T19:22:20.934Z"
+  },
+  {
+    "incidentId": "INC-2026-8034",
+    "title": "Minor optical scan distortion detected in Volume 4 page 112",
+    "description": "Human verifier detected skewed marginalia in secondary scan.",
+    "severity": "LOW",
+    "status": "OPEN",
+    "affectedSubsystems": [
+      "System"
+    ],
+    "createdBy": "superadmin@ambedkar-archive.in",
+    "assignedTo": "archivist@ambedkar-archive.in",
+    "timeline": [
+      {
+        "action": "CREATED",
+        "actor": "superadmin@ambedkar-archive.in",
+        "details": "Incident opened",
+        "timestamp": "2026-09-29T18:57:48.034Z"
+      }
+    ],
+    "internalNotes": [],
+    "resolvedAt": null,
+    "resolutionSummary": "",
+    "createdAt": "2026-09-29T18:57:48.034Z",
+    "updatedAt": "2026-09-29T18:57:48.034Z"
+  },
+  {
+    "incidentId": "INC-2026-6884",
+    "title": "Minor optical scan distortion detected in Volume 4 page 112",
+    "description": "Human verifier detected skewed marginalia in secondary scan.",
+    "severity": "LOW",
+    "status": "OPEN",
+    "affectedSubsystems": [
+      "System"
+    ],
+    "createdBy": "superadmin@ambedkar-archive.in",
+    "assignedTo": "archivist@ambedkar-archive.in",
+    "timeline": [
+      {
+        "action": "CREATED",
+        "actor": "superadmin@ambedkar-archive.in",
+        "details": "Incident opened",
+        "timestamp": "2026-09-29T18:56:46.884Z"
+      }
+    ],
+    "internalNotes": [],
+    "resolvedAt": null,
+    "resolutionSummary": "",
+    "createdAt": "2026-09-29T18:56:46.884Z",
+    "updatedAt": "2026-09-29T18:56:46.884Z"
+  },
+  {
+    "incidentId": "INC-2026-0847",
+    "title": "Minor optical scan distortion detected in Volume 4 page 112",
+    "description": "Human verifier detected skewed marginalia in secondary scan.",
+    "severity": "LOW",
+    "status": "OPEN",
+    "affectedSubsystems": [
+      "System"
+    ],
+    "createdBy": "superadmin@ambedkar-archive.in",
+    "assignedTo": "archivist@ambedkar-archive.in",
+    "timeline": [
+      {
+        "action": "CREATED",
+        "actor": "superadmin@ambedkar-archive.in",
+        "details": "Incident opened",
+        "timestamp": "2026-09-29T18:53:50.847Z"
+      }
+    ],
+    "internalNotes": [],
+    "resolvedAt": null,
+    "resolutionSummary": "",
+    "createdAt": "2026-09-29T18:53:50.847Z",
+    "updatedAt": "2026-09-29T18:53:50.847Z"
+  },
+  {
+    "incidentId": "INC-2026-8968",
+    "title": "Minor optical scan distortion detected in Volume 4 page 112",
+    "description": "Human verifier detected skewed marginalia in secondary scan.",
+    "severity": "LOW",
+    "status": "OPEN",
+    "affectedSubsystems": [
+      "System"
+    ],
+    "createdBy": "superadmin@ambedkar-archive.in",
+    "assignedTo": "archivist@ambedkar-archive.in",
+    "timeline": [
+      {
+        "action": "CREATED",
+        "actor": "superadmin@ambedkar-archive.in",
+        "details": "Incident opened",
+        "timestamp": "2026-09-29T18:53:38.968Z"
+      }
+    ],
+    "internalNotes": [],
+    "resolvedAt": null,
+    "resolutionSummary": "",
+    "createdAt": "2026-09-29T18:53:38.968Z",
+    "updatedAt": "2026-09-29T18:53:38.968Z"
+  },
+  {
+    "incidentId": "INC-2026-6135",
+    "title": "Minor optical scan distortion detected in Volume 4 page 112",
+    "description": "Human verifier detected skewed marginalia in secondary scan.",
+    "severity": "LOW",
+    "status": "OPEN",
+    "affectedSubsystems": [
+      "System"
+    ],
+    "createdBy": "superadmin@ambedkar-archive.in",
+    "assignedTo": "archivist@ambedkar-archive.in",
+    "timeline": [
+      {
+        "action": "CREATED",
+        "actor": "superadmin@ambedkar-archive.in",
+        "details": "Incident opened",
+        "timestamp": "2026-09-29T18:46:56.135Z"
+      }
+    ],
+    "internalNotes": [],
+    "resolvedAt": null,
+    "resolutionSummary": "",
+    "createdAt": "2026-09-29T18:46:56.135Z",
+    "updatedAt": "2026-09-29T18:46:56.135Z"
+  },
+  {
+    "incidentId": "INC-2026-0085",
+    "title": "Minor optical scan distortion detected in Volume 4 page 112",
+    "description": "Human verifier detected skewed marginalia in secondary scan.",
+    "severity": "LOW",
+    "status": "OPEN",
+    "affectedSubsystems": [
+      "System"
+    ],
+    "createdBy": "superadmin@ambedkar-archive.in",
+    "assignedTo": "archivist@ambedkar-archive.in",
+    "timeline": [
+      {
+        "action": "CREATED",
+        "actor": "superadmin@ambedkar-archive.in",
+        "details": "Incident opened",
+        "timestamp": "2026-09-29T18:10:10.085Z"
+      }
+    ],
+    "internalNotes": [],
+    "resolvedAt": null,
+    "resolutionSummary": "",
+    "createdAt": "2026-09-29T18:10:10.085Z",
+    "updatedAt": "2026-09-29T18:10:10.085Z"
+  },
+  {
+    "incidentId": "INC-2026-8466",
+    "title": "Minor optical scan distortion detected in Volume 4 page 112",
+    "description": "Human verifier detected skewed marginalia in secondary scan.",
+    "severity": "LOW",
+    "status": "OPEN",
+    "affectedSubsystems": [
+      "System"
+    ],
+    "createdBy": "superadmin@ambedkar-archive.in",
+    "assignedTo": "archivist@ambedkar-archive.in",
+    "timeline": [
+      {
+        "action": "CREATED",
+        "actor": "superadmin@ambedkar-archive.in",
+        "details": "Incident opened",
+        "timestamp": "2026-09-29T18:08:38.466Z"
+      }
+    ],
+    "internalNotes": [],
+    "resolvedAt": null,
+    "resolutionSummary": "",
+    "createdAt": "2026-09-29T18:08:38.466Z",
+    "updatedAt": "2026-09-29T18:08:38.466Z"
+  },
+  {
+    "incidentId": "INC-2026-5121",
+    "title": "Minor optical scan distortion detected in Volume 4 page 112",
+    "description": "Human verifier detected skewed marginalia in secondary scan.",
+    "severity": "LOW",
+    "status": "OPEN",
+    "affectedSubsystems": [
+      "System"
+    ],
+    "createdBy": "superadmin@ambedkar-archive.in",
+    "assignedTo": "archivist@ambedkar-archive.in",
+    "timeline": [
+      {
+        "action": "CREATED",
+        "actor": "superadmin@ambedkar-archive.in",
+        "details": "Incident opened",
+        "timestamp": "2026-09-29T18:00:55.121Z"
+      }
+    ],
+    "internalNotes": [],
+    "resolvedAt": null,
+    "resolutionSummary": "",
+    "createdAt": "2026-09-29T18:00:55.121Z",
+    "updatedAt": "2026-09-29T18:00:55.121Z"
+  },
+  {
+    "incidentId": "INC-2026-3205",
+    "title": "Minor optical scan distortion detected in Volume 4 page 112",
+    "description": "Human verifier detected skewed marginalia in secondary scan.",
+    "severity": "LOW",
+    "status": "OPEN",
+    "affectedSubsystems": [
+      "System"
+    ],
+    "createdBy": "superadmin@ambedkar-archive.in",
+    "assignedTo": "archivist@ambedkar-archive.in",
+    "timeline": [
+      {
+        "action": "CREATED",
+        "actor": "superadmin@ambedkar-archive.in",
+        "details": "Incident opened",
+        "timestamp": "2026-09-29T17:59:53.205Z"
+      }
+    ],
+    "internalNotes": [],
+    "resolvedAt": null,
+    "resolutionSummary": "",
+    "createdAt": "2026-09-29T17:59:53.205Z",
+    "updatedAt": "2026-09-29T17:59:53.205Z"
+  },
+  {
+    "incidentId": "INC-2026-3917",
+    "title": "Minor optical scan distortion detected in Volume 4 page 112",
+    "description": "Human verifier detected skewed marginalia in secondary scan.",
+    "severity": "LOW",
+    "status": "OPEN",
+    "affectedSubsystems": [
+      "System"
+    ],
+    "createdBy": "superadmin@ambedkar-archive.in",
+    "assignedTo": "archivist@ambedkar-archive.in",
+    "timeline": [
+      {
+        "action": "CREATED",
+        "actor": "superadmin@ambedkar-archive.in",
+        "details": "Incident opened",
+        "timestamp": "2026-09-29T17:59:43.917Z"
+      }
+    ],
+    "internalNotes": [],
+    "resolvedAt": null,
+    "resolutionSummary": "",
+    "createdAt": "2026-09-29T17:59:43.917Z",
+    "updatedAt": "2026-09-29T17:59:43.917Z"
+  },
+  {
+    "incidentId": "INC-2026-0879",
+    "title": "Minor optical scan distortion detected in Volume 4 page 112",
+    "description": "Human verifier detected skewed marginalia in secondary scan.",
+    "severity": "LOW",
+    "status": "OPEN",
+    "affectedSubsystems": [
+      "System"
+    ],
+    "createdBy": "superadmin@ambedkar-archive.in",
+    "assignedTo": "archivist@ambedkar-archive.in",
+    "timeline": [
+      {
+        "action": "CREATED",
+        "actor": "superadmin@ambedkar-archive.in",
+        "details": "Incident opened",
+        "timestamp": "2026-09-29T17:36:00.879Z"
+      }
+    ],
+    "internalNotes": [],
+    "resolvedAt": null,
+    "resolutionSummary": "",
+    "createdAt": "2026-09-29T17:36:00.879Z",
+    "updatedAt": "2026-09-29T17:36:00.879Z"
+  },
+  {
+    "incidentId": "INC-2026-2941",
+    "title": "Minor optical scan distortion detected in Volume 4 page 112",
+    "description": "Human verifier detected skewed marginalia in secondary scan.",
+    "severity": "LOW",
+    "status": "OPEN",
+    "affectedSubsystems": [
+      "System"
+    ],
+    "createdBy": "superadmin@ambedkar-archive.in",
+    "assignedTo": "archivist@ambedkar-archive.in",
+    "timeline": [
+      {
+        "action": "CREATED",
+        "actor": "superadmin@ambedkar-archive.in",
+        "details": "Incident opened",
+        "timestamp": "2026-09-29T17:35:42.941Z"
+      }
+    ],
+    "internalNotes": [],
+    "resolvedAt": null,
+    "resolutionSummary": "",
+    "createdAt": "2026-09-29T17:35:42.941Z",
+    "updatedAt": "2026-09-29T17:35:42.941Z"
+  },
+  {
+    "incidentId": "INC-2026-5650",
+    "title": "Minor optical scan distortion detected in Volume 4 page 112",
+    "description": "Human verifier detected skewed marginalia in secondary scan.",
+    "severity": "LOW",
+    "status": "OPEN",
+    "affectedSubsystems": [
+      "System"
+    ],
+    "createdBy": "superadmin@ambedkar-archive.in",
+    "assignedTo": "archivist@ambedkar-archive.in",
+    "timeline": [
+      {
+        "action": "CREATED",
+        "actor": "superadmin@ambedkar-archive.in",
+        "details": "Incident opened",
+        "timestamp": "2026-09-29T17:26:55.650Z"
+      }
+    ],
+    "internalNotes": [],
+    "resolvedAt": null,
+    "resolutionSummary": "",
+    "createdAt": "2026-09-29T17:26:55.650Z",
+    "updatedAt": "2026-09-29T17:26:55.650Z"
+  },
+  {
+    "incidentId": "INC-2026-1450",
+    "title": "Minor optical scan distortion detected in Volume 4 page 112",
+    "description": "Human verifier detected skewed marginalia in secondary scan.",
+    "severity": "LOW",
+    "status": "OPEN",
+    "affectedSubsystems": [
+      "System"
+    ],
+    "createdBy": "superadmin@ambedkar-archive.in",
+    "assignedTo": "archivist@ambedkar-archive.in",
+    "timeline": [
+      {
+        "action": "CREATED",
+        "actor": "superadmin@ambedkar-archive.in",
+        "details": "Incident opened",
+        "timestamp": "2026-09-29T17:21:01.450Z"
+      }
+    ],
+    "internalNotes": [],
+    "resolvedAt": null,
+    "resolutionSummary": "",
+    "createdAt": "2026-09-29T17:21:01.450Z",
+    "updatedAt": "2026-09-29T17:21:01.450Z"
+  },
+  {
+    "incidentId": "INC-2026-5891",
+    "title": "Minor optical scan distortion detected in Volume 4 page 112",
+    "description": "Human verifier detected skewed marginalia in secondary scan.",
+    "severity": "LOW",
+    "status": "OPEN",
+    "affectedSubsystems": [
+      "System"
+    ],
+    "createdBy": "superadmin@ambedkar-archive.in",
+    "assignedTo": "archivist@ambedkar-archive.in",
+    "timeline": [
+      {
+        "action": "CREATED",
+        "actor": "superadmin@ambedkar-archive.in",
+        "details": "Incident opened",
+        "timestamp": "2026-09-29T17:19:25.891Z"
+      }
+    ],
+    "internalNotes": [],
+    "resolvedAt": null,
+    "resolutionSummary": "",
+    "createdAt": "2026-09-29T17:19:25.891Z",
+    "updatedAt": "2026-09-29T17:19:25.891Z"
+  },
+  {
+    "incidentId": "INC-2026-001",
+    "title": "Transient OCR Verification Queue Latency",
+    "description": "Tesseract worker processing in browser reported occasional timeout on scanned high-res TIFF files.",
+    "severity": "LOW",
+    "status": "RESOLVED",
+    "affectedSubsystems": [
+      "OCR",
+      "Worker"
+    ],
+    "createdBy": "archivist@ambedkar-archive.in",
+    "assignedTo": "admin@ambedkar-archive.in",
+    "timeline": [
+      {
+        "action": "CREATED",
+        "actor": "archivist@ambedkar-archive.in",
+        "details": "Incident opened for investigation.",
+        "timestamp": "2026-09-27T16:36:06.500Z"
+      },
+      {
+        "action": "RESOLVED",
+        "actor": "admin@ambedkar-archive.in",
+        "details": "Added 30s worker timeout guard and auto-resizing.",
+        "timestamp": "2026-09-28T16:36:06.500Z"
+      }
+    ],
+    "internalNotes": [
+      {
+        "note": "Worker pool configuration updated in ocr.js.",
+        "author": "admin@ambedkar-archive.in",
+        "timestamp": "2026-09-28T16:36:06.500Z"
+      }
+    ],
+    "resolvedAt": "2026-09-28T16:36:06.500Z",
+    "resolutionSummary": "Worker timeout and memory limits safely adjusted.",
+    "createdAt": "2026-09-27T16:36:06.500Z"
+  }
+]

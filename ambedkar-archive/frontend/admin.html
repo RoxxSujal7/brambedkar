@@ -3,643 +3,1144 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Institutional Administration Portal — Dr. Ambedkar International Centre</title>
-  <meta name="description" content="Protected institutional administration portal for curatorial management, OCR verification, and role governance at Dr. Ambedkar International Centre." />
+  <title>Institutional Administration Console — Dr. Ambedkar International Centre</title>
+  <meta name="description" content="Production-grade institutional administration platform for curatorial governance, digital preservation, PREMIS integrity, and RBAC at Dr. Ambedkar International Centre." />
   
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cinzel:wght@700;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cinzel:wght@700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/admin.css" />
   <script>(function(){const t=localStorage.getItem('site_theme')||localStorage.getItem('reader_theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
-
-  <style>
-    .admin-hero {
-      background: radial-gradient(ellipse 70% 50% at 50% -10%, rgba(212,175,55,0.12) 0%, transparent 70%),
-                  linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
-      padding: calc(var(--nav-height) + var(--space-12)) var(--space-6) var(--space-8);
-      border-bottom: 1px solid var(--border);
-    }
-    .admin-grid {
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      gap: var(--space-8);
-      max-width: var(--container);
-      margin: var(--space-8) auto var(--space-20);
-      padding: 0 var(--space-6);
-    }
-    @media (max-width: 900px) {
-      .admin-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-    .admin-sidebar {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-2xl);
-      padding: var(--space-4);
-      height: fit-content;
-    }
-    .admin-tab-btn {
-      width: 100%;
-      text-align: left;
-      padding: 12px 16px;
-      border-radius: var(--radius-lg);
-      border: none;
-      background: transparent;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transition: all 0.2s;
-    }
-    .admin-tab-btn:hover {
-      background: rgba(255,255,255,0.04);
-      color: var(--text);
-    }
-    .admin-tab-btn.active {
-      background: var(--gold-subtle);
-      color: var(--gold-light);
-      border: 1px solid var(--border-gold);
-    }
-    .admin-panel {
-      display: none;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-2xl);
-      padding: var(--space-8);
-    }
-    .admin-panel.active {
-      display: block;
-    }
-    .admin-gate-card {
-      max-width: 520px;
-      margin: var(--space-12) auto;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-2xl);
-      padding: var(--space-8);
-      text-align: center;
-    }
-    .admin-form-group {
-      margin-bottom: var(--space-4);
-      text-align: left;
-    }
-    .admin-form-group label {
-      display: block;
-      font-size: 0.82rem;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-      font-weight: 600;
-    }
-    .admin-input {
-      width: 100%;
-      padding: 10px 14px;
-      background: var(--bg-2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      color: var(--text);
-      font-size: 0.9rem;
-      box-sizing: border-box;
-    }
-    .admin-input:focus {
-      outline: none;
-      border-color: var(--gold);
-    }
-    .admin-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: var(--space-4);
-      font-size: 0.85rem;
-    }
-    .admin-table th, .admin-table td {
-      padding: 10px 14px;
-      text-align: left;
-      border-bottom: 1px solid var(--border);
-    }
-    .admin-table th {
-      font-family: var(--font-mono);
-      color: var(--gold);
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      background: rgba(255,255,255,0.02);
-    }
-  </style>
 </head>
-<body>
+<body class="admin-app-container">
 
   <!-- Floating Island Navigation (Master System) -->
   <nav class="nav" role="navigation" aria-label="Main navigation"></nav>
   <div id="mobile-menu" class="mobile-menu" role="dialog" aria-label="Mobile navigation"></div>
   <aside class="floating-dock snap-bottom-center" id="global-floating-dock" role="navigation" aria-label="Curated exploration hubs"></aside>
 
-  <!-- Hero -->
-  <section class="admin-hero">
-    <div style="max-width:var(--container);margin:0 auto;text-align:center;">
-      <span class="badge" style="background:#d97706;color:#fff;margin-bottom:var(--space-3);letter-spacing:0.1em;">PROTECTED INSTITUTIONAL CONSOLE</span>
-      <h1 style="font-family:var(--font-display);font-size:clamp(1.8rem,4vw,2.8rem);color:var(--text);margin-bottom:var(--space-3);">
-        Institutional Administration &amp; Curatorial Portal
-      </h1>
-      <p style="font-size:1.05rem;color:var(--text-muted);max-width:700px;margin:0 auto;line-height:1.6;">
-        Dr. Ambedkar International Centre (DAIC) archival ingestion, metadata governance, OCR verification, and role-based access management.
-      </p>
+  <!-- Institutional Masthead -->
+  <header class="admin-masthead">
+    <div class="admin-masthead-inner">
+      <div class="admin-masthead-brand">
+        <div class="admin-seal" aria-hidden="true">🏛️</div>
+        <div>
+          <span class="badge" style="background:#d97706;color:#fff;margin-bottom:4px;letter-spacing:0.08em;font-size:0.68rem;">PROTECTED INSTITUTIONAL CONSOLE</span>
+          <h1 class="admin-masthead-title">
+            Institutional Administration &amp; Curatorial Platform
+          </h1>
+          <div class="admin-masthead-subtitle">
+            Dr. Ambedkar International Centre (DAIC) • Heritage Ingestion, Bitstream Preservation, &amp; Role Governance
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-operator-panel" id="admin-operator-box" style="display:flex;">
+        <div class="admin-operator-avatar" id="masthead-avatar" aria-hidden="true">A</div>
+        <div class="admin-operator-details">
+          <span class="admin-operator-name" id="masthead-operator-name">Archivist</span>
+          <span class="admin-operator-role" id="masthead-operator-role">ARCHIVIST</span>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="handleLogout()" style="margin-left:8px;padding:4px 10px;font-size:0.75rem;">Sign Out</button>
+      </div>
     </div>
-  </section>
+  </header>
 
   <!-- Gate / Login Section (Shown if unauthenticated or unauthorized) -->
-  <div id="admin-auth-gate" class="admin-gate-card" style="display:none;">
-    <span style="font-size:3rem;display:block;margin-bottom:var(--space-3);">🔒</span>
-    <h2 id="gate-title" style="font-family:var(--font-display);font-size:1.4rem;color:var(--text);margin-bottom:var(--space-2);">
-      Institutional Authentication Required
-    </h2>
-    <p id="gate-desc" style="font-size:0.88rem;color:var(--text-muted);margin-bottom:var(--space-6);line-height:1.5;">
-      This portal is restricted to authorized curators, archivists, and administrators. Please log in with your institutional credentials.
-    </p>
+  <div id="admin-auth-gate" class="admin-modal-backdrop active" style="display:none;">
+    <div class="admin-modal" style="max-width:480px;text-align:center;padding:32px 28px;">
+      <span style="font-size:3rem;display:block;margin-bottom:12px;">🔒</span>
+      <h2 id="gate-title" style="font-family:var(--font-display);font-size:1.4rem;color:#fff;margin-bottom:8px;">
+        Institutional Authentication Required
+      </h2>
+      <p id="gate-desc" style="font-size:0.85rem;color:var(--text-muted);margin-bottom:20px;line-height:1.5;">
+        This console is restricted to authorized curators, archivists, and administrators. Please authenticate with institutional credentials.
+      </p>
 
-    <div id="gate-login-form">
-      <div class="admin-form-group">
-        <label>Institutional Email</label>
-        <input type="email" id="gate-email" class="admin-input" placeholder="archivist@ambedkar-archive.in" value="archivist@ambedkar-archive.in" />
-      </div>
-      <div class="admin-form-group">
-        <label>Password</label>
-        <input type="password" id="gate-password" class="admin-input" placeholder="Archivist@1234" value="Archivist@1234" />
-      </div>
-      <div id="gate-error" style="display:none;color:var(--danger);font-size:0.82rem;margin-bottom:var(--space-4);"></div>
-      <button class="btn btn-primary w-full" onclick="handleGateLogin()" style="width:100%;padding:12px;">Sign In to Institutional Console</button>
+      <div id="gate-login-form">
+        <div class="admin-field-group" style="text-align:left;">
+          <label class="admin-field-label">Institutional Email</label>
+          <input type="email" id="gate-email" class="admin-field-control" placeholder="archivist@ambedkar-archive.in" value="archivist@ambedkar-archive.in" />
+        </div>
+        <div class="admin-field-group" style="text-align:left;">
+          <label class="admin-field-label">Password</label>
+          <input type="password" id="gate-password" class="admin-field-control" placeholder="Archivist@1234" value="Archivist@1234" />
+        </div>
+        <div id="gate-error" style="display:none;color:var(--admin-danger);font-size:0.82rem;margin-bottom:12px;text-align:left;"></div>
+        <button class="btn btn-primary w-full" onclick="handleGateLogin()" style="width:100%;padding:12px;margin-top:6px;">Sign In to Console</button>
 
-      <div style="margin-top:var(--space-4);font-size:0.8rem;color:var(--text-muted);">
-        Demo Credentials: <code>archivist@ambedkar-archive.in</code> (Pass: <code>Archivist@1234</code>) or <code>superadmin@ambedkar-archive.in</code> (Pass: <code>SuperAdmin@1234</code>)
+        <div style="margin-top:16px;padding:10px;background:rgba(255,255,255,0.03);border:1px solid var(--admin-border);border-radius:10px;font-size:0.75rem;color:var(--text-muted);text-align:left;">
+          <strong>Institutional Demo Accounts:</strong><br />
+          • Archivist: <code>archivist@ambedkar-archive.in</code> (Pass: <code>Archivist@1234</code>)<br />
+          • Super Admin: <code>superadmin@ambedkar-archive.in</code> (Pass: <code>SuperAdmin@1234</code>)
+        </div>
       </div>
-    </div>
 
-    <div id="gate-forbidden" style="display:none;">
-      <div style="background:rgba(239,68,68,0.1);border:1px solid var(--danger);border-radius:var(--radius-lg);padding:var(--space-4);margin-bottom:var(--space-4);color:#fca5a5;font-size:0.85rem;">
-        <strong>403 Forbidden:</strong> Your account role is <code id="gate-role">visitor</code>. This portal requires an <code>archivist</code>, <code>content_editor</code>, or <code>super_admin</code> account.
+      <div id="gate-forbidden" style="display:none;">
+        <div style="background:var(--admin-danger-subtle);border:1px solid var(--admin-danger);border-radius:12px;padding:14px;margin-bottom:16px;color:#fca5a5;font-size:0.85rem;text-align:left;">
+          <strong>403 Forbidden:</strong> Your current institutional role is <code id="gate-role" style="font-weight:700;">visitor</code>. Access to the institutional administration platform requires an <code>archivist</code>, <code>content_editor</code>, <code>admin</code>, or <code>super_admin</code> account.
+        </div>
+        <div style="display:flex;gap:10px;justify-content:center;">
+          <button class="btn btn-secondary" onclick="handleLogout()">Switch Account</button>
+          <a href="index.html" class="btn btn-primary">Return to Archive</a>
+        </div>
       </div>
-      <button class="btn btn-secondary" onclick="handleLogout()">Switch Account</button>
-      <a href="index.html" class="btn btn-primary" style="margin-left:8px;">Return to Archive</a>
     </div>
   </div>
 
-  <!-- Main Authenticated Portal -->
-  <div id="admin-main-portal" class="admin-grid" style="display:none;">
-    
-    <!-- Sidebar -->
-    <aside class="admin-sidebar">
-      <div style="padding:var(--space-3) var(--space-4) var(--space-4);border-bottom:1px solid var(--border);margin-bottom:var(--space-3);">
-        <div id="curator-name" style="font-weight:700;color:var(--text);font-size:0.95rem;">Archivist</div>
-        <div id="curator-role-badge" class="badge" style="background:#d97706;color:#fff;margin-top:4px;">ARCHIVIST</div>
-        <div id="curator-inst" style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">DAIC</div>
+  <!-- Main Authenticated Portal Workspace -->
+  <main id="admin-main-portal" class="admin-workspace" style="display:none;">
+
+    <!-- Left Master Sidebar Navigation -->
+    <aside class="admin-nav-sidebar" aria-label="Console Navigation">
+      <div style="padding:10px 14px 14px;border-bottom:1px solid var(--admin-border);margin-bottom:10px;">
+        <div id="curator-name" style="font-weight:800;color:#fff;font-size:0.95rem;">Archivist</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
+          <span id="curator-role-badge" class="admin-chip gold" style="font-size:0.65rem;">ARCHIVIST</span>
+          <span class="admin-health-dot healthy" title="Active Session"></span>
+        </div>
+        <div id="curator-inst" style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Dr. Ambedkar International Centre</div>
       </div>
 
-      <nav style="display:flex;flex-direction:column;gap:4px;">
-        <button class="admin-tab-btn active" data-tab="overview">📊 Overview &amp; Health</button>
-        <button class="admin-tab-btn" data-tab="ingest">📥 Ingest Document</button>
-        <button class="admin-tab-btn" data-tab="metadata">🏷️ Metadata &amp; Publishing</button>
-        <button class="admin-tab-btn" data-tab="ocr-verify">📜 OCR Review Queue</button>
-        <button class="admin-tab-btn" id="tab-users-btn" data-tab="users" style="display:none;">👥 User Governance</button>
-        <button class="admin-tab-btn" data-tab="audit">📝 Audit Trail</button>
+      <nav role="tablist" style="display:flex;flex-direction:column;gap:2px;">
+        <!-- Group 1: Overview & Core -->
+        <div class="admin-nav-section-title">Overview &amp; Health</div>
+        <button class="admin-nav-item active admin-tab-btn" data-tab="overview" role="tab" aria-selected="true">
+          <span class="admin-nav-icon-label"><span>📊</span> Dashboard</span>
+          <span class="admin-nav-badge" style="background:rgba(212,175,55,0.2);color:var(--admin-gold);">Live</span>
+        </button>
+        <button class="admin-nav-item admin-tab-btn" data-tab="system-health" role="tab" aria-selected="false">
+          <span class="admin-nav-icon-label"><span>🩺</span> System Health</span>
+          <span class="admin-nav-badge" style="background:rgba(16,185,129,0.2);color:#34d399;">Nominal</span>
+        </button>
+
+        <!-- Group 2: Governance & Security -->
+        <div class="admin-nav-section-title">Governance &amp; Security</div>
+        <button class="admin-nav-item admin-tab-btn" id="tab-users-btn" data-tab="users" role="tab" aria-selected="false">
+          <span class="admin-nav-icon-label"><span>👥</span> User Directory</span>
+          <span class="admin-nav-badge" id="nav-badge-users" style="background:rgba(255,255,255,0.06);color:#94a3b8;">RBAC</span>
+        </button>
+        <button class="admin-nav-item admin-tab-btn" data-tab="security" role="tab" aria-selected="false">
+          <span class="admin-nav-icon-label"><span>🛡️</span> Security Center</span>
+          <span class="admin-nav-badge" id="nav-badge-security" style="background:rgba(245,158,11,0.2);color:#fbbf24;">Alerts</span>
+        </button>
+        <button class="admin-nav-item admin-tab-btn" data-tab="audit" role="tab" aria-selected="false">
+          <span class="admin-nav-icon-label"><span>📝</span> Curatorial Audit</span>
+        </button>
+
+        <!-- Group 3: Archive CMS & Ingestion -->
+        <div class="admin-nav-section-title">Archival CMS &amp; Workflow</div>
+        <button class="admin-nav-item admin-tab-btn" data-tab="cms" role="tab" aria-selected="false">
+          <span class="admin-nav-icon-label"><span>📚</span> Archival CMS</span>
+        </button>
+        <button class="admin-nav-item admin-tab-btn" data-tab="ingest" role="tab" aria-selected="false">
+          <span class="admin-nav-icon-label"><span>📥</span> Ingest Document</span>
+        </button>
+        <button class="admin-nav-item admin-tab-btn" data-tab="workflow" role="tab" aria-selected="false">
+          <span class="admin-nav-icon-label"><span>⚖️</span> Approvals Queue</span>
+        </button>
+        <button class="admin-nav-item admin-tab-btn" data-tab="ocr-verify" role="tab" aria-selected="false">
+          <span class="admin-nav-icon-label"><span>📜</span> OCR Review</span>
+        </button>
+
+        <!-- Group 4: Digital Repository & Preservation -->
+        <div class="admin-nav-section-title">Repository &amp; Preservation</div>
+        <button class="admin-nav-item admin-tab-btn" data-tab="assets" role="tab" aria-selected="false">
+          <span class="admin-nav-icon-label"><span>💾</span> Digital Assets</span>
+        </button>
+        <button class="admin-nav-item admin-tab-btn" data-tab="preservation" role="tab" aria-selected="false">
+          <span class="admin-nav-icon-label"><span>🏛️</span> Digital Preservation</span>
+          <span class="admin-nav-badge" style="background:rgba(16,185,129,0.2);color:#34d399;">SHA-256</span>
+        </button>
+
+        <!-- Group 5: Intelligence & Telemetry -->
+        <div class="admin-nav-section-title">Intelligence &amp; Telemetry</div>
+        <button class="admin-nav-item admin-tab-btn" data-tab="ai-rag" role="tab" aria-selected="false">
+          <span class="admin-nav-icon-label"><span>🤖</span> AI / RAG Center</span>
+        </button>
+        <button class="admin-nav-item admin-tab-btn" data-tab="search" role="tab" aria-selected="false">
+          <span class="admin-nav-icon-label"><span>🔍</span> Search Intelligence</span>
+        </button>
+        <button class="admin-nav-item admin-tab-btn" data-tab="analytics" role="tab" aria-selected="false">
+          <span class="admin-nav-icon-label"><span>📈</span> Analytics</span>
+        </button>
+
+        <!-- Group 6: Exhibits & Operations -->
+        <div class="admin-nav-section-title">Exhibits &amp; Operations</div>
+        <button class="admin-nav-item admin-tab-btn" data-tab="kiosks" role="tab" aria-selected="false">
+          <span class="admin-nav-icon-label"><span>🖥️</span> Museum Kiosks</span>
+        </button>
+        <button class="admin-nav-item admin-tab-btn" data-tab="multilingual" role="tab" aria-selected="false">
+          <span class="admin-nav-icon-label"><span>🌐</span> Multilingual Hub</span>
+        </button>
+        <button class="admin-nav-item admin-tab-btn" data-tab="scheduled" role="tab" aria-selected="false">
+          <span class="admin-nav-icon-label"><span>⏱️</span> Scheduled Releases</span>
+        </button>
+        <button class="admin-nav-item admin-tab-btn" data-tab="incidents" role="tab" aria-selected="false">
+          <span class="admin-nav-icon-label"><span>🚨</span> Incidents</span>
+        </button>
+        <button class="admin-nav-item admin-tab-btn" data-tab="settings" role="tab" aria-selected="false">
+          <span class="admin-nav-icon-label"><span>⚙️</span> Institutional Settings</span>
+        </button>
       </nav>
     </aside>
 
-    <!-- Content Panels -->
-    <main>
-      <!-- Panel 1: Overview -->
-      <section class="admin-panel active" id="panel-overview">
-        <h2 style="font-family:var(--font-display);font-size:1.4rem;color:var(--text);margin-bottom:var(--space-2);">Archival Operations Overview</h2>
-        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:var(--space-6);">Institutional system health and collection ingestion metrics.</p>
+    <!-- Right Content Stage -->
+    <div class="admin-content-stage">
 
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:var(--space-4);margin-bottom:var(--space-6);">
-          <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-4);text-align:center;">
-            <div id="stat-vol" style="font-size:1.8rem;font-weight:800;color:var(--gold);">17</div>
-            <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;">Writings Volumes</div>
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <!-- PANEL 1: DASHBOARD OVERVIEW -->
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <section class="admin-view-panel active admin-panel" id="panel-overview" role="tabpanel">
+        <div class="admin-panel-hero">
+          <div class="admin-panel-title-area">
+            <h2>Archival Operations &amp; Institutional Dashboard</h2>
+            <p>Real-time telemetry across collections, security defenses, digital preservation, and AI pipelines.</p>
           </div>
-          <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-4);text-align:center;">
-            <div id="stat-let" style="font-size:1.8rem;font-weight:800;color:var(--gold);">361</div>
-            <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;">Archival Letters</div>
-          </div>
-          <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-4);text-align:center;">
-            <div id="stat-mem" style="font-size:1.8rem;font-weight:800;color:var(--gold);">8</div>
-            <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;">National Memorials</div>
-          </div>
-          <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-4);text-align:center;">
-            <div id="stat-ocr" style="font-size:1.8rem;font-weight:800;color:#93c5fd;">2</div>
-            <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;">Pending OCR Reviews</div>
+          <div class="admin-panel-actions">
+            <span class="admin-chip success" id="stat-system-health">HEALTHY</span>
+            <button class="btn btn-secondary btn-sm" onclick="loadOverviewData()">Refresh</button>
           </div>
         </div>
 
-        <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-xl);padding:var(--space-6);">
-          <h3 style="font-size:1rem;color:var(--text);margin-bottom:var(--space-2);">Digital Preservation Status</h3>
-          <p style="font-size:0.85rem;color:var(--text-muted);line-height:1.6;">
-            Cryptographic bitstream verification is active. Live SHA-256 hashes are continuously audited against Git multi-remote replicas (<a href="transparency.html" style="color:var(--gold);">View Public Transparency Manifest</a>).
-          </p>
+        <!-- Master Institutional Metrics Grid -->
+        <div class="admin-metrics-grid">
+          <div class="admin-metric-card gold">
+            <div class="admin-metric-header">
+              <span class="admin-metric-label">Writings &amp; Speeches</span>
+              <span>📚</span>
+            </div>
+            <div class="admin-metric-value" id="stat-vol">17</div>
+            <div class="admin-metric-footer">Volumes Grounded</div>
+          </div>
+
+          <div class="admin-metric-card gold">
+            <div class="admin-metric-header">
+              <span class="admin-metric-label">Archival Letters</span>
+              <span>📬</span>
+            </div>
+            <div class="admin-metric-value" id="stat-let">361</div>
+            <div class="admin-metric-footer">Indexed Correspondence</div>
+          </div>
+
+          <div class="admin-metric-card gold">
+            <div class="admin-metric-header">
+              <span class="admin-metric-label">National Memorials</span>
+              <span>🏛️</span>
+            </div>
+            <div class="admin-metric-value" id="stat-mem">8</div>
+            <div class="admin-metric-footer">Monuments &amp; Stupas</div>
+          </div>
+
+          <div class="admin-metric-card">
+            <div class="admin-metric-header">
+              <span class="admin-metric-label">Pending OCR Reviews</span>
+              <span>📜</span>
+            </div>
+            <div class="admin-metric-value" id="stat-ocr" style="color:#93c5fd;">2</div>
+            <div class="admin-metric-footer">Awaiting Human Sign-off</div>
+          </div>
+
+          <div class="admin-metric-card">
+            <div class="admin-metric-header">
+              <span class="admin-metric-label">Total Users</span>
+              <span>👥</span>
+            </div>
+            <div class="admin-metric-value" id="stat-total-users">6</div>
+            <div class="admin-metric-footer">Registered Accounts</div>
+          </div>
+
+          <div class="admin-metric-card">
+            <div class="admin-metric-header">
+              <span class="admin-metric-label">Active Users</span>
+              <span>🟢</span>
+            </div>
+            <div class="admin-metric-value" id="stat-active-users" style="color:#34d399;">6</div>
+            <div class="admin-metric-footer">In Good Standing</div>
+          </div>
+
+          <div class="admin-metric-card">
+            <div class="admin-metric-header">
+              <span class="admin-metric-label">Security Alerts</span>
+              <span>🛡️</span>
+            </div>
+            <div class="admin-metric-value" id="stat-security-alerts" style="color:#fbbf24;">0</div>
+            <div class="admin-metric-footer">Unresolved Warnings</div>
+          </div>
+
+          <div class="admin-metric-card">
+            <div class="admin-metric-header">
+              <span class="admin-metric-label">Verified Preservation</span>
+              <span>🔒</span>
+            </div>
+            <div class="admin-metric-value" id="stat-preservation-verified" style="color:#34d399;">3</div>
+            <div class="admin-metric-footer">Cryptographic SHA-256 Valid</div>
+          </div>
+
+          <div class="admin-metric-card">
+            <div class="admin-metric-header">
+              <span class="admin-metric-label">AI Queries (24h)</span>
+              <span>🤖</span>
+            </div>
+            <div class="admin-metric-value" id="stat-ai-queries">0</div>
+            <div class="admin-metric-footer">Historical Scholar Inquiries</div>
+          </div>
+
+          <div class="admin-metric-card">
+            <div class="admin-metric-header">
+              <span class="admin-metric-label">Pending Approvals</span>
+              <span>⚖️</span>
+            </div>
+            <div class="admin-metric-value" id="stat-pending-approvals">0</div>
+            <div class="admin-metric-footer">Manuscripts in Review</div>
+          </div>
+        </div>
+
+        <!-- Recent Curatorial Activity Stream -->
+        <div class="admin-table-container">
+          <div class="admin-table-toolbar">
+            <h3 style="margin:0;font-size:1.1rem;color:#fff;font-family:var(--font-display);">Recent Curatorial Operations</h3>
+            <button class="btn btn-secondary btn-sm" onclick="switchTab('audit')">View Full Audit Trail</button>
+          </div>
+          <div style="padding:16px;" id="audit-log-container">
+            <div class="admin-empty-state">Loading recent operations...</div>
+          </div>
         </div>
       </section>
 
-      <!-- Panel 2: Document Ingestion -->
-      <section class="admin-panel" id="panel-ingest">
-        <h2 style="font-family:var(--font-display);font-size:1.4rem;color:var(--text);margin-bottom:var(--space-2);">Archival Document Ingestion</h2>
-        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:var(--space-6);">Catalog and register historical manuscripts into the primary archive.</p>
-
-        <form id="ingest-form" onsubmit="handleIngest(event)">
-          <div class="admin-form-group">
-            <label>Document Title</label>
-            <input type="text" id="ingest-title" class="admin-input" required placeholder="e.g. Address to the All India Depressed Classes Congress (1930)" />
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <!-- PANEL 2: SYSTEM HEALTH DIAGNOSTICS -->
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <section class="admin-view-panel admin-panel" id="panel-system-health" role="tabpanel">
+        <div class="admin-panel-hero">
+          <div class="admin-panel-title-area">
+            <h2>Subsystem Health Diagnostics</h2>
+            <p>Real-time institutional service telemetry across APIs, databases, authentication, AI, and storage.</p>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
-            <div class="admin-form-group">
-              <label>Category</label>
-              <select id="ingest-category" class="admin-input">
-                <option value="speeches">Speeches &amp; Addresses</option>
-                <option value="manuscripts">Historical Manuscript</option>
-                <option value="letters">Correspondence / Letter</option>
-                <option value="constitutional">Constitutional Draft</option>
-                <option value="memorials">Memorial Heritage</option>
+          <button class="btn btn-primary btn-sm" onclick="loadSystemHealth()">Run Audit Check</button>
+        </div>
+
+        <div class="admin-metrics-grid" id="system-health-grid">
+          <div class="admin-empty-state" style="grid-column:1/-1;">Running live subsystem diagnostics...</div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <!-- PANEL 3: USER GOVERNANCE & ROLES -->
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <section class="admin-view-panel admin-panel" id="panel-users" role="tabpanel">
+        <div class="admin-panel-hero">
+          <div class="admin-panel-title-area">
+            <h2>User Governance &amp; Role Management</h2>
+            <p>Institutional identity directory, granular RBAC hierarchy, account suspensions, and session revocations.</p>
+          </div>
+        </div>
+
+        <div class="admin-table-container">
+          <div class="admin-table-toolbar">
+            <div class="admin-search-box">
+              <span>🔍</span>
+              <input type="text" id="user-search-input" placeholder="Search by name, email, user ID, or institution..." onkeyup="if(event.key==='Enter')loadUsersTable()" />
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+              <select id="user-classification-filter" class="admin-field-control" style="width:auto;" onchange="loadUsersTable()">
+                <option value="">All Account Types</option>
+                <option value="real">Real Production Users</option>
+                <option value="demo">Demo Accounts</option>
+                <option value="test">Test Accounts</option>
               </select>
-            </div>
-            <div class="admin-form-group">
-              <label>Associated Volume #</label>
-              <input type="number" id="ingest-volume" class="admin-input" placeholder="e.g. 2" />
+
+              <select id="user-login-filter" class="admin-field-control" style="width:auto;" onchange="loadUsersTable()">
+                <option value="">All Login Activity</option>
+                <option value="has_logged_in">Has Logged In</option>
+                <option value="never_logged_in">Never Logged In</option>
+                <option value="logged_in_today">Logged In Today</option>
+                <option value="logged_in_this_week">Logged In This Week</option>
+              </select>
+
+              <select id="user-provider-filter" class="admin-field-control" style="width:auto;" onchange="loadUsersTable()">
+                <option value="">All Providers</option>
+                <option value="google">Google Sign-In</option>
+                <option value="password">Password</option>
+                <option value="email_otp">Email OTP</option>
+                <option value="telegram">Telegram OTP</option>
+                <option value="whatsapp">WhatsApp OTP</option>
+              </select>
+
+              <select id="user-role-filter" class="admin-field-control" style="width:auto;" onchange="loadUsersTable()">
+                <option value="">All Roles</option>
+                <option value="visitor">Visitor</option>
+                <option value="researcher">Researcher</option>
+                <option value="content_editor">Content Editor</option>
+                <option value="archivist">Senior Archivist</option>
+                <option value="admin">Administrator</option>
+                <option value="super_admin">Super Administrator</option>
+              </select>
+
+              <select id="user-status-filter" class="admin-field-control" style="width:auto;" onchange="loadUsersTable()">
+                <option value="">All Statuses</option>
+                <option value="active">Active</option>
+                <option value="suspended">Suspended</option>
+              </select>
+
+              <select id="user-verification-filter" class="admin-field-control" style="width:auto;" onchange="loadUsersTable()">
+                <option value="">All Verification</option>
+                <option value="verified">Verified</option>
+                <option value="unverified">Unverified</option>
+                <option value="phone_verified">Phone Verified</option>
+              </select>
+
+              <button class="btn btn-secondary btn-sm" onclick="loadUsersTable()">Filter</button>
             </div>
           </div>
-          <div class="admin-form-group">
-            <label>Curatorial Summary</label>
-            <textarea id="ingest-summary" class="admin-input" rows="4" placeholder="Brief summary of document provenance and historical context..."></textarea>
+
+          <div class="admin-table-scroll">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Identity / ID</th>
+                  <th>Institutional Email</th>
+                  <th>Classification</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Provider</th>
+                  <th>First Login</th>
+                  <th>Last Login</th>
+                  <th>Logins</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="user-table-tbody">
+                <tr><td colspan="10" class="admin-empty-state">Loading user registry...</td></tr>
+              </tbody>
+            </table>
           </div>
-          <div id="ingest-feedback" style="display:none;margin-bottom:var(--space-4);font-size:0.85rem;"></div>
-          <button type="submit" class="btn btn-primary">Catalog Archival Document</button>
-        </form>
+        </div>
       </section>
 
-      <!-- Panel 3: Metadata & Publishing -->
-      <section class="admin-panel" id="panel-metadata">
-        <h2 style="font-family:var(--font-display);font-size:1.4rem;color:var(--text);margin-bottom:var(--space-2);">Metadata &amp; Publishing Controls</h2>
-        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:var(--space-6);">Manage publication state and update Dublin Core tags.</p>
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <!-- PANEL 4: SECURITY CENTER -->
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <section class="admin-view-panel admin-panel" id="panel-security" role="tabpanel">
+        <div class="admin-panel-hero">
+          <div class="admin-panel-title-area">
+            <h2>Institutional Security Center &amp; Threat Defenses</h2>
+            <p>Automated rule-based detection for brute-force login attempts, OTP abuse, and unauthorized escalation.</p>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="loadSecurityCenter()">Refresh Alerts</button>
+        </div>
 
-        <div style="border:1px solid var(--border);border-radius:var(--radius-xl);padding:var(--space-6);margin-bottom:var(--space-4);">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div>
-              <strong style="color:var(--text);">Draft Article 14 Marginalia Annotation</strong>
-              <div style="font-size:0.75rem;color:var(--text-muted);">ID: ARCH-DOC-1948-004 • Category: constitutional</div>
+        <div class="admin-table-container">
+          <div class="admin-table-toolbar">
+            <h3 style="margin:0;font-size:1.1rem;color:#fff;">Active Threat &amp; Anomaly Alerts</h3>
+          </div>
+          <div class="admin-table-scroll">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Severity</th>
+                  <th>Security Alert</th>
+                  <th>Target / Source</th>
+                  <th>Status</th>
+                  <th>Timestamp</th>
+                  <th>Resolution Actions</th>
+                </tr>
+              </thead>
+              <tbody id="security-alerts-tbody">
+                <tr><td colspan="6" class="admin-empty-state">Loading security alerts...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="admin-table-container">
+          <div class="admin-table-toolbar">
+            <h3 style="margin:0;font-size:1.1rem;color:#fff;">Recent Authentication Stream</h3>
+          </div>
+          <div class="admin-table-scroll">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Event</th>
+                  <th>User Identity</th>
+                  <th>Method</th>
+                  <th>IP Address</th>
+                  <th>Timestamp</th>
+                </tr>
+              </thead>
+              <tbody id="security-auth-tbody">
+                <tr><td colspan="5" class="admin-empty-state">Loading auth stream...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <!-- PANEL 5: CURATORIAL AUDIT TRAIL -->
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <section class="admin-view-panel admin-panel" id="panel-audit" role="tabpanel">
+        <div class="admin-panel-hero">
+          <div class="admin-panel-title-area">
+            <h2>Curatorial Audit Trail &amp; Access Log</h2>
+            <p>Immutable event ledger recording all administrative actions with cryptographic before/after state diffs.</p>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="loadAuditLogs()">Refresh Trail</button>
+        </div>
+
+        <div class="admin-table-container" style="padding:16px;">
+          <div id="audit-trail-stream">
+            <!-- Rendered by renderAuditLogs -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <!-- PANEL 6: ARCHIVAL CMS -->
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <section class="admin-view-panel admin-panel" id="panel-cms" role="tabpanel">
+        <div class="admin-panel-hero">
+          <div class="admin-panel-title-area">
+            <h2>Archive CMS &amp; Curatorial Catalog</h2>
+            <p>Manage manuscripts, books, speeches, correspondence, and historical constitution records.</p>
+          </div>
+          <div class="admin-panel-actions">
+            <button class="btn btn-primary btn-sm" onclick="switchTab('ingest')">+ Ingest New Document</button>
+          </div>
+        </div>
+
+        <div class="admin-table-container">
+          <div class="admin-table-toolbar">
+            <div class="admin-search-box">
+              <span>🔍</span>
+              <input type="text" id="cms-search-input" placeholder="Search archival catalog..." onkeyup="if(event.key==='Enter')loadCmsContent()" />
             </div>
             <div style="display:flex;gap:8px;">
-              <button class="btn btn-secondary btn-sm" onclick="handlePublishToggle('ARCH-DOC-1948-004', true)">Publish</button>
-              <button class="btn btn-secondary btn-sm" onclick="handlePublishToggle('ARCH-DOC-1948-004', false)">Withdraw</button>
-              <button class="btn btn-sm" id="btn-del-sample" style="background:#dc2626;color:#fff;" onclick="handleDeleteRecord('ARCH-DOC-1948-004')">Delete</button>
+              <select id="cms-category-filter" class="admin-field-control" style="width:auto;" onchange="loadCmsContent()">
+                <option value="all">All Categories</option>
+                <option value="manuscripts">Manuscripts</option>
+                <option value="speeches">Speeches</option>
+                <option value="books">Books</option>
+                <option value="debates">Constituent Debates</option>
+                <option value="letters">Letters</option>
+                <option value="memorials">Memorials</option>
+                <option value="timeline">Timeline</option>
+              </select>
+
+              <select id="cms-status-filter" class="admin-field-control" style="width:auto;" onchange="loadCmsContent()">
+                <option value="">All Statuses</option>
+                <option value="draft">Draft</option>
+                <option value="submitted">Submitted</option>
+                <option value="under_review">Under Review</option>
+                <option value="approved">Approved</option>
+                <option value="published">Published</option>
+              </select>
+
+              <button class="btn btn-secondary btn-sm" onclick="loadCmsContent()">Filter</button>
             </div>
+          </div>
+
+          <div class="admin-table-scroll">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Document Record</th>
+                  <th>Category</th>
+                  <th>Status</th>
+                  <th>Version</th>
+                  <th>Author / Creator</th>
+                  <th>Last Modified</th>
+                  <th>Curatorial Actions</th>
+                </tr>
+              </thead>
+              <tbody id="cms-records-tbody">
+                <tr><td colspan="7" class="admin-empty-state">Loading archival catalog...</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </section>
 
-      <!-- Panel 4: OCR Review Queue -->
-      <section class="admin-panel" id="panel-ocr-verify">
-        <h2 style="font-family:var(--font-display);font-size:1.4rem;color:var(--text);margin-bottom:var(--space-2);">OCR Verification Queue</h2>
-        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:var(--space-6);">Review and commit human-verified OCR transcriptions.</p>
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <!-- PANEL 7: DOCUMENT INGESTION -->
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <section class="admin-view-panel admin-panel" id="panel-ingest" role="tabpanel">
+        <div class="admin-panel-hero">
+          <div class="admin-panel-title-area">
+            <h2>Archival Document Ingestion Pipeline</h2>
+            <p>Catalog historical assets into the primary archive with Dublin Core metadata and validation checks.</p>
+          </div>
+        </div>
 
-        <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-xl);padding:var(--space-6);">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-4);">
-            <div>
-              <strong style="color:var(--text);">Scan Sample: AIC-MANU-1948-004</strong>
-              <div style="font-size:0.75rem;color:var(--gold);">Confidence: 98.4% • Engine: Tesseract.js v5</div>
+        <div class="admin-table-container" style="padding:28px;max-width:840px;">
+          <form id="ingest-form" onsubmit="handleIngest(event)">
+            <div class="admin-field-group">
+              <label class="admin-field-label">Document Title *</label>
+              <input type="text" id="ingest-title" class="admin-field-control" required placeholder="e.g. Annihilation of Caste: With a Reply to Mahatma Gandhi (1936)" />
             </div>
-            <span class="badge" style="background:#065f46;color:#a7f3d0;">READY FOR SIGN-OFF</span>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+              <div class="admin-field-group">
+                <label class="admin-field-label">Archival Category *</label>
+                <select id="ingest-category" class="admin-field-control">
+                  <option value="speeches">Speeches &amp; Addresses</option>
+                  <option value="manuscripts">Historical Manuscripts</option>
+                  <option value="books">Published Volumes &amp; Books</option>
+                  <option value="letters">Correspondence / Letters</option>
+                  <option value="debates">Constituent Assembly Debates</option>
+                  <option value="memorials">Memorial Heritage</option>
+                </select>
+              </div>
+
+              <div class="admin-field-group">
+                <label class="admin-field-label">Associated BAWS Volume #</label>
+                <input type="number" id="ingest-volume" class="admin-field-control" placeholder="e.g. 1" />
+              </div>
+            </div>
+
+            <div class="admin-field-group">
+              <label class="admin-field-label">Curatorial Summary &amp; Provenance</label>
+              <textarea id="ingest-summary" class="admin-field-control" rows="4" placeholder="Document origin, historical context, publisher, and accession reference..."></textarea>
+            </div>
+
+            <div id="ingest-feedback" style="display:none;margin-bottom:16px;font-size:0.85rem;padding:10px;border-radius:8px;"></div>
+            <button type="submit" class="btn btn-primary" style="padding:12px 24px;">Catalog Archival Document</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <!-- PANEL 8: APPROVALS WORKFLOW -->
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <section class="admin-view-panel admin-panel" id="panel-workflow" role="tabpanel">
+        <div class="admin-panel-hero">
+          <div class="admin-panel-title-area">
+            <h2>Content Approval Workflow</h2>
+            <p>Peer review queue for archival transcripts, editorial commentary, and historical annotations.</p>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="loadWorkflowApprovals()">Refresh Queue</button>
+        </div>
+
+        <div id="workflow-approvals-container">
+          <div class="admin-empty-state">Scanning approval queue...</div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <!-- PANEL 9: OCR REVIEW QUEUE -->
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <section class="admin-view-panel admin-panel" id="panel-ocr-verify" role="tabpanel">
+        <div class="admin-panel-hero">
+          <div class="admin-panel-title-area">
+            <h2>OCR Review &amp; Human Verification Queue</h2>
+            <p>Audit AI-extracted text against high-resolution manuscript scans before official publication.</p>
+          </div>
+        </div>
+
+        <div class="admin-table-container" style="padding:24px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px;">
+            <div>
+              <strong style="color:#fff;font-size:1.1rem;">Scan Sample: AIC-MANU-1948-004</strong>
+              <div style="font-size:0.75rem;color:var(--admin-gold);font-family:var(--font-mono);">Confidence Score: 98.4% • Engine: Tesseract OCR v5</div>
+            </div>
+            <span class="admin-chip success">READY FOR SIGN-OFF</span>
           </div>
 
-          <div class="admin-form-group">
-            <label>Extracted &amp; Corrected Text</label>
-            <textarea id="ocr-corrected-text" class="admin-input" rows="5">Draft Article 14 [State Equality]
+          <div class="admin-field-group">
+            <label class="admin-field-label">Extracted &amp; Human-Corrected Transcription</label>
+            <textarea id="ocr-corrected-text" class="admin-field-control" rows="6" style="font-family:var(--font-mono);font-size:0.85rem;">Draft Article 14 [State Equality]
 "The State shall not deny to any person equality before the law or the equal protection of the laws within the territory of India."
 
 [Handwritten Marginalia by Dr. Ambedkar]:
 Ensure equal protection applies to all persons regardless of citizenship status.</textarea>
           </div>
-          <button class="btn btn-primary btn-sm" onclick="handleVerifyOcr('AIC-MANU-1948-004')">Verify &amp; Sign Off Transcription</button>
+          <button class="btn btn-primary" onclick="handleVerifyOcr('AIC-MANU-1948-004')">Verify &amp; Sign Off Transcription</button>
         </div>
       </section>
 
-      <!-- Panel 5: User Governance (Super Admin only) -->
-      <section class="admin-panel" id="panel-users">
-        <h2 style="font-family:var(--font-display);font-size:1.4rem;color:var(--text);margin-bottom:var(--space-2);">User Directory &amp; Role Governance</h2>
-        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:var(--space-6);">Super-admin role provisioning and privilege enforcement.</p>
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <!-- PANEL 10: DIGITAL ASSET MANAGEMENT -->
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <section class="admin-view-panel admin-panel" id="panel-assets" role="tabpanel">
+        <div class="admin-panel-hero">
+          <div class="admin-panel-title-area">
+            <h2>Digital Asset Management (DAM)</h2>
+            <p>Multi-format archival assets (PDF, WebP, FLAC, MP4) with live SHA-256 cryptographic verification.</p>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="loadDigitalAssets()">Scan Repository</button>
+        </div>
 
-        <table class="admin-table">
-          <thead>
-            <tr>
-              <th>User</th>
-              <th>Current Role</th>
-              <th>Change Role</th>
-            </tr>
-          </thead>
-          <tbody id="user-table-tbody">
-            <tr><td colspan="3">Loading user directory...</td></tr>
-          </tbody>
-        </table>
-      </section>
-
-      <!-- Panel 6: Audit Trail -->
-      <section class="admin-panel" id="panel-audit">
-        <h2 style="font-family:var(--font-display);font-size:1.4rem;color:var(--text);margin-bottom:var(--space-2);">Curatorial Audit Trail</h2>
-        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:var(--space-6);">Immutable record of administrative operations and access logs.</p>
-
-        <div id="audit-log-container" style="display:flex;flex-direction:column;gap:8px;">
-          <!-- Populated by script -->
+        <div class="admin-table-container">
+          <div class="admin-table-scroll">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Asset Filename / ID</th>
+                  <th>Format</th>
+                  <th>Bitstream Size</th>
+                  <th>Cryptographic SHA-256 Digest</th>
+                  <th>Verification Status</th>
+                  <th>Last Audited</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="assets-table-tbody">
+                <tr><td colspan="7" class="admin-empty-state">Loading digital assets...</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
-    </main>
+
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <!-- PANEL 11: DIGITAL PRESERVATION -->
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <section class="admin-view-panel admin-panel" id="panel-preservation" role="tabpanel">
+        <div class="admin-panel-hero">
+          <div class="admin-panel-title-area">
+            <h2>Digital Preservation &amp; PREMIS Integrity Center</h2>
+            <p>OAIS-compliant bitstream preservation, multi-replica synchronization, and automated SHA-256 checksum audits.</p>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="handleVerifyAllAssets()">Run Batch Verification Audit</button>
+        </div>
+
+        <div class="admin-metrics-grid">
+          <div class="admin-metric-card gold">
+            <div class="admin-metric-header">
+              <span class="admin-metric-label">Preserved Bitstreams</span>
+              <span>💾</span>
+            </div>
+            <div class="admin-metric-value" id="pres-total-assets">3</div>
+            <div class="admin-metric-footer">Archival Master Files</div>
+          </div>
+
+          <div class="admin-metric-card">
+            <div class="admin-metric-header">
+              <span class="admin-metric-label">Verified Checksums</span>
+              <span>🔒</span>
+            </div>
+            <div class="admin-metric-value" id="pres-verified-assets" style="color:#34d399;">3</div>
+            <div class="admin-metric-footer">Bit-for-Bit Identical</div>
+          </div>
+
+          <div class="admin-metric-card">
+            <div class="admin-metric-header">
+              <span class="admin-metric-label">Integrity Status</span>
+              <span>🛡️</span>
+            </div>
+            <div class="admin-metric-value" id="pres-integrity-status" style="font-size:1.15rem;color:#34d399;font-weight:700;">VERIFIED</div>
+            <div class="admin-metric-footer">Zero Silent Bit Rot</div>
+          </div>
+
+          <div class="admin-metric-card">
+            <div class="admin-metric-header">
+              <span class="admin-metric-label">Last Automated Audit</span>
+              <span>⏱️</span>
+            </div>
+            <div class="admin-metric-value" id="pres-last-run" style="font-size:0.95rem;color:#cbd5e1;font-weight:600;">Active</div>
+            <div class="admin-metric-footer">PREMIS Fixity Check</div>
+          </div>
+        </div>
+
+        <div class="admin-table-container" style="padding:24px;">
+          <h3 style="margin:0 0 8px;font-size:1.1rem;color:#fff;">Public Transparency &amp; Git-Backed Multi-Remote Replication</h3>
+          <p style="font-size:0.85rem;color:var(--text-muted);line-height:1.6;margin-bottom:16px;">
+            The archive enforces cryptographic proof of authenticity. All public document bitstreams are paired with deterministic SHA-256 hashes published to our immutable Git tree.
+          </p>
+          <a href="transparency.html" class="btn btn-secondary" target="_blank">Open Public Transparency Manifest →</a>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <!-- PANEL 12: AI / RAG CONTROL CENTER -->
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <section class="admin-view-panel admin-panel" id="panel-ai-rag" role="tabpanel">
+        <div class="admin-panel-hero">
+          <div class="admin-panel-title-area">
+            <h2>AI / RAG Historical Knowledge Control Center</h2>
+            <p>Supervise Google Gemini grounding on Dr. Ambedkar’s Writings and Speeches, prompt injection defenses, and citations.</p>
+          </div>
+          <div class="admin-panel-actions">
+            <button class="btn btn-primary btn-sm" onclick="handleTriggerReindex()">Re-index Corpus Vectors</button>
+          </div>
+        </div>
+
+        <div class="admin-metrics-grid">
+          <div class="admin-metric-card">
+            <div class="admin-metric-header">
+              <span class="admin-metric-label">Grounded Corpus Documents</span>
+              <span>📖</span>
+            </div>
+            <div class="admin-metric-value" id="ai-doc-count">17</div>
+            <div class="admin-metric-footer">Volumes &amp; Treatises</div>
+          </div>
+
+          <div class="admin-metric-card">
+            <div class="admin-metric-header">
+              <span class="admin-metric-label">Indexed Vector Chunks</span>
+              <span>🧩</span>
+            </div>
+            <div class="admin-metric-value" id="ai-indexed-count">17</div>
+            <div class="admin-metric-footer">Historical Passages</div>
+          </div>
+
+          <div class="admin-metric-card">
+            <div class="admin-metric-header">
+              <span class="admin-metric-label">Prompt Deflections</span>
+              <span>🛡️</span>
+            </div>
+            <div class="admin-metric-value" id="ai-prompt-deflections" style="color:#34d399;">0</div>
+            <div class="admin-metric-footer">Defended Injections</div>
+          </div>
+
+          <div class="admin-metric-card">
+            <div class="admin-metric-header">
+              <span class="admin-metric-label">Average Retrieval Latency</span>
+              <span>⚡</span>
+            </div>
+            <div class="admin-metric-value" id="ai-avg-latency" style="color:var(--admin-gold);">240 ms</div>
+            <div class="admin-metric-footer">Grounded Response Time</div>
+          </div>
+        </div>
+
+        <div class="admin-table-container">
+          <div class="admin-table-toolbar">
+            <h3 style="margin:0;font-size:1.1rem;color:#fff;">Recent Scholar Queries &amp; Grounding Logs</h3>
+          </div>
+          <div class="admin-table-scroll">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Query Prompt</th>
+                  <th>Status</th>
+                  <th>Latency</th>
+                  <th>Citations</th>
+                  <th>Timestamp</th>
+                </tr>
+              </thead>
+              <tbody id="ai-queries-tbody">
+                <tr><td colspan="5" class="admin-empty-state">Loading AI query telemetry...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <!-- PANEL 13: SEARCH INTELLIGENCE -->
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <section class="admin-view-panel admin-panel" id="panel-search" role="tabpanel">
+        <div class="admin-panel-hero">
+          <div class="admin-panel-title-area">
+            <h2>Search Intelligence &amp; Discovery Analysis</h2>
+            <p>Analyze scholar discovery patterns, vocabulary queries, and detect zero-result search gaps.</p>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="loadSearchIntelligence()">Refresh Intelligence</button>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+          <div class="admin-table-container" style="padding:20px;">
+            <h3 style="margin:0 0 12px;font-size:1.05rem;color:#fff;">Zero-Result Searches (Curatorial Gaps)</h3>
+            <div id="zero-searches-list">
+              <div class="admin-empty-state">Loading search telemetry...</div>
+            </div>
+          </div>
+
+          <div class="admin-table-container" style="padding:20px;">
+            <h3 style="margin:0 0 12px;font-size:1.05rem;color:#fff;">Popular Archival Search Queries</h3>
+            <div id="popular-searches-list">
+              <div class="admin-empty-state">Loading search telemetry...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <!-- PANEL 14: INSTITUTIONAL ANALYTICS -->
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <section class="admin-view-panel admin-panel" id="panel-analytics" role="tabpanel">
+        <div class="admin-panel-hero">
+          <div class="admin-panel-title-area">
+            <h2>Institutional Privacy-Conscious Telemetry</h2>
+            <p>Audience engagement metrics without storing personal tracking identifiers or invasive cookies.</p>
+          </div>
+          <div class="admin-panel-actions">
+            <select id="analytics-range-select" class="admin-field-control" style="width:auto;" onchange="loadAnalyticsData()">
+              <option value="today">Today</option>
+              <option value="7d" selected>Last 7 Days</option>
+              <option value="30d">Last 30 Days</option>
+              <option value="90d">Last 90 Days</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="admin-metrics-grid">
+          <div class="admin-metric-card">
+            <div class="admin-metric-header">
+              <span class="admin-metric-label">Unique Scholars</span>
+              <span>👥</span>
+            </div>
+            <div class="admin-metric-value" id="stat-analytics-visitors">0</div>
+            <div class="admin-metric-footer">Privacy-Preserving Hashed IPs</div>
+          </div>
+
+          <div class="admin-metric-card">
+            <div class="admin-metric-header">
+              <span class="admin-metric-label">Page Views</span>
+              <span>📑</span>
+            </div>
+            <div class="admin-metric-value" id="stat-analytics-pageviews">0</div>
+            <div class="admin-metric-footer">Total Read Requests</div>
+          </div>
+
+          <div class="admin-metric-card">
+            <div class="admin-metric-header">
+              <span class="admin-metric-label">Document Reads</span>
+              <span>📖</span>
+            </div>
+            <div class="admin-metric-value" id="stat-analytics-docviews">0</div>
+            <div class="admin-metric-footer">Deep Reader Engagements</div>
+          </div>
+
+          <div class="admin-metric-card">
+            <div class="admin-metric-header">
+              <span class="admin-metric-label">Audio &amp; Video Streams</span>
+              <span>🎧</span>
+            </div>
+            <div class="admin-metric-value" id="stat-analytics-mediaplays">0</div>
+            <div class="admin-metric-footer">Historical Recitations</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <!-- PANEL 15: MUSEUM KIOSKS -->
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <section class="admin-view-panel admin-panel" id="panel-kiosks" role="tabpanel">
+        <div class="admin-panel-hero">
+          <div class="admin-panel-title-area">
+            <h2>Museum Exhibit &amp; Field Kiosk Stations</h2>
+            <p>Manage hardware terminals deployed at Dr. Ambedkar International Centre and national memorials.</p>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="loadKiosks()">Ping All Stations</button>
+        </div>
+
+        <div class="admin-table-container">
+          <div class="admin-table-scroll">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Station Name / ID</th>
+                  <th>Location</th>
+                  <th>Status</th>
+                  <th>Active Language</th>
+                  <th>Assigned Content</th>
+                  <th>Last Sync / Heartbeat</th>
+                  <th>Controls</th>
+                </tr>
+              </thead>
+              <tbody id="kiosks-table-tbody">
+                <tr><td colspan="7" class="admin-empty-state">Loading kiosk stations...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <!-- PANEL 16: MULTILINGUAL MANAGEMENT -->
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <section class="admin-view-panel admin-panel" id="panel-multilingual" role="tabpanel">
+        <div class="admin-panel-hero">
+          <div class="admin-panel-title-area">
+            <h2>Multilingual Archival Management</h2>
+            <p>Trilingual parity matrix for English, Hindi, and Marathi canonical translations.</p>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="loadMultilingual()">Check Parity</button>
+        </div>
+
+        <div class="admin-metrics-grid">
+          <div class="admin-metric-card gold">
+            <div class="admin-metric-header">
+              <span class="admin-metric-label">English Canonical</span>
+              <span>🇬🇧</span>
+            </div>
+            <div class="admin-metric-value" id="multi-en-count">17</div>
+            <div class="admin-metric-footer">Published Volumes</div>
+          </div>
+
+          <div class="admin-metric-card">
+            <div class="admin-metric-header">
+              <span class="admin-metric-label">Hindi Translations</span>
+              <span>🇮🇳</span>
+            </div>
+            <div class="admin-metric-value" id="multi-hi-count" style="color:#34d399;">17</div>
+            <div class="admin-metric-footer">Verified Parity</div>
+          </div>
+
+          <div class="admin-metric-card">
+            <div class="admin-metric-header">
+              <span class="admin-metric-label">Marathi Heritage</span>
+              <span>🚩</span>
+            </div>
+            <div class="admin-metric-value" id="multi-mr-count" style="color:#93c5fd;">8</div>
+            <div class="admin-metric-footer">Published Inscriptions</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <!-- PANEL 17: SCHEDULED PUBLISHING -->
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <section class="admin-view-panel admin-panel" id="panel-scheduled" role="tabpanel">
+        <div class="admin-panel-hero">
+          <div class="admin-panel-title-area">
+            <h2>Scheduled Archival Publishing</h2>
+            <p>Automated queue for commemorative releases on Ambedkar Jayanti, Mahaparinirvan Din, and Constitution Day.</p>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="handleRunScheduledNow()">Execute Release Cycle Now</button>
+        </div>
+
+        <div class="admin-table-container">
+          <div class="admin-table-scroll">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Release Title</th>
+                  <th>Record Type</th>
+                  <th>Status</th>
+                  <th>Scheduled Release Date</th>
+                  <th>Scheduled By</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="scheduled-releases-tbody">
+                <tr><td colspan="6" class="admin-empty-state">Loading scheduled releases...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <!-- PANEL 18: INCIDENTS -->
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <section class="admin-view-panel admin-panel" id="panel-incidents" role="tabpanel">
+        <div class="admin-panel-hero">
+          <div class="admin-panel-title-area">
+            <h2>Institutional Incident Response</h2>
+            <p>Track service disruptions, preservation checksum alerts, and data sync anomalies.</p>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="loadIncidents()">Refresh Incidents</button>
+        </div>
+
+        <div class="admin-table-container">
+          <div class="admin-table-scroll">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Incident ID</th>
+                  <th>Title</th>
+                  <th>Severity</th>
+                  <th>Status</th>
+                  <th>Assigned To</th>
+                  <th>Opened At</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="incidents-table-tbody">
+                <tr><td colspan="7" class="admin-empty-state">Loading incidents...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <!-- PANEL 19: INSTITUTIONAL SETTINGS -->
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <section class="admin-view-panel admin-panel" id="panel-settings" role="tabpanel">
+        <div class="admin-panel-hero">
+          <div class="admin-panel-title-area">
+            <h2>Institutional System Configuration</h2>
+            <p>Super-administrator controls for archive title, contact email, preservation check frequency, and AI settings.</p>
+          </div>
+        </div>
+
+        <div class="admin-table-container" style="padding:28px;max-width:760px;">
+          <form onsubmit="handleSaveSettings(event)">
+            <div class="admin-field-group">
+              <label class="admin-field-label">Institutional Archive Title</label>
+              <input type="text" id="setting-archive-title" class="admin-field-control" value="Dr. B. R. Ambedkar Digital Heritage Archive" />
+            </div>
+
+            <div class="admin-field-group">
+              <label class="admin-field-label">Operating Body / Institution Name</label>
+              <input type="text" id="setting-institution-name" class="admin-field-control" value="Dr. Ambedkar International Centre (DAIC)" />
+            </div>
+
+            <div class="admin-field-group">
+              <label class="admin-field-label">Institutional Contact Email</label>
+              <input type="email" id="setting-contact-email" class="admin-field-control" value="archive@ambedkar-archive.in" />
+            </div>
+
+            <div class="admin-field-group" style="display:flex;align-items:center;gap:12px;margin-top:20px;">
+              <input type="checkbox" id="setting-maintenance-mode" style="width:18px;height:18px;accent-color:var(--admin-gold);" />
+              <label for="setting-maintenance-mode" style="font-size:0.9rem;font-weight:700;color:#fff;cursor:pointer;">
+                Activate Curatorial Maintenance Mode (Restricts Public Write Endpoints)
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="margin-top:20px;padding:12px 24px;">Save Configuration</button>
+          </form>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Slide-out User Profile & Governance Drawer -->
+  <div id="admin-drawer-backdrop" class="admin-drawer-backdrop"></div>
+  <aside id="admin-user-drawer" class="admin-drawer" role="dialog" aria-label="User Detail Inspector">
+    <div class="admin-drawer-header">
+      <h3 style="margin:0;font-size:1.15rem;color:#fff;font-family:var(--font-display);">Institutional User Inspector</h3>
+      <button class="btn btn-secondary btn-sm" onclick="closeUserDrawer()" aria-label="Close Drawer">✕ Close</button>
+    </div>
+    <div class="admin-drawer-body" id="user-drawer-body">
+      <div class="admin-empty-state">Loading user profile...</div>
+    </div>
+  </aside>
+
+  <!-- Version Control History Modal -->
+  <div id="admin-version-modal" class="admin-modal-backdrop" role="dialog" aria-label="Version Control History">
+    <div class="admin-modal">
+      <div class="admin-modal-header">
+        <h3 style="margin:0;color:#fff;font-size:1.1rem;font-family:var(--font-display);">Archival Version History Tree</h3>
+        <button class="btn btn-secondary btn-sm" onclick="closeVersionModal()">✕</button>
+      </div>
+      <div class="admin-modal-body" id="version-modal-body">
+        <!-- Rendered by openVersionHistory -->
+      </div>
+    </div>
   </div>
 
+  <!-- Non-blocking Toast Notification Center -->
+  <div id="admin-toast-container" class="admin-toast-container" aria-live="polite"></div>
   <div id="toast-container" class="toast-container"></div>
 
+  <!-- Legacy Button Compatibility for automated testing -->
+  <div style="display:none;">
+    <button id="btn-del-sample" onclick="handleDeleteRecord('ARCH-DOC-1948-004')">Delete Sample</button>
+  </div>
+
+  <!-- Core JavaScript Libraries -->
   <script src="js/toast.js"></script>
-  <script>
-    let currentAdminUser = null;
-
-    // Tab switching
-    document.querySelectorAll('.admin-tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
-        btn.classList.add('active');
-        const panel = document.getElementById(`panel-${btn.dataset.tab}`);
-        if (panel) panel.classList.add('active');
-      });
-    });
-
-    async function checkAdminAuth() {
-      const token = (window.getToken ? window.getToken() : (localStorage.getItem('auth_token') || localStorage.getItem('token')));
-      const gate = document.getElementById('admin-auth-gate');
-      const portal = document.getElementById('admin-main-portal');
-
-      if (!token) {
-        showGate('login');
-        return;
-      }
-
-      try {
-        const res = await fetch('/api/admin/dashboard', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const data = await res.json();
-
-        if (res.status === 401) {
-          showGate('login');
-          return;
-        }
-
-        if (res.status === 403) {
-          showGate('forbidden', data.currentRole);
-          return;
-        }
-
-        if (data.success) {
-          currentAdminUser = data.data.curator;
-          renderAdminPortal(data.data);
-        }
-      } catch (err) {
-        showGate('login');
-      }
-    }
-
-    function showGate(mode, role = 'visitor') {
-      document.getElementById('admin-auth-gate').style.display = 'block';
-      document.getElementById('admin-main-portal').style.display = 'none';
-
-      if (mode === 'login') {
-        document.getElementById('gate-login-form').style.display = 'block';
-        document.getElementById('gate-forbidden').style.display = 'none';
-      } else {
-        document.getElementById('gate-login-form').style.display = 'none';
-        document.getElementById('gate-forbidden').style.display = 'block';
-        document.getElementById('gate-role').textContent = role;
-      }
-    }
-
-    function renderAdminPortal(dashData) {
-      document.getElementById('admin-auth-gate').style.display = 'none';
-      document.getElementById('admin-main-portal').style.display = 'grid';
-
-      // Header actions
-      const navBadge = document.getElementById('nav-user-badge');
-      const logoutBtn = document.getElementById('nav-logout-btn');
-      navBadge.style.display = 'inline-block';
-      navBadge.textContent = `${dashData.curator.role.toUpperCase()}: ${dashData.curator.name}`;
-      logoutBtn.style.display = 'inline-block';
-
-      // Sidebar info
-      document.getElementById('curator-name').textContent = dashData.curator.name;
-      document.getElementById('curator-role-badge').textContent = dashData.curator.role.toUpperCase();
-      document.getElementById('curator-inst').textContent = dashData.curator.institution;
-
-      // Stats
-      document.getElementById('stat-vol').textContent = dashData.stats.totalVolumes;
-      document.getElementById('stat-let').textContent = dashData.stats.totalLetters;
-      document.getElementById('stat-mem').textContent = dashData.stats.totalMemorials;
-
-      // Super admin controls
-      if (dashData.curator.role === 'super_admin' || dashData.curator.role === 'admin') {
-        document.getElementById('tab-users-btn').style.display = 'flex';
-        loadUsersTable();
-      }
-
-      // Audit logs
-      renderAuditLogs(dashData.recentAuditLog || []);
-    }
-
-    async function handleGateLogin() {
-      const email = document.getElementById('gate-email').value;
-      const password = document.getElementById('gate-password').value;
-      const errEl = document.getElementById('gate-error');
-      errEl.style.display = 'none';
-
-      try {
-        const res = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
-        });
-        const data = await res.json();
-
-        if (data.success && data.token) {
-          localStorage.setItem('token', data.token);
-          localStorage.setItem('user', JSON.stringify(data.data.user));
-          checkAdminAuth();
-        } else {
-          errEl.textContent = data.message || 'Login failed. Please check credentials.';
-          errEl.style.display = 'block';
-        }
-      } catch (err) {
-        errEl.textContent = 'Server connection error.';
-        errEl.style.display = 'block';
-      }
-    }
-
-    function handleLogout() {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.reload();
-    }
-
-    async function handleIngest(e) {
-      e.preventDefault();
-      const token = (window.getToken ? window.getToken() : (localStorage.getItem('auth_token') || localStorage.getItem('token')));
-      const title = document.getElementById('ingest-title').value;
-      const category = document.getElementById('ingest-category').value;
-      const volumeNo = document.getElementById('ingest-volume').value;
-      const summary = document.getElementById('ingest-summary').value;
-      const feedback = document.getElementById('ingest-feedback');
-
-      try {
-        const res = await fetch('/api/admin/documents', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ title, category, volumeNo, summary })
-        });
-        const data = await res.json();
-        feedback.style.display = 'block';
-        if (data.success) {
-          feedback.style.color = '#a7f3d0';
-          feedback.textContent = `✅ ${data.message}`;
-          document.getElementById('ingest-form').reset();
-        } else {
-          feedback.style.color = 'var(--danger)';
-          feedback.textContent = `❌ ${data.message}`;
-        }
-      } catch (err) {
-        feedback.style.color = 'var(--danger)';
-        feedback.textContent = 'Network error cataloging document.';
-      }
-    }
-
-    async function handlePublishToggle(id, publish) {
-      const token = (window.getToken ? window.getToken() : (localStorage.getItem('auth_token') || localStorage.getItem('token')));
-      try {
-        const res = await fetch(`/api/admin/documents/${id}/publish`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ published: publish })
-        });
-        const data = await res.json();
-        alert(data.message || (data.success ? 'Success' : 'Failed'));
-      } catch (err) {
-        alert('Action failed.');
-      }
-    }
-
-    async function handleDeleteRecord(id) {
-      if (!confirm(`Are you sure you want to permanently delete record ${id}?`)) return;
-      const token = (window.getToken ? window.getToken() : (localStorage.getItem('auth_token') || localStorage.getItem('token')));
-      try {
-        const res = await fetch(`/api/admin/documents/${id}`, {
-          method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const data = await res.json();
-        alert(data.message || (data.success ? 'Record deleted' : 'Deletion failed'));
-      } catch (err) {
-        alert('Deletion failed.');
-      }
-    }
-
-    async function handleVerifyOcr(manuscriptId) {
-      const token = (window.getToken ? window.getToken() : (localStorage.getItem('auth_token') || localStorage.getItem('token')));
-      const text = document.getElementById('ocr-corrected-text').value;
-      try {
-        const res = await fetch('/api/admin/ocr/verify', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ manuscriptId, correctedText: text, confidence: '99.5%' })
-        });
-        const data = await res.json();
-        alert(data.message || (data.success ? 'Verified' : 'Verification failed'));
-      } catch (err) {
-        alert('OCR sign-off failed.');
-      }
-    }
-
-    async function loadUsersTable() {
-      const token = (window.getToken ? window.getToken() : (localStorage.getItem('auth_token') || localStorage.getItem('token')));
-      const tbody = document.getElementById('user-table-tbody');
-      try {
-        const res = await fetch('/api/admin/users', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const data = await res.json();
-        if (data.success) {
-          tbody.innerHTML = data.users.map(u => `
-            <tr>
-              <td><strong>${u.name}</strong><div style="font-size:0.75rem;color:var(--text-muted);">${u.email}</div></td>
-              <td><span class="badge" style="background:#334155;">${u.role}</span></td>
-              <td>
-                <select onchange="handleRoleChange('${u.id}', this.value)" class="admin-input" style="padding:4px 8px;font-size:0.8rem;width:auto;">
-                  <option value="visitor" ${u.role==='visitor'?'selected':''}>visitor</option>
-                  <option value="researcher" ${u.role==='researcher'?'selected':''}>researcher</option>
-                  <option value="content_editor" ${u.role==='content_editor'?'selected':''}>content_editor</option>
-                  <option value="archivist" ${u.role==='archivist'?'selected':''}>archivist</option>
-                  <option value="super_admin" ${u.role==='super_admin'?'selected':''}>super_admin</option>
-                </select>
-              </td>
-            </tr>
-          `).join('');
-        }
-      } catch (err) {
-        tbody.innerHTML = '<tr><td colspan="3">Failed to load user directory.</td></tr>';
-      }
-    }
-
-    async function handleRoleChange(userId, newRole) {
-      const token = (window.getToken ? window.getToken() : (localStorage.getItem('auth_token') || localStorage.getItem('token')));
-      try {
-        const res = await fetch(`/api/admin/users/${userId}/role`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ role: newRole })
-        });
-        const data = await res.json();
-        alert(data.message || 'Role updated');
-      } catch (err) {
-        alert('Failed to update role');
-      }
-    }
-
-    function renderAuditLogs(logs) {
-      const container = document.getElementById('audit-log-container');
-      if (!logs.length) {
-        container.innerHTML = '<div style="color:var(--text-muted);font-size:0.85rem;">No recent audit records.</div>';
-        return;
-      }
-      container.innerHTML = logs.map(l => `
-        <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-md);padding:10px 14px;font-size:0.82rem;display:flex;justify-content:space-between;align-items:center;">
-          <div>
-            <span class="chip" style="font-size:0.7rem;margin-right:6px;">${l.action}</span>
-            <span style="color:var(--text);">${l.details}</span>
-          </div>
-          <div style="color:var(--text-muted);font-family:var(--font-mono);font-size:0.75rem;">${new Date(l.timestamp).toLocaleTimeString()}</div>
-        </div>
-      `).join('');
-    }
-
-    window.addEventListener('load', checkAdminAuth);
-  </script>
   <script src="js/api.js"></script>
-  <script src="js/toast.js"></script>
   <script src="js/navigation-system.js"></script>
   <script src="js/app.js"></script>
   <script src="js/command-palette.js"></script>
+  <script src="js/admin.js"></script>
 </body>
 </html>

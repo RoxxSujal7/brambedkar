@@ -13,6 +13,7 @@ const passwordPolicy = require('../utils/passwordPolicy');
 const PasswordReset = require('../models/PasswordReset');
 const { signToken } = require('../config/jwt');
 const { protect } = require('../middleware/auth');
+const adminService = require('../services/adminService');
 
 const router = express.Router();
 
@@ -117,6 +118,18 @@ router.post(
       });
 
       const token = signToken(user._id);
+
+      adminService.recordAuthEvent({
+        event: 'LOGIN_SUCCESS',
+        userEmail: user.email,
+        userId: user._id,
+        authMethod: 'password',
+        success: true,
+        actor: user.email,
+        ip: req.ip,
+        userAgent: req.headers['user-agent'],
+        reason: 'New account registered',
+      }).catch(() => {});
 
       res.status(201).json({
         success: true,
@@ -313,17 +326,52 @@ router.post(
       }
 
       if (!user || !(await user.comparePassword(password))) {
+        userService.recordUserLoginFailure(identifier).catch(() => {});
+        adminService.recordAuthEvent({
+          event: 'LOGIN_FAILED',
+          userEmail: identifier,
+          authMethod: 'password',
+          success: false,
+          actor: identifier,
+          ip: req.ip,
+          reason: 'Invalid email/phone or password',
+        }).catch(() => {});
         return res.status(401).json({ success: false, message: 'Invalid email/phone or password.' });
       }
 
       if (!user.isActive) {
+        adminService.recordAuthEvent({
+          event: 'LOGIN_FAILED',
+          userEmail: identifier,
+          authMethod: 'password',
+          success: false,
+          actor: identifier,
+          ip: req.ip,
+          reason: 'Account deactivated / suspended',
+        }).catch(() => {});
         return res.status(403).json({ success: false, message: 'Account deactivated. Contact support.' });
       }
 
       if (typeof user.updateActivity === 'function') {
         await user.updateActivity();
       }
+      await userService.recordUserLogin(user._id, {
+        authMethod: 'password',
+        ip: req.ip,
+        userAgent: req.headers['user-agent'],
+      });
       const token = signToken(user._id);
+
+      adminService.recordAuthEvent({
+        event: 'LOGIN_SUCCESS',
+        userEmail: user.email,
+        userId: user._id,
+        authMethod: 'password',
+        success: true,
+        actor: user.email,
+        ip: req.ip,
+        userAgent: req.headers['user-agent'],
+      }).catch(() => {});
 
       res.json({
         success: true,
@@ -446,7 +494,24 @@ router.post('/google', authLimiter, async (req, res, next) => {
       });
     }
 
+    await userService.recordUserLogin(user._id, {
+      authMethod: 'google',
+      ip: req.ip,
+      userAgent: req.headers['user-agent'],
+    });
+
     const token = signToken(user._id);
+
+    adminService.recordAuthEvent({
+      event: 'GOOGLE_LOGIN',
+      userEmail: user.email,
+      userId: user._id,
+      authMethod: 'google',
+      success: true,
+      actor: user.email,
+      ip: req.ip,
+      userAgent: req.headers['user-agent'],
+    }).catch(() => {});
 
     res.json({
       success: true,
@@ -621,6 +686,16 @@ router.post(
       }
 
       const channelName = channel === 'email' ? 'Email' : channel === 'telegram' ? 'Telegram' : 'WhatsApp';
+
+      adminService.recordAuthEvent({
+        event: channel === 'telegram' ? 'TELEGRAM_OTP_REQUESTED' : 'OTP_REQUESTED',
+        userEmail: cleanTarget,
+        authMethod: channel === 'telegram' ? 'telegram_otp' : (channel === 'email' ? 'email_otp' : 'whatsapp_otp'),
+        success: true,
+        actor: cleanTarget,
+        ip: req.ip,
+      }).catch(() => {});
+
       res.json({
         success: true,
         message: `OTP dispatched to ${displayTarget} via ${channelName}.`,
@@ -712,6 +787,16 @@ router.post(
       const isValidOtp = cryptoUtil.verifyOtp(record.otpHash, otp);
 
       if (!isValidOtp) {
+        userService.recordUserLoginFailure(cleanTarget).catch(() => {});
+        adminService.recordAuthEvent({
+          event: 'OTP_FAILED',
+          userEmail: cleanTarget,
+          authMethod: channel === 'telegram' ? 'telegram_otp' : (channel === 'email' ? 'email_otp' : 'whatsapp_otp'),
+          success: false,
+          actor: cleanTarget,
+          ip: req.ip,
+          reason: 'Invalid OTP code',
+        }).catch(() => {});
         return res.status(400).json({ success: false, message: 'Invalid OTP code. Please try again.' });
       }
 
@@ -792,7 +877,23 @@ router.post(
         await user.updateActivity();
       }
 
+      await userService.recordUserLogin(user._id, {
+        authMethod: channel === 'telegram' ? 'telegram_otp' : (channel === 'email' ? 'email_otp' : 'whatsapp_otp'),
+        ip: req.ip,
+        userAgent: req.headers['user-agent'],
+      });
+
       const token = signToken(user._id);
+
+      adminService.recordAuthEvent({
+        event: channel === 'telegram' ? 'TELEGRAM_LOGIN' : 'OTP_VERIFIED',
+        userEmail: user.email,
+        userId: user._id,
+        authMethod: channel === 'telegram' ? 'telegram_otp' : (channel === 'email' ? 'email_otp' : 'whatsapp_otp'),
+        success: true,
+        actor: user.email,
+        ip: req.ip,
+      }).catch(() => {});
 
       res.json({
         success: true,
@@ -882,6 +983,15 @@ router.patch(
 
 // POST /api/auth/logout
 router.post('/logout', (req, res) => {
+  adminService.recordAuthEvent({
+    event: 'LOGOUT',
+    userEmail: req.user ? req.user.email : 'client_session',
+    authMethod: 'system',
+    success: true,
+    actor: req.user ? req.user.email : 'client',
+    ip: req.ip,
+  }).catch(() => {});
+
   res.json({
     success: true,
     message: 'Logged out successfully. Client session cleared.'

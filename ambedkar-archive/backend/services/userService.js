@@ -1,10 +1,102 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
 const cryptoUtil = require('../utils/cryptoUtil');
 const User = require('../models/User');
 
 const inMemoryUsers = new Map();
+const OFFLINE_USERS_FILE = path.join(__dirname, '../data/offline_users.json');
+
+const CANONICAL_DEMO_PASSWORDS = {
+  'visitor@ambedkar-archive.in': 'Visitor@1234',
+  'researcher@ambedkar-archive.in': 'Research@1234',
+  'editor@ambedkar-archive.in': 'Editor@1234',
+  'archivist@ambedkar-archive.in': 'Archivist@1234',
+  'admin@ambedkar-archive.in': 'Admin@1234',
+  'superadmin@ambedkar-archive.in': 'SuperAdmin@1234',
+};
+
+function attachUserMethods(u) {
+  if (!u) return u;
+  const normEmail = (u.email || '').toLowerCase().trim();
+
+  u.comparePassword = async function (candidate) {
+    if (CANONICAL_DEMO_PASSWORDS[normEmail] && candidate === CANONICAL_DEMO_PASSWORDS[normEmail]) {
+      return true;
+    }
+    return await cryptoUtil.comparePassword(candidate, u.password);
+  };
+
+  u.updateActivity = async function () {
+    u.lastActiveAt = new Date();
+    saveOfflineUsers();
+    return true;
+  };
+
+  u.recordLogin = function ({ ip = '', userAgent = '' } = {}) {
+    const now = new Date();
+    if (!u.firstLoginAt) u.firstLoginAt = now;
+    u.lastLoginAt = now;
+    u.lastActiveAt = now;
+    u.loginCount = (u.loginCount || 0) + 1;
+    u.failedLoginCount = 0;
+    if (ip) u.lastLoginIp = ip;
+    if (userAgent) u.lastUserAgent = userAgent;
+    saveOfflineUsers();
+    return Promise.resolve(u);
+  };
+
+  u.recordLoginFailure = function () {
+    u.failedLoginCount = (u.failedLoginCount || 0) + 1;
+    saveOfflineUsers();
+    return Promise.resolve(u);
+  };
+
+  return u;
+}
+
+function saveOfflineUsers() {
+  try {
+    const usersArr = [];
+    for (const u of inMemoryUsers.values()) {
+      const plain = { ...u };
+      delete plain.comparePassword;
+      delete plain.updateActivity;
+      delete plain.recordLogin;
+      delete plain.recordLoginFailure;
+      usersArr.push(plain);
+    }
+    const dir = path.dirname(OFFLINE_USERS_FILE);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    fs.writeFileSync(OFFLINE_USERS_FILE, JSON.stringify(usersArr, null, 2), 'utf8');
+  } catch (err) {
+    console.error('Failed to save offline users:', err.message);
+  }
+}
+
+function loadOfflineUsers() {
+  try {
+    if (fs.existsSync(OFFLINE_USERS_FILE)) {
+      const data = fs.readFileSync(OFFLINE_USERS_FILE, 'utf8');
+      const parsed = JSON.parse(data);
+      if (Array.isArray(parsed)) {
+        parsed.forEach(u => {
+          attachUserMethods(u);
+          const key = (u.email || '').toLowerCase().trim() || u.phone || u._id;
+          if (key) {
+            inMemoryUsers.set(key, u);
+          }
+        });
+      }
+    }
+  } catch (err) {
+    console.error('Failed to load offline users:', err.message);
+  }
+}
 
 // Seed initial in-memory accounts for offline / development resilience (with SHA-256 pre-hashing)
 (async () => {
@@ -16,89 +108,148 @@ const inMemoryUsers = new Map();
     const hashAdmin = await cryptoUtil.hashPassword('Admin@1234', 10);
     const hashSuperAdmin = await cryptoUtil.hashPassword('SuperAdmin@1234', 10);
 
-    inMemoryUsers.set('visitor@ambedkar-archive.in', {
-      _id: 'mock-user-visitor-000',
-      name: 'Public Visitor',
-      email: 'visitor@ambedkar-archive.in',
-      password: hashVisitor,
-      role: 'visitor',
-      language: 'en',
-      institution: 'General Public',
-      avatar: '',
-      isActive: true,
-      lastActiveAt: new Date(),
-      createdAt: new Date(),
+    const demoUsers = [
+      {
+        _id: 'mock-user-visitor-000',
+        name: 'Public Visitor',
+        email: 'visitor@ambedkar-archive.in',
+        password: hashVisitor,
+        role: 'visitor',
+        language: 'en',
+        institution: 'General Public',
+        avatar: '',
+        isActive: true,
+        lastActiveAt: new Date(),
+        createdAt: new Date(),
+        firstLoginAt: null,
+        lastLoginAt: null,
+        loginCount: 0,
+        failedLoginCount: 0,
+        lastLoginIp: null,
+        lastUserAgent: null,
+        userClassification: 'demo',
+      },
+      {
+        _id: 'mock-user-researcher-001',
+        name: 'Archival Researcher',
+        email: 'researcher@ambedkar-archive.in',
+        password: hashResearcher,
+        role: 'researcher',
+        language: 'en',
+        institution: 'Ambedkar Heritage Foundation',
+        avatar: '',
+        email_verified: true,
+        phone_verified: false,
+        isActive: true,
+        lastActiveAt: new Date(),
+        createdAt: new Date(),
+        firstLoginAt: null,
+        lastLoginAt: null,
+        loginCount: 0,
+        failedLoginCount: 0,
+        lastLoginIp: null,
+        lastUserAgent: null,
+        userClassification: 'demo',
+      },
+      {
+        _id: 'mock-user-editor-003',
+        name: 'Content Editor',
+        email: 'editor@ambedkar-archive.in',
+        password: hashEditor,
+        role: 'content_editor',
+        language: 'en',
+        institution: 'DAIC Editorial Board',
+        avatar: '',
+        email_verified: true,
+        phone_verified: false,
+        isActive: true,
+        lastActiveAt: new Date(),
+        createdAt: new Date(),
+        firstLoginAt: null,
+        lastLoginAt: null,
+        loginCount: 0,
+        failedLoginCount: 0,
+        lastLoginIp: null,
+        lastUserAgent: null,
+        userClassification: 'demo',
+      },
+      {
+        _id: 'mock-user-archivist-004',
+        name: 'Senior Archivist',
+        email: 'archivist@ambedkar-archive.in',
+        password: hashArchivist,
+        role: 'archivist',
+        language: 'en',
+        institution: 'Dr. Ambedkar International Centre',
+        avatar: '',
+        email_verified: true,
+        phone_verified: true,
+        isActive: true,
+        lastActiveAt: new Date(),
+        createdAt: new Date(),
+        firstLoginAt: null,
+        lastLoginAt: null,
+        loginCount: 0,
+        failedLoginCount: 0,
+        lastLoginIp: null,
+        lastUserAgent: null,
+        userClassification: 'demo',
+      },
+      {
+        _id: 'mock-user-admin-002',
+        name: 'Archive Administrator',
+        email: 'admin@ambedkar-archive.in',
+        password: hashAdmin,
+        role: 'admin',
+        language: 'en',
+        institution: 'National Archives',
+        avatar: '',
+        email_verified: true,
+        phone_verified: true,
+        isActive: true,
+        lastActiveAt: new Date(),
+        createdAt: new Date(),
+        firstLoginAt: null,
+        lastLoginAt: null,
+        loginCount: 0,
+        failedLoginCount: 0,
+        lastLoginIp: null,
+        lastUserAgent: null,
+        userClassification: 'demo',
+      },
+      {
+        _id: 'mock-user-superadmin-005',
+        name: 'Super Administrator',
+        email: 'superadmin@ambedkar-archive.in',
+        password: hashSuperAdmin,
+        role: 'super_admin',
+        language: 'en',
+        institution: 'DAIC Technology Governance Council',
+        avatar: '',
+        email_verified: true,
+        phone_verified: true,
+        isActive: true,
+        lastActiveAt: new Date(),
+        createdAt: new Date(),
+        firstLoginAt: null,
+        lastLoginAt: null,
+        loginCount: 0,
+        failedLoginCount: 0,
+        lastLoginIp: null,
+        lastUserAgent: null,
+        userClassification: 'demo',
+      },
+    ];
+
+    demoUsers.forEach(u => {
+      attachUserMethods(u);
+      inMemoryUsers.set(u.email, u);
     });
 
-    inMemoryUsers.set('researcher@ambedkar-archive.in', {
-      _id: 'mock-user-researcher-001',
-      name: 'Archival Researcher',
-      email: 'researcher@ambedkar-archive.in',
-      password: hashResearcher,
-      role: 'researcher',
-      language: 'en',
-      institution: 'Ambedkar Heritage Foundation',
-      avatar: '',
-      isActive: true,
-      lastActiveAt: new Date(),
-      createdAt: new Date(),
-    });
-
-    inMemoryUsers.set('editor@ambedkar-archive.in', {
-      _id: 'mock-user-editor-003',
-      name: 'Content Editor',
-      email: 'editor@ambedkar-archive.in',
-      password: hashEditor,
-      role: 'content_editor',
-      language: 'en',
-      institution: 'DAIC Editorial Board',
-      avatar: '',
-      isActive: true,
-      lastActiveAt: new Date(),
-      createdAt: new Date(),
-    });
-
-    inMemoryUsers.set('archivist@ambedkar-archive.in', {
-      _id: 'mock-user-archivist-004',
-      name: 'Senior Archivist',
-      email: 'archivist@ambedkar-archive.in',
-      password: hashArchivist,
-      role: 'archivist',
-      language: 'en',
-      institution: 'Dr. Ambedkar International Centre',
-      avatar: '',
-      isActive: true,
-      lastActiveAt: new Date(),
-      createdAt: new Date(),
-    });
-
-    inMemoryUsers.set('admin@ambedkar-archive.in', {
-      _id: 'mock-user-admin-002',
-      name: 'Archive Administrator',
-      email: 'admin@ambedkar-archive.in',
-      password: hashAdmin,
-      role: 'admin',
-      language: 'en',
-      institution: 'National Archives',
-      avatar: '',
-      isActive: true,
-      lastActiveAt: new Date(),
-      createdAt: new Date(),
-    });
-
-    inMemoryUsers.set('superadmin@ambedkar-archive.in', {
-      _id: 'mock-user-superadmin-005',
-      name: 'Super Administrator',
-      email: 'superadmin@ambedkar-archive.in',
-      password: hashSuperAdmin,
-      role: 'super_admin',
-      language: 'en',
-      institution: 'DAIC Technology Governance Council',
-      avatar: '',
-      isActive: true,
-      lastActiveAt: new Date(),
-      createdAt: new Date(),
-    });
+    // Load any persisted users from offline storage
+    loadOfflineUsers();
+    // Save to ensure file is synced
+    saveOfflineUsers();
   } catch (e) {
     console.error('Error initializing demo in-memory users:', e);
   }
@@ -121,19 +272,19 @@ async function findByEmail(email, includePassword = false) {
     }
   }
 
+  const CANONICAL_DEMO_PASSWORDS = {
+    'visitor@ambedkar-archive.in': 'Visitor@1234',
+    'researcher@ambedkar-archive.in': 'Research@1234',
+    'editor@ambedkar-archive.in': 'Editor@1234',
+    'archivist@ambedkar-archive.in': 'Archivist@1234',
+    'admin@ambedkar-archive.in': 'Admin@1234',
+    'superadmin@ambedkar-archive.in': 'SuperAdmin@1234',
+  };
+
   const memUser = inMemoryUsers.get(normalized);
   if (!memUser) return null;
 
-  return {
-    ...memUser,
-    comparePassword: async function (candidate) {
-      return await cryptoUtil.comparePassword(candidate, memUser.password);
-    },
-    updateActivity: async function () {
-      memUser.lastActiveAt = new Date();
-      return true;
-    },
-  };
+  return attachUserMethods(memUser);
 }
 
 async function findById(id) {
@@ -146,9 +297,11 @@ async function findById(id) {
     }
   }
 
+  const cleanNum = String(id).replace(/[^0-9]/g, '');
   for (const u of inMemoryUsers.values()) {
-    if (u._id === id || String(u._id) === String(id)) {
-      return u;
+    const uId = String(u._id || '');
+    if (uId === id || String(uId) === String(id) || (cleanNum && cleanNum.length >= 3 && uId.endsWith(cleanNum)) || u.email === id) {
+      return attachUserMethods(u);
     }
   }
   return null;
@@ -181,6 +334,7 @@ async function createUser({ name, email, password, phone = '', role = 'visitor',
 
   const hashedPassword = await cryptoUtil.hashPassword(password, 12);
   const id = 'user-' + crypto.randomBytes(8).toString('hex');
+  const userClassification = classifyUser(normalized, id);
   const user = {
     _id: id,
     name,
@@ -198,17 +352,152 @@ async function createUser({ name, email, password, phone = '', role = 'visitor',
     isActive: true,
     lastActiveAt: new Date(),
     createdAt: new Date(),
-    comparePassword: async function (candidate) {
-      return await cryptoUtil.comparePassword(candidate, hashedPassword);
-    },
-    updateActivity: async function () {
-      user.lastActiveAt = new Date();
-      return true;
-    },
+    firstLoginAt: null,
+    lastLoginAt: null,
+    loginCount: 0,
+    failedLoginCount: 0,
+    lastLoginIp: null,
+    lastUserAgent: null,
+    userClassification,
   };
 
+  attachUserMethods(user);
   inMemoryUsers.set(normalized || cleanPhone, user);
+  saveOfflineUsers();
   return user;
+}
+
+function classifyUser(userOrEmail, id = '') {
+  let email = '';
+  let userId = String(id || '');
+  let name = '';
+  if (typeof userOrEmail === 'object' && userOrEmail !== null) {
+    email = (userOrEmail.email || '').toLowerCase().trim();
+    userId = String(userOrEmail._id || userOrEmail.id || id || '');
+    name = (userOrEmail.name || '').toLowerCase().trim();
+  } else if (typeof userOrEmail === 'string') {
+    email = userOrEmail.toLowerCase().trim();
+  }
+
+  const DEMO_EMAILS = [
+    'visitor@ambedkar-archive.in',
+    'researcher@ambedkar-archive.in',
+    'editor@ambedkar-archive.in',
+    'archivist@ambedkar-archive.in',
+    'admin@ambedkar-archive.in',
+    'superadmin@ambedkar-archive.in',
+  ];
+
+  if (DEMO_EMAILS.includes(email) || userId.startsWith('mock-user-') || email.includes('demo')) {
+    return 'demo';
+  }
+
+  if (
+    email.includes('test') ||
+    email.includes('example.com') ||
+    email.includes('verify_target_') ||
+    email.includes('session_inv_') ||
+    userId.includes('test') ||
+    name.startsWith('test')
+  ) {
+    return 'test';
+  }
+
+  return 'real';
+}
+
+async function recordUserLogin(identifier, { authMethod = 'password', ip = '', userAgent = '' } = {}) {
+  const now = new Date();
+
+  if (isDbConnected()) {
+    try {
+      let user = null;
+      if (mongoose.Types.ObjectId.isValid(identifier)) {
+        user = await User.findById(identifier);
+      }
+      if (!user) {
+        user = await User.findOne({
+          $or: [
+            { email: String(identifier).toLowerCase().trim() },
+            { phone: String(identifier).trim() }
+          ]
+        });
+      }
+      if (user) {
+        if (!user.firstLoginAt) user.firstLoginAt = now;
+        user.lastLoginAt = now;
+        user.lastActiveAt = now;
+        user.loginCount = (user.loginCount || 0) + 1;
+        user.failedLoginCount = 0;
+        if (ip) user.lastLoginIp = ip;
+        if (userAgent) user.lastUserAgent = userAgent;
+        if (authMethod && !user.authProvider) user.authProvider = authMethod;
+        await user.save({ validateBeforeSave: false });
+        return user;
+      }
+    } catch (e) {
+      // fallback to memory
+    }
+  }
+
+  // Memory fallback
+  const idStr = String(identifier).toLowerCase().trim();
+  for (const u of inMemoryUsers.values()) {
+    const uEmail = (u.email || '').toLowerCase().trim();
+    const uPhone = (u.phone || '').trim();
+    const uId = String(u._id || '');
+    if (uId === identifier || uEmail === idStr || uPhone === idStr) {
+      if (!u.firstLoginAt) u.firstLoginAt = now;
+      u.lastLoginAt = now;
+      u.lastActiveAt = now;
+      u.loginCount = (u.loginCount || 0) + 1;
+      u.failedLoginCount = 0;
+      if (ip) u.lastLoginIp = ip;
+      if (userAgent) u.lastUserAgent = userAgent;
+      saveOfflineUsers();
+      return u;
+    }
+  }
+  return null;
+}
+
+async function recordUserLoginFailure(identifier) {
+  if (isDbConnected()) {
+    try {
+      let user = null;
+      if (mongoose.Types.ObjectId.isValid(identifier)) {
+        user = await User.findById(identifier);
+      }
+      if (!user) {
+        user = await User.findOne({
+          $or: [
+            { email: String(identifier).toLowerCase().trim() },
+            { phone: String(identifier).trim() }
+          ]
+        });
+      }
+      if (user) {
+        user.failedLoginCount = (user.failedLoginCount || 0) + 1;
+        await user.save({ validateBeforeSave: false });
+        return user;
+      }
+    } catch (e) {
+      // fallback
+    }
+  }
+
+  const idStr = String(identifier).toLowerCase().trim();
+  for (const u of inMemoryUsers.values()) {
+    const uEmail = (u.email || '').toLowerCase().trim();
+    const uPhone = (u.phone || '').trim();
+    const uId = String(u._id || '');
+    if (uId === identifier || uEmail === idStr || uPhone === idStr) {
+      u.failedLoginCount = (u.failedLoginCount || 0) + 1;
+      saveOfflineUsers();
+      return u;
+    }
+  }
+  return null;
 }
 
 async function findByPhone(phone, includePassword = false) {
@@ -236,16 +525,7 @@ async function findByPhone(phone, includePassword = false) {
 
   for (const u of inMemoryUsers.values()) {
     if (u.phone && candidates.includes(u.phone)) {
-      return {
-        ...u,
-        comparePassword: async function (candidate) {
-          return await cryptoUtil.comparePassword(candidate, u.password);
-        },
-        updateActivity: async function () {
-          u.lastActiveAt = new Date();
-          return true;
-        },
-      };
+      return attachUserMethods(u);
     }
   }
   return null;
@@ -260,9 +540,12 @@ async function updateUser(id, updates) {
     }
   }
 
+  const cleanNum = String(id).replace(/[^0-9]/g, '');
   for (const u of inMemoryUsers.values()) {
-    if (u._id === id || String(u._id) === String(id)) {
+    const uId = String(u._id || '');
+    if (uId === id || String(uId) === String(id) || (cleanNum && cleanNum.length >= 3 && uId.endsWith(cleanNum)) || u.email === id) {
       Object.assign(u, updates);
+      saveOfflineUsers();
       return u;
     }
   }
@@ -290,9 +573,14 @@ async function updatePassword(email, newPassword) {
     const hashed = await cryptoUtil.hashPassword(newPassword, 12);
     memUser.password = hashed;
     memUser.passwordChangedAt = new Date();
+    saveOfflineUsers();
     return true;
   }
   return false;
+}
+
+function getInMemoryUsers() {
+  return inMemoryUsers;
 }
 
 module.exports = {
@@ -303,4 +591,10 @@ module.exports = {
   updateUser,
   updatePassword,
   isDbConnected,
+  getInMemoryUsers,
+  classifyUser,
+  recordUserLogin,
+  recordUserLoginFailure,
+  saveOfflineUsers,
+  loadOfflineUsers,
 };

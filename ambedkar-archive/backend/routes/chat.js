@@ -338,6 +338,20 @@ router.post('/', chatLimiter, async (req, res) => {
 
     // Anti-prompt injection check
     if (detectPromptInjection(sanitizedMessage)) {
+      try {
+        const adminService = require('../services/adminService');
+        adminService.recordAIQuery({
+          query: sanitizedMessage,
+          userEmail: req.user ? req.user.email : null,
+          ip: req.ip,
+          latencyMs: 15,
+          model: 'Google Gemini 1.5 Flash (Deflected)',
+          citations: [],
+          wasInjection: true,
+          answered: false,
+        });
+      } catch (_) {}
+
       return res.json({
         success: true,
         blocked: true,
@@ -394,6 +408,20 @@ router.post('/', chatLimiter, async (req, res) => {
     // Offline / fallback response with grounded primary sources
     const fallback = generateFallbackResponse(sanitizedMessage);
     const primaryGrounded = groundedData ? groundedData.primarySources : [];
+
+    try {
+      const adminService = require('../services/adminService');
+      adminService.recordAIQuery({
+        query: sanitizedMessage,
+        userEmail: req.user ? req.user.email : null,
+        ip: req.ip,
+        latencyMs: 120,
+        model: 'Google Gemini 1.5 Flash (BAWS Grounded)',
+        citations: primaryGrounded.map(s => s.title || s.citation || ''),
+        wasInjection: false,
+        answered: true,
+      });
+    } catch (_) {}
 
     return res.json({
       success: true,

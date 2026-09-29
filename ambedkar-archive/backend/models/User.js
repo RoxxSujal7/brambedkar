@@ -77,9 +77,67 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    firstLoginAt: {
+      type: Date,
+      default: null,
+    },
+    lastLoginAt: {
+      type: Date,
+      default: null,
+    },
+    loginCount: {
+      type: Number,
+      default: 0,
+    },
+    failedLoginCount: {
+      type: Number,
+      default: 0,
+    },
+    lastLoginIp: {
+      type: String,
+      default: '',
+    },
+    lastUserAgent: {
+      type: String,
+      default: '',
+    },
+    providerAccountId: {
+      type: String,
+      default: '',
+      index: true,
+    },
+    userClassification: {
+      type: String,
+      enum: ['real', 'demo', 'test', 'seeded'],
+      default: 'real',
+    },
   },
   { timestamps: true }
 );
+
+// Virtual aliases for standard production identity fields
+userSchema.virtual('userId').get(function () {
+  return String(this._id);
+});
+
+userSchema.virtual('provider').get(function () {
+  return this.authProvider;
+});
+
+userSchema.virtual('status').get(function () {
+  return this.isActive ? 'active' : 'suspended';
+});
+
+userSchema.virtual('totalLoginCount').get(function () {
+  return this.loginCount || 0;
+});
+
+userSchema.virtual('lastActivityAt').get(function () {
+  return this.lastActiveAt;
+});
+
+userSchema.set('toJSON', { virtuals: true });
+userSchema.set('toObject', { virtuals: true });
 
 // Hash password before saving (with SHA-256 pre-hashing) and record passwordChangedAt
 userSchema.pre('save', async function (next) {
@@ -99,6 +157,26 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
 // Update lastActiveAt on login
 userSchema.methods.updateActivity = function () {
   this.lastActiveAt = Date.now();
+  return this.save({ validateBeforeSave: false });
+};
+
+// Record successful authentication event on user
+userSchema.methods.recordLogin = function ({ ip = '', userAgent = '' } = {}) {
+  const now = new Date();
+  if (!this.firstLoginAt) {
+    this.firstLoginAt = now;
+  }
+  this.lastLoginAt = now;
+  this.lastActiveAt = now;
+  this.loginCount = (this.loginCount || 0) + 1;
+  if (ip) this.lastLoginIp = ip;
+  if (userAgent) this.lastUserAgent = userAgent;
+  return this.save({ validateBeforeSave: false });
+};
+
+// Record failed login attempt
+userSchema.methods.recordLoginFailure = function () {
+  this.failedLoginCount = (this.failedLoginCount || 0) + 1;
   return this.save({ validateBeforeSave: false });
 };
 

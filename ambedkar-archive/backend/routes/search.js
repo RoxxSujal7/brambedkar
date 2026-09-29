@@ -274,6 +274,17 @@ router.get('/', searchLimiter, async (req, res, next) => {
     // Re-sort after hybrid inclusion
     results.sort((a, b) => (b.score || 0) - (a.score || 0));
 
+    try {
+      const adminService = require('../services/adminService');
+      adminService.recordSearchTelemetry({
+        query,
+        resultsCount: results.length,
+        filterType,
+        language: req.query.lang || 'en',
+        searchMode: 'hybrid',
+      });
+    } catch (_) {}
+
     res.json({
       success: true,
       count: results.length,

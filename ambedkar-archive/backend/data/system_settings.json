@@ -1,0 +1,15 @@
+{
+  "archiveTitle": "Dr. B. R. Ambedkar Digital Heritage Archive",
+  "institutionName": "Dr. Ambedkar International Centre (DAIC)",
+  "contactEmail": "archive@ambedkar-archive.in",
+  "maintenanceMode": false,
+  "allowRegistration": true,
+  "minPasswordLength": 8,
+  "rateLimitPerMinute": 60,
+  "preservationAutoCheckIntervalHours": 24,
+  "aiModelProvider": "Google Gemini 1.5 Flash (Grounded on BAWS)",
+  "maxUploadSizeBytes": 31457280,
+  "defaultLanguage": "en",
+  "updatedAt": "2026-09-29T20:05:16.326Z",
+  "updatedBy": "superadmin@ambedkar-archive.in"
+}

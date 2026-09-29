@@ -1,0 +1,113 @@
+[
+  {
+    "assetId": "AST-DOC-1916-001",
+    "filename": "castes_in_india_columbia_1916.pdf",
+    "originalName": "Castes_In_India_Genesis_Mechanism.pdf",
+    "assetType": "pdf",
+    "mimeType": "application/pdf",
+    "sizeBytes": 2458900,
+    "sha256Checksum": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "uploader": "archivist@ambedkar-archive.in",
+    "version": 1,
+    "processingStatus": "VERIFIED",
+    "verificationStatus": "VERIFIED",
+    "lastVerifiedAt": "2026-09-29T20:05:15.987Z",
+    "isArchived": false,
+    "dublinCore": {
+      "title": "Castes in India: Their Mechanism, Genesis and Development",
+      "creator": "Dr. B. R. Ambedkar",
+      "date": "1916-05-09",
+      "subject": [
+        "Caste",
+        "Anthropology",
+        "Social Hierarchy"
+      ],
+      "language": "en",
+      "rights": "Public Domain",
+      "sourceInstitution": "Columbia University Anthropology Seminar / DAIC"
+    },
+    "versionHistory": [
+      {
+        "version": 1,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sizeBytes": 2458900,
+        "modifiedBy": "archivist@ambedkar-archive.in",
+        "modifiedAt": "2026-09-29T16:36:06.498Z"
+      }
+    ]
+  },
+  {
+    "assetId": "AST-IMG-1927-002",
+    "filename": "mahad_satyagraha_chavdar_1927.webp",
+    "originalName": "mahad_chavdar_historic.webp",
+    "assetType": "webp",
+    "mimeType": "image/webp",
+    "sizeBytes": 684200,
+    "sha256Checksum": "5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03",
+    "uploader": "archivist@ambedkar-archive.in",
+    "version": 1,
+    "processingStatus": "VERIFIED",
+    "verificationStatus": "VERIFIED",
+    "lastVerifiedAt": "2026-09-29T16:36:06.498Z",
+    "isArchived": false,
+    "dublinCore": {
+      "title": "Dr. Ambedkar drinking water at Chavdar Tale, Mahad",
+      "creator": "Historical Press Archive",
+      "date": "1927-03-20",
+      "subject": [
+        "Mahad Satyagraha",
+        "Civil Rights",
+        "Water Access"
+      ],
+      "language": "en",
+      "rights": "Institutional Cultural Heritage",
+      "sourceInstitution": "Dr. Ambedkar International Centre"
+    },
+    "versionHistory": [
+      {
+        "version": 1,
+        "sha256": "5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03",
+        "sizeBytes": 684200,
+        "modifiedBy": "archivist@ambedkar-archive.in",
+        "modifiedAt": "2026-09-29T16:36:06.498Z"
+      }
+    ]
+  },
+  {
+    "assetId": "AST-AUD-1956-003",
+    "filename": "buddha_dhamma_recitation_1956.mp3",
+    "originalName": "deekshabhoomi_22_vows_audio.mp3",
+    "assetType": "audio",
+    "mimeType": "audio/mpeg",
+    "sizeBytes": 8940000,
+    "sha256Checksum": "7d793037a0760186574b0282f2f435e7090a6ffb8e5c8e2b866c1b3f9b7c8a1e",
+    "uploader": "archivist@ambedkar-archive.in",
+    "version": 1,
+    "processingStatus": "VERIFIED",
+    "verificationStatus": "VERIFIED",
+    "lastVerifiedAt": "2026-09-29T16:36:06.498Z",
+    "isArchived": false,
+    "dublinCore": {
+      "title": "22 Vows of Nagpur Recitation & Address",
+      "creator": "Dr. B. R. Ambedkar",
+      "date": "1956-10-14",
+      "subject": [
+        "Buddhism",
+        "Deeksha Bhoomi",
+        "Moral Renaissance"
+      ],
+      "language": "hi",
+      "rights": "National Archival Treasure",
+      "sourceInstitution": "All India Radio / DAIC Preservation"
+    },
+    "versionHistory": [
+      {
+        "version": 1,
+        "sha256": "7d793037a0760186574b0282f2f435e7090a6ffb8e5c8e2b866c1b3f9b7c8a1e",
+        "sizeBytes": 8940000,
+        "modifiedBy": "archivist@ambedkar-archive.in",
+        "modifiedAt": "2026-09-29T16:36:06.498Z"
+      }
+    ]
+  }
+]

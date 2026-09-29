@@ -1,0 +1,99 @@
+[
+  {
+    "kioskId": "KIOSK-DAIC-DELHI-01",
+    "name": "DAIC Main Atrium Display",
+    "location": "DAIC New Delhi — Ground Floor Gallery",
+    "status": "ONLINE",
+    "lastHeartbeat": "2026-09-29T16:35:21.497Z",
+    "appVersion": "1.4.2",
+    "language": "en",
+    "assignedContent": "Constitutional Assembly 3D Interactive Timeline",
+    "playlist": [
+      {
+        "contentId": "DEB-001",
+        "contentType": "debates",
+        "title": "Preamble Deliberations",
+        "durationSeconds": 300
+      },
+      {
+        "contentId": "MEM-001",
+        "contentType": "memorials",
+        "title": "Chaitya Bhoomi Tribute",
+        "durationSeconds": 240
+      }
+    ],
+    "lastSyncAt": "2026-09-29T15:36:06.497Z",
+    "ipAddress": "10.20.4.15",
+    "isActive": true
+  },
+  {
+    "kioskId": "KIOSK-CHAITYA-MUMBAI-02",
+    "name": "Chaitya Bhoomi Memorial Kiosk",
+    "location": "Dadar Chowpatty, Mumbai",
+    "status": "ONLINE",
+    "lastHeartbeat": "2026-09-29T16:34:36.497Z",
+    "appVersion": "1.4.2",
+    "language": "mr",
+    "assignedContent": "Mahad Satyagraha & Life Chronology",
+    "playlist": [
+      {
+        "contentId": "VOL-001",
+        "contentType": "volumes",
+        "title": "Castes in India",
+        "durationSeconds": 400
+      }
+    ],
+    "lastSyncAt": "2026-09-29T14:36:06.497Z",
+    "ipAddress": "10.30.2.8",
+    "isActive": true
+  },
+  {
+    "kioskId": "KIOSK-DEEKSHA-NAGPUR-03",
+    "name": "Deeksha Bhoomi Stupa Kiosk",
+    "location": "Nagpur Historical Memorial Complex",
+    "status": "ONLINE",
+    "lastHeartbeat": "2026-09-29T16:34:06.497Z",
+    "appVersion": "1.4.1",
+    "language": "hi",
+    "assignedContent": "22 Vows of Nagpur Sacred Recitation",
+    "playlist": [
+      {
+        "contentId": "VOW-ALL",
+        "contentType": "vows",
+        "title": "22 Vows Trilingual Audio",
+        "durationSeconds": 600
+      }
+    ],
+    "lastSyncAt": "2026-09-29T12:36:06.497Z",
+    "ipAddress": "10.40.1.20",
+    "isActive": true
+  },
+  {
+    "kioskId": "KIOSK-MAHAD-04",
+    "name": "Chavdar Tale Water Memorial Station",
+    "location": "Mahad, Raigad District",
+    "status": "DEGRADED",
+    "lastHeartbeat": "2026-09-28T16:36:06.497Z",
+    "appVersion": "1.3.9",
+    "language": "mr",
+    "assignedContent": "Mahad Satyagraha Historical Inscription",
+    "playlist": [],
+    "lastSyncAt": "2026-09-27T16:36:06.497Z",
+    "ipAddress": "10.50.8.12",
+    "isActive": true
+  },
+  {
+    "kioskId": "KIOSK-DAIC-01",
+    "name": "Kiosk Station KIOSK-DAIC-01",
+    "location": "Exhibition Floor",
+    "status": "ONLINE",
+    "lastHeartbeat": "2026-09-29T20:05:16.263Z",
+    "appVersion": "1.4.2",
+    "language": "en",
+    "assignedContent": "General Archive Exploration",
+    "playlist": [],
+    "lastSyncAt": "2026-09-29T17:19:25.855Z",
+    "ipAddress": "127.0.0.1",
+    "isActive": true
+  }
+]

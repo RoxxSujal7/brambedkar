@@ -191,6 +191,7 @@ app.get('/api/health', async (req, res) => {
       error: dbInfo.error ? String(dbInfo.error).replace(/\/\/[^@]*@/, '//****@') : null,
     },
     timestamp: new Date().toISOString(),
+    commit: process.env.VERCEL_GIT_COMMIT_SHA || '0a67a8f',
     version: '1.0.0',
   });
 });

@@ -634,21 +634,17 @@ router.post(
         }
         displayTarget = maskTarget(cleanTarget, 'email');
       } else if (channel === 'telegram') {
-        const parsed = telegramOtpService.parsePhoneNumber(rawTarget);
-        if (parsed.isPhone) {
-          cleanTarget = parsed.e164;
-          displayTarget = maskTarget(cleanTarget, 'phone');
+        const rawClean = rawTarget.trim();
+        if (!rawClean) {
+          return res.status(400).json({ success: false, message: 'Please enter your mobile number, Telegram @username, or Chat ID.' });
+        }
+        cleanTarget = rawClean;
+        if (/^\d{7,14}$/.test(rawClean)) {
+          displayTarget = `Telegram ID ${rawClean}`;
+        } else if (rawClean.startsWith('+')) {
+          displayTarget = maskTarget(rawClean, 'phone');
         } else {
-          cleanTarget = rawTarget.trim();
-          if (!cleanTarget) {
-            return res.status(400).json({ success: false, message: 'Please enter your mobile number, Telegram @username, or Chat ID.' });
-          }
-          if (/^\d+$/.test(cleanTarget)) {
-            displayTarget = `Telegram ID ${cleanTarget}`;
-          } else {
-            cleanTarget = cleanTarget.toLowerCase();
-            displayTarget = cleanTarget.startsWith('@') ? cleanTarget : '@' + cleanTarget;
-          }
+          displayTarget = rawClean.startsWith('@') ? rawClean : '@' + rawClean;
         }
       } else {
         // WhatsApp or Phone OTP: normalize to Indian E.164 format (+91XXXXXXXXXX)
@@ -743,8 +739,7 @@ router.post(
       if (channel === 'email') {
         cleanTarget = target.toLowerCase().trim();
       } else if (channel === 'telegram') {
-        const parsed = telegramOtpService.parsePhoneNumber(target);
-        cleanTarget = parsed.isPhone ? parsed.e164 : target.trim();
+        cleanTarget = target.trim();
       } else {
         const phoneNorm = whatsappOtpService.normalizeIndianPhone(target);
         cleanTarget = phoneNorm.valid ? phoneNorm.e164 : target.replace(/[^0-9+]/g, '').trim();

@@ -11,7 +11,24 @@ const connectDB = async () => {
     return connPromise;
   }
 
-  const uri = process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb://localhost:27017/ambedkar_archive';
+  let uri = process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb://localhost:27017/ambedkar_archive';
+
+  // Hard safety guard: Test execution must NEVER use production database ambedkar_archive
+  const isTest = process.env.NODE_ENV === 'test' || process.env.TEST_MODE === 'true';
+  if (isTest) {
+    if (process.env.MONGO_TEST_URI) {
+      uri = process.env.MONGO_TEST_URI;
+    } else if (uri.includes('/ambedkar_archive?') || uri.endsWith('/ambedkar_archive')) {
+      // Safely switch to isolated test database ambedkar_archive_test
+      uri = uri.replace(/\/ambedkar_archive(\?|$)/, '/ambedkar_archive_test$1');
+      console.log('🔒 Test isolation active: Redirected to isolated test database ambedkar_archive_test');
+    }
+
+    // Verify hard safety guard
+    if (uri.includes('/ambedkar_archive?') || uri.endsWith('/ambedkar_archive')) {
+      throw new Error("🚨 HARD SAFETY GUARD: Test mode attempted to connect to production database 'ambedkar_archive'! Tests must use an isolated test database ('ambedkar_archive_test').");
+    }
+  }
 
   connPromise = (async () => {
     try {
@@ -19,7 +36,7 @@ const connectDB = async () => {
         serverSelectionTimeoutMS: 5000,
       });
       lastDbError = null;
-      console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
+      console.log(`✅ MongoDB Connected: ${conn.connection.host} [db: ${conn.connection.name}]`);
       return conn;
     } catch (err) {
       connPromise = null;

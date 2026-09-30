@@ -8,7 +8,7 @@ const bookmarkSchema = new mongoose.Schema(
       index: true,
     },
     documentId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.Mixed, // Accepts ObjectId OR slug/string IDs (e.g. doc-annihilation)
       ref: 'Document',
       required: true,
     },

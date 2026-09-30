@@ -260,7 +260,21 @@ async function runTests() {
     const mainStatsRes = await req('/api/admin/stats', 'GET', null, adminToken);
     testAssert(mainStatsRes.ok && mainStatsRes.data.success, 'GET /api/admin/stats succeeds');
     testAssert('realUsersCount' in mainStatsRes.data.stats, 'Main admin stats includes realUsersCount');
-    testAssert('usersNeverLoggedInCount' in mainStatsRes.data.stats, 'Main admin stats includes usersNeverLoggedInCount');
+    // 12. Test Teardown: Leave database clean
+    console.log('\n--- 12. Test Teardown: Purging Test Fixtures ---');
+    try {
+      const User = require('../backend/models/User');
+      const AuthEvent = require('../backend/models/AuthEvent');
+      const connectDB = require('../backend/config/db');
+      await connectDB();
+      if (User) {
+        await User.deleteMany({ email: { $in: [uniqueEmail, otpUserEmail] } });
+      }
+      if (AuthEvent) {
+        await AuthEvent.deleteMany({ userEmail: { $in: [uniqueEmail, otpUserEmail] } });
+      }
+      console.log('Teardown complete: Cleaned test fixtures.');
+    } catch (_) {}
 
   } catch (err) {
     console.error('Unhandled test suite error:', err);

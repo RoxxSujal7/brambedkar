@@ -453,15 +453,21 @@ async function recordAuthEvent(eventData) {
     metadata = {},
   } = eventData;
 
-  const eventId = eventData.eventId || `AUTH-${Date.now().toString().slice(-6)}-${crypto.randomBytes(2).toString('hex')}`;
+  const isTest = Boolean(
+    eventData.isTest ||
+    (userService.isTestEmail && (userService.isTestEmail(userEmail) || userService.isTestEmail(actor))) ||
+    (userEmail && (userEmail.includes('test') || userEmail.includes('session_inv_') || userEmail.includes('sec_user_')))
+  );
+
   const classification = eventData.eventClassification || (
-    (userEmail && (userEmail.includes('demo') || userEmail.endsWith('@ambedkar-archive.in')))
-      ? 'demo'
-      : (userEmail && (userEmail.includes('test') || userEmail.includes('example.com')))
-        ? 'test'
+    isTest
+      ? 'test'
+      : (userEmail && (userEmail.includes('demo') || (userEmail.endsWith('@ambedkar-archive.in') && !userEmail.startsWith('admin'))))
+        ? 'demo'
         : 'real'
   );
 
+  const eventId = `EVT-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`;
   const entry = {
     id: eventId,
     eventId,
@@ -488,12 +494,15 @@ async function recordAuthEvent(eventData) {
     }
   }
 
-  const events = readJson(FILES.AUTH_EVENTS, []);
-  events.unshift(entry);
-  if (events.length > 2000) events.pop();
-  writeJson(FILES.AUTH_EVENTS, events);
+  // Only persist genuine operational events to production file storage
+  if (classification !== 'test') {
+    const events = readJson(FILES.AUTH_EVENTS, []);
+    events.unshift(entry);
+    if (events.length > 2000) events.pop();
+    writeJson(FILES.AUTH_EVENTS, events);
+  }
 
-  // Evaluate for Security Center alerts
+  // Evaluate for Security Center alerts (suppressed for tests)
   await evaluateSecurityRules(entry);
 
   return entry;
@@ -553,6 +562,15 @@ async function getAuthEvents(options = {}) {
 
 async function evaluateSecurityRules(authEvent) {
   try {
+    // Hard guard: Automated test fixtures must never generate production SecurityEvents
+    if (
+      authEvent.isTest ||
+      (userService.isTestEmail && userService.isTestEmail(authEvent.userEmail)) ||
+      (authEvent.userEmail && (authEvent.userEmail.includes('test') || authEvent.userEmail.includes('session_inv_') || authEvent.userEmail.includes('sec_user_')))
+    ) {
+      return;
+    }
+
     const events = readJson(FILES.AUTH_EVENTS, []);
     const fifteenMinAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString();
 
@@ -800,7 +818,7 @@ async function getAllAuthEvents() {
 function enrichUserWithAuthData(rawUser, authEvents = []) {
   const email = (rawUser.email || '').toLowerCase().trim();
   const userId = String(rawUser.id || rawUser._id || '');
-  const classification = rawUser.userClassification || (userService.classifyUser ? userService.classifyUser(rawUser, userId) : (userId.startsWith('mock-user-') ? 'demo' : 'real'));
+  const classification = userService.classifyUser ? userService.classifyUser(rawUser, userId) : (rawUser.userClassification || (userId.startsWith('mock-user-') ? 'demo' : 'real'));
 
   // Find all auth events for this user
   const userEvents = authEvents.filter(e => {
@@ -818,18 +836,20 @@ function enrichUserWithAuthData(rawUser, authEvents = []) {
   const rawLoginCount = rawUser.loginCount !== undefined ? rawUser.loginCount : 0;
   const totalLogins = Math.max(rawLoginCount, successfulLogins.length);
 
-  let firstLogin = null;
-  if (rawUser.firstLoginAt) {
-    firstLogin = new Date(rawUser.firstLoginAt).toISOString();
-  } else if (successfulLogins.length > 0) {
-    firstLogin = new Date(successfulLogins[0].timestamp).toISOString();
+  function safeIso(d) {
+    if (!d) return null;
+    const date = new Date(d);
+    return isNaN(date.getTime()) ? null : date.toISOString();
   }
 
-  let lastLogin = null;
-  if (rawUser.lastLoginAt) {
-    lastLogin = new Date(rawUser.lastLoginAt).toISOString();
-  } else if (successfulLogins.length > 0) {
-    lastLogin = new Date(successfulLogins[successfulLogins.length - 1].timestamp).toISOString();
+  let firstLogin = safeIso(rawUser.firstLoginAt);
+  if (!firstLogin && successfulLogins.length > 0) {
+    firstLogin = safeIso(successfulLogins[0].timestamp);
+  }
+
+  let lastLogin = safeIso(rawUser.lastLoginAt);
+  if (!lastLogin && successfulLogins.length > 0) {
+    lastLogin = safeIso(successfulLogins[successfulLogins.length - 1].timestamp);
   }
 
   const hasLoggedIn = totalLogins > 0 || !!firstLogin;
@@ -861,7 +881,7 @@ function enrichUserWithAuthData(rawUser, authEvents = []) {
     hasLoggedIn,
     firstLogin,
     lastLogin,
-    lastActiveAt: rawUser.lastActiveAt || lastLogin || rawUser.createdAt || new Date().toISOString(),
+    lastActiveAt: safeIso(rawUser.lastActiveAt) || lastLogin || safeIso(rawUser.createdAt) || new Date().toISOString(),
     failedLogins,
     lastIp,
     lastUserAgent,
@@ -871,7 +891,7 @@ function enrichUserWithAuthData(rawUser, authEvents = []) {
 async function getUsers(options = {}) {
   const {
     page = 1,
-    limit = 20,
+    limit = 50,
     role,
     status,
     search,
@@ -920,9 +940,9 @@ async function getUsers(options = {}) {
   for (const f of FALLBACK_USER_REGISTRY) {
     const fEmail = (f.email || '').toLowerCase().trim();
     const fId = String(f.id || '');
-    if (!seenIds.has(fId) && !seenEmails.has(fEmail)) {
+    const existingSameClass = rawList.find(u => (u.email || '').toLowerCase().trim() === fEmail && (u.userClassification || 'real') === f.userClassification);
+    if (!seenIds.has(fId) && !existingSameClass) {
       seenIds.add(fId);
-      seenEmails.add(fEmail);
       rawList.push(f);
     }
   }
@@ -1509,8 +1529,10 @@ async function getDigitalAssets(options = {}) {
         ];
       }
       const count = await DigitalAsset.countDocuments(q);
-      const data = await DigitalAsset.find(q).sort({ createdAt: -1 }).skip(skip).limit(parseInt(limit, 10));
-      return { total: count, page: parseInt(page, 10), limit: parseInt(limit, 10), assets: data };
+      if (count > 0) {
+        const data = await DigitalAsset.find(q).sort({ createdAt: -1 }).skip(skip).limit(parseInt(limit, 10));
+        return { total: count, page: parseInt(page, 10), limit: parseInt(limit, 10), assets: data };
+      }
     } catch (e) {
       // Fallback
     }
@@ -2326,4 +2348,5 @@ module.exports = {
   checkSystemHealth,
   getSystemSettings,
   updateSystemSettings,
+  evaluateSecurityRules,
 };

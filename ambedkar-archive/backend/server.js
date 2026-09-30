@@ -52,6 +52,7 @@ app.use(helmet({
     directives: {
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'", "'unsafe-inline'", "https://accounts.google.com", "https://apis.google.com", "https://cdn.jsdelivr.net"],
+      scriptSrcAttr: ["'self'", "'unsafe-inline'"],
       workerSrc: ["'self'", "blob:"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://accounts.google.com/gsi/style"],
       fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
@@ -71,6 +72,25 @@ app.use(helmet({
 // Permissions-Policy (disables unused browser sensor/hardware APIs)
 app.use((req, res, next) => {
   res.setHeader('Permissions-Policy', 'geolocation=(), camera=(), microphone=(), payment=()');
+  // Strict institutional CSP for Admin Console: Enforce script-src-attr 'none'
+  if (req.path === '/admin.html' || req.path === '/admin') {
+    res.setHeader(
+      'Content-Security-Policy',
+      "default-src 'self'; " +
+      "script-src 'self' 'unsafe-inline' https://accounts.google.com https://apis.google.com https://cdn.jsdelivr.net; " +
+      "script-src-attr 'none'; " +
+      "worker-src 'self' blob:; " +
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com/gsi/style; " +
+      "font-src 'self' https://fonts.gstatic.com data:; " +
+      "img-src 'self' data: https: blob:; " +
+      "connect-src 'self' https://accounts.google.com https://accounts.google.com/gsi/ https://www.googleapis.com https://oauth2.googleapis.com https://generativelanguage.googleapis.com https://cdn.jsdelivr.net https://tessdata.projectnaptha.com; " +
+      "frame-src 'self' https://accounts.google.com; " +
+      "object-src 'none'; " +
+      "base-uri 'self'; " +
+      "form-action 'self'; " +
+      "frame-ancestors 'self';"
+    );
+  }
   next();
 });
 

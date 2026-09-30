@@ -1,1 +1,40 @@
-[]
+[
+  {
+    "eventId": "SEC-278590-a7c3",
+    "eventType": "FAILED_LOGINS_THRESHOLD",
+    "severity": "HIGH",
+    "title": "Multiple Failed Login Attempts (4 attempts in 15m)",
+    "details": "Repeated failed logins detected for admin@ambedkar-archive.in from IP 127.0.0.1.",
+    "targetUser": "admin@ambedkar-archive.in",
+    "sourceIp": "127.0.0.1",
+    "status": "UNRESOLVED",
+    "acknowledgedBy": null,
+    "acknowledgedAt": null,
+    "resolvedBy": null,
+    "resolvedAt": null,
+    "internalNotes": [],
+    "metadata": {
+      "failureCount": 4
+    },
+    "createdAt": "2026-09-30T12:11:18.590Z"
+  },
+  {
+    "eventId": "SEC-231403-54d4",
+    "eventType": "FAILED_LOGINS_THRESHOLD",
+    "severity": "HIGH",
+    "title": "Multiple Failed Login Attempts (3 attempts in 15m)",
+    "details": "Repeated failed logins detected for scholar.1790770227789@columbia.edu from IP 127.0.0.1.",
+    "targetUser": "scholar.1790770227789@columbia.edu",
+    "sourceIp": "127.0.0.1",
+    "status": "UNRESOLVED",
+    "acknowledgedBy": null,
+    "acknowledgedAt": null,
+    "resolvedBy": null,
+    "resolvedAt": null,
+    "internalNotes": [],
+    "metadata": {
+      "failureCount": 3
+    },
+    "createdAt": "2026-09-30T12:10:31.403Z"
+  }
+]

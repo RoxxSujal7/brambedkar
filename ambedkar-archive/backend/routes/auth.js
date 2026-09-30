@@ -326,8 +326,8 @@ router.post(
       }
 
       if (!user || !(await user.comparePassword(password))) {
-        userService.recordUserLoginFailure(identifier).catch(() => {});
-        adminService.recordAuthEvent({
+        await userService.recordUserLoginFailure(identifier).catch(() => {});
+        await adminService.recordAuthEvent({
           event: 'LOGIN_FAILED',
           userEmail: identifier,
           authMethod: 'password',
@@ -362,7 +362,7 @@ router.post(
       });
       const token = signToken(user._id);
 
-      adminService.recordAuthEvent({
+      await adminService.recordAuthEvent({
         event: 'LOGIN_SUCCESS',
         userEmail: user.email,
         userId: user._id,
@@ -442,8 +442,8 @@ router.post('/google', authLimiter, async (req, res, next) => {
         });
       }
 
-      // When GOOGLE_CLIENT_ID is unconfigured or in development mode, only permit pre-configured safe demo accounts
-      const safeDemoEmails = ['researcher@ambedkar-archive.in', 'admin@ambedkar-archive.in', 'visitor@ambedkar-archive.in'];
+      // When GOOGLE_CLIENT_ID is unconfigured or in development mode, only permit pre-configured safe demo accounts (non-admin)
+      const safeDemoEmails = ['researcher@ambedkar-archive.in', 'visitor@ambedkar-archive.in'];
       const normalizedEmail = bodyEmail.trim().toLowerCase();
       if (!safeDemoEmails.includes(normalizedEmail)) {
         return res.status(403).json({

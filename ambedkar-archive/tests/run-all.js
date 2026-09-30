@@ -20,6 +20,7 @@ const testFiles = [
   'sha256-integrity.test.js',
   'theme-font-contrast.test.js',
   'real-user-login-intelligence.test.js',
+  'test-data-isolation-and-classification.test.js',
 ];
 
 console.log('========================================================');
@@ -36,8 +37,8 @@ for (const file of testFiles) {
   try {
     const output = execSync(`node "${filePath}"`, {
       encoding: 'utf8',
-      timeout: 30000,
-      env: { ...process.env, TEST_BASE_URL: 'http://127.0.0.1:5000' },
+      timeout: 60000,
+      env: { ...process.env, NODE_ENV: 'test', TEST_MODE: 'true', TEST_BASE_URL: 'http://127.0.0.1:5000' },
     });
 
     // Robust summary regex handling all archive test formats

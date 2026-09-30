@@ -160,35 +160,24 @@
     if (instEl) instEl.textContent = curator.institution || 'Dr. Ambedkar International Centre';
 
     // Update Masthead Operator Area
+    const mastBox = document.getElementById('admin-operator-box');
+    if (mastBox) mastBox.style.display = 'flex';
     const mastName = document.getElementById('masthead-operator-name');
     const mastRole = document.getElementById('masthead-operator-role');
     if (mastName) mastName.textContent = curator.name;
     if (mastRole) mastRole.textContent = curator.role.toUpperCase();
 
-    // Enforce Tab Visibility by Role
+    // Enforce Tab Visibility by Role for 5 Primary Sections
     const userRole = curator.role;
     const isSuperAdmin = userRole === 'super_admin';
     const isAdmin = userRole === 'admin' || isSuperAdmin;
     const isArchivist = userRole === 'archivist' || isAdmin;
-    const isEditor = userRole === 'content_editor' || isArchivist;
 
+    toggleTabVisibility('overview', true);
     toggleTabVisibility('users', isAdmin);
+    toggleTabVisibility('archive', isArchivist);
     toggleTabVisibility('security', isAdmin);
-    toggleTabVisibility('audit', isArchivist);
-    toggleTabVisibility('cms', isEditor);
-    toggleTabVisibility('workflow', isEditor);
-    toggleTabVisibility('versions', isArchivist);
-    toggleTabVisibility('assets', isArchivist);
-    toggleTabVisibility('preservation', isArchivist);
-    toggleTabVisibility('ai-rag', isArchivist);
-    toggleTabVisibility('search', isAdmin);
-    toggleTabVisibility('analytics', isArchivist);
-    toggleTabVisibility('kiosks', isArchivist);
-    toggleTabVisibility('multilingual', isEditor);
-    toggleTabVisibility('scheduled', isEditor);
-    toggleTabVisibility('incidents', isAdmin);
-    toggleTabVisibility('system-health', isAdmin);
-    toggleTabVisibility('settings', isSuperAdmin);
+    toggleTabVisibility('system', isAdmin);
 
     // Initial Overview Stats Render
     renderOverviewStats(dashData);
@@ -219,10 +208,78 @@
     });
   }
 
+  let currentArchiveSubtab = 'assets';
+  function switchArchiveSubtab(subtab) {
+    currentArchiveSubtab = subtab;
+    document.querySelectorAll('.archive-subpanel').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('#subtab-archive-assets, #subtab-archive-preservation, #subtab-archive-publishing').forEach(btn => btn.classList.remove('active-subtab'));
+
+    const panel = document.getElementById(`archive-subpanel-${subtab}`);
+    if (panel) panel.style.display = 'block';
+    const btn = document.getElementById(`subtab-archive-${subtab}`);
+    if (btn) btn.classList.add('active-subtab');
+
+    if (subtab === 'assets') loadDigitalAssets();
+    else if (subtab === 'preservation') loadPreservationMetrics();
+    else if (subtab === 'publishing') loadCmsContent();
+  }
+
+  function loadArchiveSection() {
+    switchArchiveSubtab(currentArchiveSubtab || 'assets');
+  }
+
+  let currentSystemSubtab = 'health';
+  function switchSystemSubtab(subtab) {
+    currentSystemSubtab = subtab;
+    document.querySelectorAll('.system-subpanel').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('#subtab-system-health, #subtab-system-settings').forEach(btn => btn.classList.remove('active-subtab'));
+
+    const panel = document.getElementById(`system-subpanel-${subtab}`);
+    if (panel) panel.style.display = 'block';
+    const btn = document.getElementById(`subtab-system-${subtab}`);
+    if (btn) btn.classList.add('active-subtab');
+
+    if (subtab === 'health') loadSystemHealth();
+    else if (subtab === 'settings') loadSystemSettings();
+  }
+
+  function loadSystemSection() {
+    switchSystemSubtab(currentSystemSubtab || 'health');
+  }
+
+  function loadSecuritySection() {
+    loadSecurityCenter();
+    loadSecurityAuthStream();
+  }
+
+  async function loadSecurityAuthStream() {
+    const tbody = document.getElementById('security-auth-tbody');
+    if (!tbody) return;
+    try {
+      const { ok, data } = await apiFetch('/api/admin/security/auth-activity?limit=25');
+      if (ok && data.success && Array.isArray(data.data) && data.data.length > 0) {
+        tbody.innerHTML = data.data.map(e => `
+          <tr>
+            <td><span class="admin-chip ${e.success ? 'success' : 'danger'}">${escapeHtml(e.event || 'AUTH_EVENT')}</span></td>
+            <td style="color:#fff;font-weight:600;">${escapeHtml(e.userEmail || e.actor || 'Anonymous')}</td>
+            <td><code style="color:var(--admin-gold);">${escapeHtml(e.authMethod || 'password')}</code></td>
+            <td style="font-family:var(--font-mono);font-size:0.8rem;">${escapeHtml(e.ip || '127.0.0.1')}</td>
+            <td style="font-size:0.8rem;color:var(--text-muted);">${formatDate(e.timestamp || e.createdAt)}</td>
+          </tr>
+        `).join('');
+      } else {
+        tbody.innerHTML = `<tr><td colspan="5" class="admin-empty-state">No authentication activity recorded yet.</td></tr>`;
+      }
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="5" class="admin-empty-state">No authentication activity recorded yet.</td></tr>`;
+    }
+  }
+
   function switchTab(tabName) {
     activeTab = tabName;
     document.querySelectorAll('.admin-nav-item, .admin-tab-btn').forEach(b => {
       b.classList.toggle('active', b.dataset.tab === tabName);
+      b.setAttribute('aria-selected', b.dataset.tab === tabName ? 'true' : 'false');
     });
 
     document.querySelectorAll('.admin-view-panel, .admin-panel').forEach(p => {
@@ -234,7 +291,6 @@
       activePanel.classList.add('active');
     }
 
-    // Trigger tab loader
     switch (tabName) {
       case 'overview':
         loadOverviewData();
@@ -242,53 +298,14 @@
       case 'users':
         loadUsersTable();
         break;
+      case 'archive':
+        loadArchiveSection();
+        break;
       case 'security':
-        loadSecurityCenter();
+        loadSecuritySection();
         break;
-      case 'audit':
-        loadAuditLogs();
-        break;
-      case 'cms':
-        loadCmsContent();
-        break;
-      case 'workflow':
-        loadWorkflowApprovals();
-        break;
-      case 'assets':
-        loadDigitalAssets();
-        break;
-      case 'preservation':
-        loadPreservationMetrics();
-        break;
-      case 'ai-rag':
-        loadAIDiagnostics();
-        break;
-      case 'search':
-        loadSearchIntelligence();
-        break;
-      case 'analytics':
-        loadAnalyticsData();
-        break;
-      case 'kiosks':
-        loadKiosks();
-        break;
-      case 'multilingual':
-        loadMultilingual();
-        break;
-      case 'scheduled':
-        loadScheduledPublishing();
-        break;
-      case 'incidents':
-        loadIncidents();
-        break;
-      case 'system-health':
-        loadSystemHealth();
-        break;
-      case 'settings':
-        loadSystemSettings();
-        break;
-      case 'ocr-verify':
-        loadOcrQueue();
+      case 'system':
+        loadSystemSection();
         break;
     }
   }
@@ -299,25 +316,30 @@
 
   function renderOverviewStats(data) {
     const stats = data.stats || {};
-    const ext = data.extendedMetrics || {};
+    const ext = data.extendedMetrics || stats || {};
 
-    setStatText('stat-vol', stats.totalVolumes, '17');
-    setStatText('stat-let', stats.totalLetters, '361');
-    setStatText('stat-mem', stats.totalMemorials, '8');
-    setStatText('stat-ocr', stats.pendingOCRReviews, '0');
+    // 4 Primary Top KPI Cards (Real Data Only)
+    setStatText('stat-total-users', ext.totalUsers !== undefined ? ext.totalUsers : stats.totalUsers, '0');
+    setStatText('stat-active-users', ext.activeUsers !== undefined ? ext.activeUsers : stats.activeUsers, '0');
+    setStatText('stat-archive-assets', stats.archiveAssets !== undefined ? stats.archiveAssets : (ext.archiveAssets || 0), '0');
 
-    setStatText('stat-total-users', ext.totalUsers, '0');
-    setStatText('stat-active-users', ext.activeUsers, '0');
-    setStatText('stat-suspended-users', ext.suspendedUsers, '0');
-    setStatText('stat-security-alerts', ext.unresolvedSecurityAlerts, '0');
-    setStatText('stat-preservation-verified', ext.verifiedAssetsCount, '0');
-    setStatText('stat-ai-queries', ext.aiQueriesToday, '0');
-    setStatText('stat-pending-approvals', ext.pendingApprovals, '0');
+    const alertsCount = ext.unresolvedSecurityAlerts !== undefined
+      ? ext.unresolvedSecurityAlerts
+      : (data.recentSecurityEvents ? data.recentSecurityEvents.filter(s => s.status === 'ACTIVE').length : 0);
+    setStatText('stat-security-events', alertsCount, '0');
+
+    // Compact Activity Summary (Real Data Only)
+    setStatText('stat-new-users', ext.realUsersCount !== undefined ? ext.realUsersCount : (ext.totalUsers || 0), '0');
+    setStatText('stat-logins-success', stats.loginsToday !== undefined ? stats.loginsToday : 0, '0');
+    setStatText('stat-logins-failed', stats.failedLoginsToday !== undefined ? stats.failedLoginsToday : 0, '0');
+
+    const auditCount = Array.isArray(data.recentAuditLog) ? data.recentAuditLog.length : 0;
+    setStatText('stat-operations-count', auditCount, '0');
 
     // System health badge
     const healthBadge = document.getElementById('stat-system-health');
     if (healthBadge) {
-      healthBadge.textContent = 'HEALTHY (100% OPERATIONAL)';
+      healthBadge.textContent = 'HEALTHY';
       healthBadge.className = 'admin-chip success';
     }
 
@@ -1538,9 +1560,15 @@
       const data = await res.json();
 
       if (data.success && data.token) {
+        // Canonical token storage with backward compatibility
+        localStorage.setItem('auth_token', data.token);
         localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.data.user));
-        checkAdminAuth();
+        const user = data.user || (data.data && data.data.user);
+        if (user) {
+          localStorage.setItem('auth_user', JSON.stringify(user));
+          localStorage.setItem('user', JSON.stringify(user));
+        }
+        await checkAdminAuth();
       } else {
         if (errEl) {
           errEl.textContent = data.message || 'Login failed. Please verify credentials.';
@@ -1556,8 +1584,10 @@
   };
 
   window.handleLogout = function () {
-    localStorage.removeItem('token');
+    // Clear canonical and compatibility token keys
     localStorage.removeItem('auth_token');
+    localStorage.removeItem('token');
+    localStorage.removeItem('auth_user');
     localStorage.removeItem('user');
     window.location.reload();
   };
@@ -1681,15 +1711,128 @@
   window.handlePingKiosk = handlePingKiosk;
   window.handleRunScheduledNow = handleRunScheduledNow;
   window.handleCancelSchedule = handleCancelSchedule;
+  window.switchArchiveSubtab = switchArchiveSubtab;
+  window.switchSystemSubtab = switchSystemSubtab;
+  window.loadArchiveSection = loadArchiveSection;
+  window.loadSecuritySection = loadSecuritySection;
+  window.loadSystemSection = loadSystemSection;
   window.handleUpdateIncidentStatus = handleUpdateIncidentStatus;
   window.handleSaveSettings = handleSaveSettings;
   window.renderAuditLogs = renderAuditLogs;
   window.renderAdminPortal = renderAdminConsole;
 
-  // Initialize on DOM Ready
-  window.addEventListener('DOMContentLoaded', () => {
-    initTabNavigation();
-    checkAdminAuth();
+  function initEventListeners() {
+    // Masthead logout
+    const logoutBtn = document.getElementById('btn-masthead-logout');
+    if (logoutBtn) logoutBtn.addEventListener('click', window.handleLogout);
+
+    // Gate form submit & login button
+    const adminLoginForm = document.getElementById('admin-login-form');
+    if (adminLoginForm) {
+      adminLoginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        window.handleGateLogin();
+      });
+    }
+    const loginBtn = document.getElementById('gate-login-btn');
+    if (loginBtn) {
+      loginBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.handleGateLogin();
+      });
+    }
+
+    // Gate switch account button
+    const gateSwitchBtn = document.getElementById('gate-switch-btn');
+    if (gateSwitchBtn) gateSwitchBtn.addEventListener('click', window.handleLogout);
+
+    // Overview refresh
+    const refreshOverview = document.getElementById('btn-refresh-overview');
+    if (refreshOverview) refreshOverview.addEventListener('click', window.loadOverviewData);
+
+    // Users directory refresh & filters
+    const refreshUsers = document.getElementById('btn-refresh-users');
+    if (refreshUsers) refreshUsers.addEventListener('click', window.loadUsersTable);
+
+    const filterUsersBtn = document.getElementById('btn-filter-users');
+    if (filterUsersBtn) filterUsersBtn.addEventListener('click', window.loadUsersTable);
+
+    const userSearchInput = document.getElementById('user-search-input');
+    if (userSearchInput) {
+      userSearchInput.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') window.loadUsersTable();
+      });
+    }
+
+    const userClassFilter = document.getElementById('user-classification-filter');
+    if (userClassFilter) userClassFilter.addEventListener('change', window.loadUsersTable);
+
+    const userLoginFilter = document.getElementById('user-login-filter');
+    if (userLoginFilter) userLoginFilter.addEventListener('change', window.loadUsersTable);
+
+    const userRoleFilter = document.getElementById('user-role-filter');
+    if (userRoleFilter) userRoleFilter.addEventListener('change', window.loadUsersTable);
+
+    // Security refresh
+    const refreshSecurity = document.getElementById('btn-refresh-security');
+    if (refreshSecurity) refreshSecurity.addEventListener('click', window.loadSecuritySection);
+
+    // Archive refresh & subtabs
+    const refreshArchive = document.getElementById('btn-refresh-archive');
+    if (refreshArchive) refreshArchive.addEventListener('click', window.loadArchiveSection);
+
+    const subtabAssets = document.getElementById('subtab-archive-assets');
+    if (subtabAssets) subtabAssets.addEventListener('click', () => window.switchArchiveSubtab('assets'));
+
+    const subtabPreservation = document.getElementById('subtab-archive-preservation');
+    if (subtabPreservation) subtabPreservation.addEventListener('click', () => window.switchArchiveSubtab('preservation'));
+
+    const subtabPublishing = document.getElementById('subtab-archive-publishing');
+    if (subtabPublishing) subtabPublishing.addEventListener('click', () => window.switchArchiveSubtab('publishing'));
+
+    const verifyAllAssetsBtn = document.getElementById('btn-verify-all-assets');
+    if (verifyAllAssetsBtn) verifyAllAssetsBtn.addEventListener('click', window.handleVerifyAllAssets);
+
+    const cmsSearchInput = document.getElementById('cms-search-input');
+    if (cmsSearchInput) {
+      cmsSearchInput.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') window.loadCmsContent();
+      });
+    }
+
+    const cmsCategoryFilter = document.getElementById('cms-category-filter');
+    if (cmsCategoryFilter) cmsCategoryFilter.addEventListener('change', window.loadCmsContent);
+
+    // System health & settings
+    const runHealthCheck = document.getElementById('btn-run-health-check');
+    if (runHealthCheck) runHealthCheck.addEventListener('click', window.loadSystemSection);
+
+    const subtabHealth = document.getElementById('subtab-system-health');
+    if (subtabHealth) subtabHealth.addEventListener('click', () => window.switchSystemSubtab('health'));
+
+    const subtabSettings = document.getElementById('subtab-system-settings');
+    if (subtabSettings) subtabSettings.addEventListener('click', () => window.switchSystemSubtab('settings'));
+
+    const settingsForm = document.getElementById('system-settings-form');
+    if (settingsForm) {
+      settingsForm.addEventListener('submit', (e) => {
+        window.handleSaveSettings(e);
+      });
+    }
+
+    // Drawers and modals
+    const closeDrawerBtn = document.getElementById('btn-close-user-drawer');
+    if (closeDrawerBtn) closeDrawerBtn.addEventListener('click', closeUserDrawer);
+
+    const closeVersionModalBtn = document.getElementById('btn-close-version-modal');
+    if (closeVersionModalBtn) closeVersionModalBtn.addEventListener('click', closeVersionModal);
+
+    const delSampleBtn = document.getElementById('btn-del-sample');
+    if (delSampleBtn) {
+      delSampleBtn.addEventListener('click', () => {
+        window.handleDeleteRecord('ARCH-DOC-1948-004');
+      });
+    }
 
     // Close drawers on backdrop click or ESC key
     const backdrop = document.getElementById('admin-drawer-backdrop');
@@ -1701,6 +1844,13 @@
         closeVersionModal();
       }
     });
+  }
+
+  // Initialize on DOM Ready
+  window.addEventListener('DOMContentLoaded', () => {
+    initTabNavigation();
+    initEventListeners();
+    checkAdminAuth();
   });
 
 })();

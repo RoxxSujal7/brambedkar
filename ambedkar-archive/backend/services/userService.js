@@ -367,39 +367,63 @@ async function createUser({ name, email, password, phone = '', role = 'visitor',
   return user;
 }
 
+function isTestEmail(email = '') {
+  if (!email || typeof email !== 'string') return false;
+  const e = email.toLowerCase().trim();
+  return (
+    e.includes('test') ||
+    e.includes('example.com') ||
+    e.includes('verify_target_') ||
+    e.includes('session_inv_') ||
+    e.includes('sec_user_') ||
+    e.includes('clean_device_') ||
+    e.includes('regular_visitor_') ||
+    e.includes('atlas.verify.') ||
+    /^researcher_\d+@ambedkar-archive\.in$/i.test(e)
+  );
+}
+
 function classifyUser(userOrEmail, id = '') {
   let email = '';
   let userId = String(id || '');
   let name = '';
+  let isExplicitTest = false;
+  let explicitClassification = '';
+
   if (typeof userOrEmail === 'object' && userOrEmail !== null) {
     email = (userOrEmail.email || '').toLowerCase().trim();
     userId = String(userOrEmail._id || userOrEmail.id || id || '');
     name = (userOrEmail.name || '').toLowerCase().trim();
+    isExplicitTest = userOrEmail.isTest === true || userOrEmail.test === true;
+    explicitClassification = userOrEmail.userClassification || '';
   } else if (typeof userOrEmail === 'string') {
     email = userOrEmail.toLowerCase().trim();
   }
 
+  // 1. Hard test check: test signatures MUST NEVER classify as real
+  if (
+    isExplicitTest ||
+    isTestEmail(email) ||
+    userId.toLowerCase().includes('test') ||
+    name.toLowerCase().startsWith('test')
+  ) {
+    return 'test';
+  }
+
+  // 2. Demo user check
   const DEMO_EMAILS = [
     'visitor@ambedkar-archive.in',
     'researcher@ambedkar-archive.in',
     'editor@ambedkar-archive.in',
     'archivist@ambedkar-archive.in',
-    'admin@ambedkar-archive.in',
     'superadmin@ambedkar-archive.in',
   ];
 
-  if (DEMO_EMAILS.includes(email) || userId.startsWith('mock-user-') || email.includes('demo')) {
+  if (userId.startsWith('mock-user-') || email.includes('demo') || DEMO_EMAILS.includes(email) || explicitClassification === 'demo') {
     return 'demo';
   }
 
-  if (
-    email.includes('test') ||
-    email.includes('example.com') ||
-    email.includes('verify_target_') ||
-    email.includes('session_inv_') ||
-    userId.includes('test') ||
-    name.startsWith('test')
-  ) {
+  if (explicitClassification === 'test') {
     return 'test';
   }
 
@@ -534,7 +558,8 @@ async function findByPhone(phone, includePassword = false) {
 async function updateUser(id, updates) {
   if (isDbConnected()) {
     try {
-      return await User.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
+      const updated = await User.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
+      if (updated) return updated;
     } catch (e) {
       // fallback
     }
@@ -593,6 +618,7 @@ module.exports = {
   isDbConnected,
   getInMemoryUsers,
   classifyUser,
+  isTestEmail,
   recordUserLogin,
   recordUserLoginFailure,
   saveOfflineUsers,

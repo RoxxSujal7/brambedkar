@@ -11,3 +11,6 @@ coverage/
 backend/uploads/*
 !backend/uploads/.gitkeep
 backend/data/telegram_contacts.json
+test-results/
+playwright-report/
+scratch/

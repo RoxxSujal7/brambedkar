@@ -1287,5 +1287,208 @@
     ],
     "createdAt": "2026-09-29T20:05:55.952Z",
     "updatedAt": "2026-09-29T20:05:55.961Z"
+  },
+  {
+    "id": "col-b69f0e68d110764e",
+    "userId": "mock-user-researcher-001",
+    "title": "Constitutional Morality & Social Democracy",
+    "description": "Primary source excerpts from BAWS Vol. 13 and speeches on November 25, 1949.",
+    "tags": [
+      "Constitution",
+      "Democracy",
+      "Morality"
+    ],
+    "items": [
+      {
+        "id": "item-1a61834bdfbb",
+        "type": "passage",
+        "sourceId": "baws-vol-13",
+        "sourceTitle": "Constituent Assembly Debates (Nov 25, 1949)",
+        "archivalQuote": "Democracy in India is only a top-dressing on an Indian soil which is essentially undemocratic.",
+        "citation": "Ambedkar, B. R. (1949). CAD Vol. 11, p. 972.",
+        "userNote": "Crucial concept: Constitutional morality as cultivated habit rather than innate default.",
+        "tags": [
+          "Democracy",
+          "Constitutionalism"
+        ],
+        "createdAt": "2026-09-30T09:38:42.343Z"
+      }
+    ],
+    "createdAt": "2026-09-30T09:38:42.337Z",
+    "updatedAt": "2026-09-30T09:38:42.343Z"
+  },
+  {
+    "id": "col-906f02640f956270",
+    "userId": "mock-user-researcher-001",
+    "title": "Constitutional Morality & Social Democracy",
+    "description": "Primary source excerpts from BAWS Vol. 13 and speeches on November 25, 1949.",
+    "tags": [
+      "Constitution",
+      "Democracy",
+      "Morality"
+    ],
+    "items": [
+      {
+        "id": "item-3257672ef447",
+        "type": "passage",
+        "sourceId": "baws-vol-13",
+        "sourceTitle": "Constituent Assembly Debates (Nov 25, 1949)",
+        "archivalQuote": "Democracy in India is only a top-dressing on an Indian soil which is essentially undemocratic.",
+        "citation": "Ambedkar, B. R. (1949). CAD Vol. 11, p. 972.",
+        "userNote": "Crucial concept: Constitutional morality as cultivated habit rather than innate default.",
+        "tags": [
+          "Democracy",
+          "Constitutionalism"
+        ],
+        "createdAt": "2026-09-30T09:53:01.108Z"
+      }
+    ],
+    "createdAt": "2026-09-30T09:53:01.099Z",
+    "updatedAt": "2026-09-30T09:53:01.108Z"
+  },
+  {
+    "id": "col-82352decc59fce90",
+    "userId": "mock-user-researcher-001",
+    "title": "Constitutional Morality & Social Democracy",
+    "description": "Primary source excerpts from BAWS Vol. 13 and speeches on November 25, 1949.",
+    "tags": [
+      "Constitution",
+      "Democracy",
+      "Morality"
+    ],
+    "items": [
+      {
+        "id": "item-378e01353477",
+        "type": "passage",
+        "sourceId": "baws-vol-13",
+        "sourceTitle": "Constituent Assembly Debates (Nov 25, 1949)",
+        "archivalQuote": "Democracy in India is only a top-dressing on an Indian soil which is essentially undemocratic.",
+        "citation": "Ambedkar, B. R. (1949). CAD Vol. 11, p. 972.",
+        "userNote": "Crucial concept: Constitutional morality as cultivated habit rather than innate default.",
+        "tags": [
+          "Democracy",
+          "Constitutionalism"
+        ],
+        "createdAt": "2026-09-30T10:57:13.484Z"
+      }
+    ],
+    "createdAt": "2026-09-30T10:57:13.476Z",
+    "updatedAt": "2026-09-30T10:57:13.484Z"
+  },
+  {
+    "id": "col-918bb3c321cf4d5b",
+    "userId": "mock-user-researcher-001",
+    "title": "Constitutional Morality & Social Democracy",
+    "description": "Primary source excerpts from BAWS Vol. 13 and speeches on November 25, 1949.",
+    "tags": [
+      "Constitution",
+      "Democracy",
+      "Morality"
+    ],
+    "items": [
+      {
+        "id": "item-1052ab2f0a46",
+        "type": "passage",
+        "sourceId": "baws-vol-13",
+        "sourceTitle": "Constituent Assembly Debates (Nov 25, 1949)",
+        "archivalQuote": "Democracy in India is only a top-dressing on an Indian soil which is essentially undemocratic.",
+        "citation": "Ambedkar, B. R. (1949). CAD Vol. 11, p. 972.",
+        "userNote": "Crucial concept: Constitutional morality as cultivated habit rather than innate default.",
+        "tags": [
+          "Democracy",
+          "Constitutionalism"
+        ],
+        "createdAt": "2026-09-30T11:00:24.987Z"
+      }
+    ],
+    "createdAt": "2026-09-30T11:00:24.981Z",
+    "updatedAt": "2026-09-30T11:00:24.987Z"
+  },
+  {
+    "id": "col-d8a34d88432b69b9",
+    "userId": "mock-user-researcher-001",
+    "title": "Constitutional Morality & Social Democracy",
+    "description": "Primary source excerpts from BAWS Vol. 13 and speeches on November 25, 1949.",
+    "tags": [
+      "Constitution",
+      "Democracy",
+      "Morality"
+    ],
+    "items": [
+      {
+        "id": "item-81822a111c15",
+        "type": "passage",
+        "sourceId": "baws-vol-13",
+        "sourceTitle": "Constituent Assembly Debates (Nov 25, 1949)",
+        "archivalQuote": "Democracy in India is only a top-dressing on an Indian soil which is essentially undemocratic.",
+        "citation": "Ambedkar, B. R. (1949). CAD Vol. 11, p. 972.",
+        "userNote": "Crucial concept: Constitutional morality as cultivated habit rather than innate default.",
+        "tags": [
+          "Democracy",
+          "Constitutionalism"
+        ],
+        "createdAt": "2026-09-30T11:40:07.261Z"
+      }
+    ],
+    "createdAt": "2026-09-30T11:40:07.255Z",
+    "updatedAt": "2026-09-30T11:40:07.261Z"
+  },
+  {
+    "id": "col-24bed7f3a47c1e2e",
+    "userId": "mock-user-researcher-001",
+    "title": "Constitutional Morality & Social Democracy",
+    "description": "Primary source excerpts from BAWS Vol. 13 and speeches on November 25, 1949.",
+    "tags": [
+      "Constitution",
+      "Democracy",
+      "Morality"
+    ],
+    "items": [
+      {
+        "id": "item-57d12cca60e8",
+        "type": "passage",
+        "sourceId": "baws-vol-13",
+        "sourceTitle": "Constituent Assembly Debates (Nov 25, 1949)",
+        "archivalQuote": "Democracy in India is only a top-dressing on an Indian soil which is essentially undemocratic.",
+        "citation": "Ambedkar, B. R. (1949). CAD Vol. 11, p. 972.",
+        "userNote": "Crucial concept: Constitutional morality as cultivated habit rather than innate default.",
+        "tags": [
+          "Democracy",
+          "Constitutionalism"
+        ],
+        "createdAt": "2026-09-30T11:59:25.195Z"
+      }
+    ],
+    "createdAt": "2026-09-30T11:59:25.188Z",
+    "updatedAt": "2026-09-30T11:59:25.195Z"
+  },
+  {
+    "id": "col-4927c42f8948f822",
+    "userId": "mock-user-researcher-001",
+    "title": "Constitutional Morality & Social Democracy",
+    "description": "Primary source excerpts from BAWS Vol. 13 and speeches on November 25, 1949.",
+    "tags": [
+      "Constitution",
+      "Democracy",
+      "Morality"
+    ],
+    "items": [
+      {
+        "id": "item-c219cbc98954",
+        "type": "passage",
+        "sourceId": "baws-vol-13",
+        "sourceTitle": "Constituent Assembly Debates (Nov 25, 1949)",
+        "archivalQuote": "Democracy in India is only a top-dressing on an Indian soil which is essentially undemocratic.",
+        "citation": "Ambedkar, B. R. (1949). CAD Vol. 11, p. 972.",
+        "userNote": "Crucial concept: Constitutional morality as cultivated habit rather than innate default.",
+        "tags": [
+          "Democracy",
+          "Constitutionalism"
+        ],
+        "createdAt": "2026-09-30T12:10:03.257Z"
+      }
+    ],
+    "createdAt": "2026-09-30T12:10:03.251Z",
+    "updatedAt": "2026-09-30T12:10:03.257Z"
   }
 ]

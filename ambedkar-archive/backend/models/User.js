@@ -109,11 +109,21 @@ const userSchema = new mongoose.Schema(
     userClassification: {
       type: String,
       enum: ['real', 'demo', 'test', 'seeded'],
-      default: 'real',
     },
   },
   { timestamps: true }
 );
+
+// Enforce strict test/demo/real classification before saving
+userSchema.pre('save', function (next) {
+  try {
+    const userService = require('../services/userService');
+    if (userService && userService.classifyUser) {
+      this.userClassification = userService.classifyUser(this, this._id);
+    }
+  } catch (_) {}
+  next();
+});
 
 // Virtual aliases for standard production identity fields
 userSchema.virtual('userId').get(function () {

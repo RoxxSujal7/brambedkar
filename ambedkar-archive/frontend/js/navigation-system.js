@@ -339,6 +339,11 @@
   // ── 5. Master Movable / Floating Dockbar System ──────────
   function renderOrSyncFloatingDock() {
     const currentPath = getCurrentPath();
+    if (currentPath === 'admin.html') {
+      const existingDock = document.getElementById('global-floating-dock');
+      if (existingDock) existingDock.remove();
+      return;
+    }
     let dock = document.getElementById('global-floating-dock');
 
     // Remove obsolete legacy static side-docks if present

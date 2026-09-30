@@ -1,36 +1,1312 @@
 [
   {
-    "id": "LOG-376018-862e",
+    "id": "LOG-228180-50ac",
     "action": "USER_PROVISION",
     "actor": "superadmin@ambedkar-archive.in",
     "role": "super_admin",
     "resourceType": "user",
-    "resourceId": "6abc1a370a4c2b2d267a768a",
-    "details": "Admin provisioned account for scholar.1790712375486@columbia.edu with role visitor",
+    "resourceId": "6abcfc334ae1530f3593874e",
+    "details": "Admin provisioned account for scholar.1790770227789@columbia.edu with role visitor",
     "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T20:06:16.018Z"
+    "timestamp": "2026-09-30T12:10:28.180Z"
   },
   {
-    "id": "LOG-359543-89f7",
+    "id": "LOG-197152-4a4a",
+    "action": "SYSTEM_CONFIG",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "system",
+    "resourceId": "config",
+    "details": "Updated institutional settings",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T12:09:57.152Z"
+  },
+  {
+    "id": "LOG-196929-d4df",
+    "action": "DOCUMENT_INGEST",
+    "actor": "archivist@ambedkar-archive.in",
+    "role": "archivist",
+    "resourceType": "document",
+    "resourceId": "ARCH-DOC-1790770196929",
+    "details": "Archived document: \"Draft Resolution on Social Rights (1928)\"",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T12:09:56.929Z"
+  },
+  {
+    "id": "LOG-129596-42d7",
+    "action": "SETTINGS_UPDATE",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "system",
+    "resourceId": "settings",
+    "details": "Updated institutional system settings",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T12:08:49.596Z"
+  },
+  {
+    "id": "LOG-129577-f560",
+    "action": "INCIDENT_CREATE",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "incident",
+    "resourceId": "INC-2026-9575",
+    "details": "Reported incident INC-2026-9575: Minor optical scan distortion detected in Volume 4 page 112",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T12:08:49.577Z"
+  },
+  {
+    "id": "LOG-129510-b382",
+    "action": "AI_INDEX_TRIGGER",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "ai",
+    "resourceId": "knowledge_base",
+    "details": "Triggered full corpus re-indexing and embedding refresh",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T12:08:49.510Z"
+  },
+  {
+    "id": "LOG-129429-3da4",
+    "action": "ASSET_VERIFY",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "asset",
+    "resourceId": "AST-DOC-1916-001",
+    "details": "Verified integrity of asset AST-DOC-1916-001: VERIFIED",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T12:08:49.429Z"
+  },
+  {
+    "id": "LOG-129040-33c8",
+    "action": "PASSWORD_RESET",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "user",
+    "resourceId": "mock-user-researcher-001",
+    "details": "Force password reset initiated for user mock-user-researcher-001",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T12:08:49.040Z"
+  },
+  {
+    "id": "LOG-127699-b66b",
     "action": "ROLE_MODIFY",
     "actor": "superadmin@ambedkar-archive.in",
     "role": "super_admin",
     "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to visitor",
+    "resourceId": "user-001",
+    "details": "Changed role of user user-001 to researcher",
     "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T20:05:59.544Z"
+    "timestamp": "2026-09-30T12:08:47.699Z"
   },
   {
-    "id": "LOG-359138-ba16",
+    "id": "LOG-127690-fb25",
     "action": "ROLE_MODIFY",
     "actor": "superadmin@ambedkar-archive.in",
     "role": "super_admin",
     "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to researcher",
+    "resourceId": "user-001",
+    "details": "Changed role of user user-001 to archivist",
     "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T20:05:59.138Z"
+    "timestamp": "2026-09-30T12:08:47.690Z"
+  },
+  {
+    "id": "LOG-127511-6cbb",
+    "action": "OCR_VERIFY",
+    "actor": "archivist@ambedkar-archive.in",
+    "role": "archivist",
+    "resourceType": "ocr",
+    "resourceId": "OCR-JOB-101",
+    "details": "Reviewed and approved OCR transcription for OCR-JOB-101",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T12:08:47.511Z"
+  },
+  {
+    "id": "LOG-127498-0604",
+    "action": "METADATA_UPDATE",
+    "actor": "archivist@ambedkar-archive.in",
+    "role": "archivist",
+    "resourceType": "metadata",
+    "resourceId": "DOC-PREMIS-01",
+    "details": "Updated metadata schema for document DOC-PREMIS-01",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T12:08:47.498Z"
+  },
+  {
+    "id": "LOG-127489-cca0",
+    "action": "DOCUMENT_INGEST",
+    "actor": "archivist@ambedkar-archive.in",
+    "role": "archivist",
+    "resourceType": "document",
+    "resourceId": "INGEST-1790770127487",
+    "details": "Ingested file: \"Ambedkar_Address_1942.pdf\" (SHA-256: cc4af409cf57...)",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T12:08:47.490Z"
+  },
+  {
+    "id": "LOG-127470-8016",
+    "action": "CONTENT_RESTORE",
+    "actor": "editor@ambedkar-archive.in",
+    "role": "content_editor",
+    "resourceType": "debates",
+    "resourceId": "REC-DEB-1790770127442",
+    "details": "Restored debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T12:08:47.470Z"
+  },
+  {
+    "id": "LOG-127462-310e",
+    "action": "CONTENT_ARCHIVE",
+    "actor": "editor@ambedkar-archive.in",
+    "role": "content_editor",
+    "resourceType": "debates",
+    "resourceId": "REC-DEB-1790770127442",
+    "details": "Archived debates record: \"Archival Commentary on 1932 Poona Deliberations\" (Soft delete)",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T12:08:47.462Z"
+  },
+  {
+    "id": "LOG-127452-f5e1",
+    "action": "CONTENT_UPDATE",
+    "actor": "editor@ambedkar-archive.in",
+    "role": "content_editor",
+    "resourceType": "debates",
+    "resourceId": "REC-DEB-1790770127442",
+    "details": "Updated debates record: \"Archival Commentary on 1932 Poona Deliberations\" (v2)",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T12:08:47.452Z"
+  },
+  {
+    "id": "LOG-127443-bb79",
+    "action": "CONTENT_CREATE",
+    "actor": "editor@ambedkar-archive.in",
+    "role": "content_editor",
+    "resourceType": "debates",
+    "resourceId": "REC-DEB-1790770127442",
+    "details": "Created debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T12:08:47.443Z"
+  },
+  {
+    "id": "LOG-102822-e669",
+    "action": "USER_PROVISION",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "user",
+    "resourceId": "6abcfbb64ae1530f359385c6",
+    "details": "Admin provisioned account for scholar.1790770102449@columbia.edu with role visitor",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T12:08:22.822Z"
+  },
+  {
+    "id": "LOG-869013-919d",
+    "action": "USER_PROVISION",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "user",
+    "resourceId": "6abcfacc1d081a59c5559594",
+    "details": "Admin provisioned account for scholar.1790769868612@columbia.edu with role visitor",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T12:04:29.013Z"
+  },
+  {
+    "id": "LOG-748944-7c8d",
+    "action": "USER_PROVISION",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "user",
+    "resourceId": "6abcfa54e9ffd2c820400d96",
+    "details": "Admin provisioned account for scholar.1790769748561@columbia.edu with role visitor",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T12:02:28.944Z"
+  },
+  {
+    "id": "LOG-700307-ef14",
+    "action": "USER_PROVISION",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "user",
+    "resourceId": "6abcfa23961dd03ac8c8fbf4",
+    "details": "Admin provisioned account for scholar.1790769699942@columbia.edu with role visitor",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T12:01:40.307Z"
+  },
+  {
+    "id": "LOG-596950-47e1",
+    "action": "USER_PROVISION",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "user",
+    "resourceId": "6abcf9bb961dd03ac8c8fbc3",
+    "details": "Admin provisioned account for scholar.1790769593943@columbia.edu with role visitor",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:59:56.950Z"
+  },
+  {
+    "id": "LOG-558150-f913",
+    "action": "SYSTEM_CONFIG",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "system",
+    "resourceId": "config",
+    "details": "Updated institutional settings",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:59:18.150Z"
+  },
+  {
+    "id": "LOG-557998-3e3e",
+    "action": "DOCUMENT_INGEST",
+    "actor": "archivist@ambedkar-archive.in",
+    "role": "archivist",
+    "resourceType": "document",
+    "resourceId": "ARCH-DOC-1790769557998",
+    "details": "Archived document: \"Draft Resolution on Social Rights (1928)\"",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:59:17.999Z"
+  },
+  {
+    "id": "LOG-484362-88fe",
+    "action": "SETTINGS_UPDATE",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "system",
+    "resourceId": "settings",
+    "details": "Updated institutional system settings",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:58:04.363Z"
+  },
+  {
+    "id": "LOG-484346-5910",
+    "action": "INCIDENT_CREATE",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "incident",
+    "resourceId": "INC-2026-4344",
+    "details": "Reported incident INC-2026-4344: Minor optical scan distortion detected in Volume 4 page 112",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:58:04.347Z"
+  },
+  {
+    "id": "LOG-484289-38ac",
+    "action": "AI_INDEX_TRIGGER",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "ai",
+    "resourceId": "knowledge_base",
+    "details": "Triggered full corpus re-indexing and embedding refresh",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:58:04.289Z"
+  },
+  {
+    "id": "LOG-484209-9918",
+    "action": "ASSET_VERIFY",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "asset",
+    "resourceId": "AST-DOC-1916-001",
+    "details": "Verified integrity of asset AST-DOC-1916-001: VERIFIED",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:58:04.209Z"
+  },
+  {
+    "id": "LOG-483815-3f7c",
+    "action": "PASSWORD_RESET",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "user",
+    "resourceId": "mock-user-researcher-001",
+    "details": "Force password reset initiated for user mock-user-researcher-001",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:58:03.815Z"
+  },
+  {
+    "id": "LOG-482262-7540",
+    "action": "ROLE_MODIFY",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "user",
+    "resourceId": "user-001",
+    "details": "Changed role of user user-001 to researcher",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:58:02.262Z"
+  },
+  {
+    "id": "LOG-482253-db54",
+    "action": "ROLE_MODIFY",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "user",
+    "resourceId": "user-001",
+    "details": "Changed role of user user-001 to archivist",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:58:02.254Z"
+  },
+  {
+    "id": "LOG-482075-f7d4",
+    "action": "OCR_VERIFY",
+    "actor": "archivist@ambedkar-archive.in",
+    "role": "archivist",
+    "resourceType": "ocr",
+    "resourceId": "OCR-JOB-101",
+    "details": "Reviewed and approved OCR transcription for OCR-JOB-101",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:58:02.076Z"
+  },
+  {
+    "id": "LOG-482064-6178",
+    "action": "METADATA_UPDATE",
+    "actor": "archivist@ambedkar-archive.in",
+    "role": "archivist",
+    "resourceType": "metadata",
+    "resourceId": "DOC-PREMIS-01",
+    "details": "Updated metadata schema for document DOC-PREMIS-01",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:58:02.064Z"
+  },
+  {
+    "id": "LOG-482057-a470",
+    "action": "DOCUMENT_INGEST",
+    "actor": "archivist@ambedkar-archive.in",
+    "role": "archivist",
+    "resourceType": "document",
+    "resourceId": "INGEST-1790769482055",
+    "details": "Ingested file: \"Ambedkar_Address_1942.pdf\" (SHA-256: cc4af409cf57...)",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:58:02.057Z"
+  },
+  {
+    "id": "LOG-482036-1619",
+    "action": "CONTENT_RESTORE",
+    "actor": "editor@ambedkar-archive.in",
+    "role": "content_editor",
+    "resourceType": "debates",
+    "resourceId": "REC-DEB-1790769482013",
+    "details": "Restored debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:58:02.036Z"
+  },
+  {
+    "id": "LOG-482029-b926",
+    "action": "CONTENT_ARCHIVE",
+    "actor": "editor@ambedkar-archive.in",
+    "role": "content_editor",
+    "resourceType": "debates",
+    "resourceId": "REC-DEB-1790769482013",
+    "details": "Archived debates record: \"Archival Commentary on 1932 Poona Deliberations\" (Soft delete)",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:58:02.029Z"
+  },
+  {
+    "id": "LOG-482023-9554",
+    "action": "CONTENT_UPDATE",
+    "actor": "editor@ambedkar-archive.in",
+    "role": "content_editor",
+    "resourceType": "debates",
+    "resourceId": "REC-DEB-1790769482013",
+    "details": "Updated debates record: \"Archival Commentary on 1932 Poona Deliberations\" (v2)",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:58:02.023Z"
+  },
+  {
+    "id": "LOG-482014-e2c3",
+    "action": "CONTENT_CREATE",
+    "actor": "editor@ambedkar-archive.in",
+    "role": "content_editor",
+    "resourceType": "debates",
+    "resourceId": "REC-DEB-1790769482013",
+    "details": "Created debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:58:02.015Z"
+  },
+  {
+    "id": "LOG-399525-20dc",
+    "action": "SYSTEM_CONFIG",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "system",
+    "resourceId": "config",
+    "details": "Updated institutional settings",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:39:59.525Z"
+  },
+  {
+    "id": "LOG-398963-df81",
+    "action": "DOCUMENT_INGEST",
+    "actor": "archivist@ambedkar-archive.in",
+    "role": "archivist",
+    "resourceType": "document",
+    "resourceId": "ARCH-DOC-1790768398963",
+    "details": "Archived document: \"Draft Resolution on Social Rights (1928)\"",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:39:58.964Z"
+  },
+  {
+    "id": "LOG-325330-166a",
+    "action": "SETTINGS_UPDATE",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "system",
+    "resourceId": "settings",
+    "details": "Updated institutional system settings",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:38:45.330Z"
+  },
+  {
+    "id": "LOG-325306-187e",
+    "action": "INCIDENT_CREATE",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "incident",
+    "resourceId": "INC-2026-5302",
+    "details": "Reported incident INC-2026-5302: Minor optical scan distortion detected in Volume 4 page 112",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:38:45.306Z"
+  },
+  {
+    "id": "LOG-325212-ebf0",
+    "action": "AI_INDEX_TRIGGER",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "ai",
+    "resourceId": "knowledge_base",
+    "details": "Triggered full corpus re-indexing and embedding refresh",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:38:45.212Z"
+  },
+  {
+    "id": "LOG-325128-d326",
+    "action": "ASSET_VERIFY",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "asset",
+    "resourceId": "AST-DOC-1916-001",
+    "details": "Verified integrity of asset AST-DOC-1916-001: VERIFIED",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:38:45.128Z"
+  },
+  {
+    "id": "LOG-324948-00f1",
+    "action": "SECURITY_ACKNOWLEDGE",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "security",
+    "resourceId": "SEC-057557-3475",
+    "details": "Acknowledged security alert SEC-057557-3475",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:38:44.948Z"
+  },
+  {
+    "id": "LOG-324641-d1b2",
+    "action": "PASSWORD_RESET",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "user",
+    "resourceId": "mock-user-researcher-001",
+    "details": "Force password reset initiated for user mock-user-researcher-001",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:38:44.641Z"
+  },
+  {
+    "id": "LOG-321627-5609",
+    "action": "OCR_VERIFY",
+    "actor": "archivist@ambedkar-archive.in",
+    "role": "archivist",
+    "resourceType": "ocr",
+    "resourceId": "OCR-JOB-101",
+    "details": "Reviewed and approved OCR transcription for OCR-JOB-101",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:38:41.628Z"
+  },
+  {
+    "id": "LOG-321613-aaf0",
+    "action": "METADATA_UPDATE",
+    "actor": "archivist@ambedkar-archive.in",
+    "role": "archivist",
+    "resourceType": "metadata",
+    "resourceId": "DOC-PREMIS-01",
+    "details": "Updated metadata schema for document DOC-PREMIS-01",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:38:41.613Z"
+  },
+  {
+    "id": "LOG-321603-9797",
+    "action": "DOCUMENT_INGEST",
+    "actor": "archivist@ambedkar-archive.in",
+    "role": "archivist",
+    "resourceType": "document",
+    "resourceId": "INGEST-1790768321601",
+    "details": "Ingested file: \"Ambedkar_Address_1942.pdf\" (SHA-256: cc4af409cf57...)",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:38:41.603Z"
+  },
+  {
+    "id": "LOG-321577-9b35",
+    "action": "CONTENT_RESTORE",
+    "actor": "editor@ambedkar-archive.in",
+    "role": "content_editor",
+    "resourceType": "debates",
+    "resourceId": "REC-DEB-1790768321532",
+    "details": "Restored debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:38:41.577Z"
+  },
+  {
+    "id": "LOG-321568-cc26",
+    "action": "CONTENT_ARCHIVE",
+    "actor": "editor@ambedkar-archive.in",
+    "role": "content_editor",
+    "resourceType": "debates",
+    "resourceId": "REC-DEB-1790768321532",
+    "details": "Archived debates record: \"Archival Commentary on 1932 Poona Deliberations\" (Soft delete)",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:38:41.568Z"
+  },
+  {
+    "id": "LOG-321560-9053",
+    "action": "CONTENT_UPDATE",
+    "actor": "editor@ambedkar-archive.in",
+    "role": "content_editor",
+    "resourceType": "debates",
+    "resourceId": "REC-DEB-1790768321532",
+    "details": "Updated debates record: \"Archival Commentary on 1932 Poona Deliberations\" (v2)",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:38:41.560Z"
+  },
+  {
+    "id": "LOG-321533-2dff",
+    "action": "CONTENT_CREATE",
+    "actor": "editor@ambedkar-archive.in",
+    "role": "content_editor",
+    "resourceType": "debates",
+    "resourceId": "REC-DEB-1790768321532",
+    "details": "Created debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:38:41.534Z"
+  },
+  {
+    "id": "LOG-019690-7a86",
+    "action": "SYSTEM_CONFIG",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "system",
+    "resourceId": "config",
+    "details": "Updated institutional settings",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:00:19.690Z"
+  },
+  {
+    "id": "LOG-019351-e317",
+    "action": "DOCUMENT_INGEST",
+    "actor": "archivist@ambedkar-archive.in",
+    "role": "archivist",
+    "resourceType": "document",
+    "resourceId": "ARCH-DOC-1790766019351",
+    "details": "Archived document: \"Draft Resolution on Social Rights (1928)\"",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T11:00:19.351Z"
+  },
+  {
+    "id": "LOG-954120-65e0",
+    "action": "SETTINGS_UPDATE",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "system",
+    "resourceId": "settings",
+    "details": "Updated institutional system settings",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T10:59:14.120Z"
+  },
+  {
+    "id": "LOG-954101-4c97",
+    "action": "INCIDENT_CREATE",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "incident",
+    "resourceId": "INC-2026-4099",
+    "details": "Reported incident INC-2026-4099: Minor optical scan distortion detected in Volume 4 page 112",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T10:59:14.102Z"
+  },
+  {
+    "id": "LOG-954020-3202",
+    "action": "AI_INDEX_TRIGGER",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "ai",
+    "resourceId": "knowledge_base",
+    "details": "Triggered full corpus re-indexing and embedding refresh",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T10:59:14.020Z"
+  },
+  {
+    "id": "LOG-953947-35d1",
+    "action": "ASSET_VERIFY",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "asset",
+    "resourceId": "AST-DOC-1916-001",
+    "details": "Verified integrity of asset AST-DOC-1916-001: VERIFIED",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T10:59:13.947Z"
+  },
+  {
+    "id": "LOG-953794-bb81",
+    "action": "SECURITY_ACKNOWLEDGE",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "security",
+    "resourceId": "SEC-928556-abf9",
+    "details": "Acknowledged security alert SEC-928556-abf9",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T10:59:13.794Z"
+  },
+  {
+    "id": "LOG-953532-683e",
+    "action": "PASSWORD_RESET",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "user",
+    "resourceId": "mock-user-researcher-001",
+    "details": "Force password reset initiated for user mock-user-researcher-001",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T10:59:13.532Z"
+  },
+  {
+    "id": "LOG-950750-5630",
+    "action": "OCR_VERIFY",
+    "actor": "archivist@ambedkar-archive.in",
+    "role": "archivist",
+    "resourceType": "ocr",
+    "resourceId": "OCR-JOB-101",
+    "details": "Reviewed and approved OCR transcription for OCR-JOB-101",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T10:59:10.751Z"
+  },
+  {
+    "id": "LOG-950737-9144",
+    "action": "METADATA_UPDATE",
+    "actor": "archivist@ambedkar-archive.in",
+    "role": "archivist",
+    "resourceType": "metadata",
+    "resourceId": "DOC-PREMIS-01",
+    "details": "Updated metadata schema for document DOC-PREMIS-01",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T10:59:10.737Z"
+  },
+  {
+    "id": "LOG-950729-f939",
+    "action": "DOCUMENT_INGEST",
+    "actor": "archivist@ambedkar-archive.in",
+    "role": "archivist",
+    "resourceType": "document",
+    "resourceId": "INGEST-1790765950728",
+    "details": "Ingested file: \"Ambedkar_Address_1942.pdf\" (SHA-256: cc4af409cf57...)",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T10:59:10.730Z"
+  },
+  {
+    "id": "LOG-950705-ccfc",
+    "action": "CONTENT_RESTORE",
+    "actor": "editor@ambedkar-archive.in",
+    "role": "content_editor",
+    "resourceType": "debates",
+    "resourceId": "REC-DEB-1790765950677",
+    "details": "Restored debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T10:59:10.705Z"
+  },
+  {
+    "id": "LOG-950697-822e",
+    "action": "CONTENT_ARCHIVE",
+    "actor": "editor@ambedkar-archive.in",
+    "role": "content_editor",
+    "resourceType": "debates",
+    "resourceId": "REC-DEB-1790765950677",
+    "details": "Archived debates record: \"Archival Commentary on 1932 Poona Deliberations\" (Soft delete)",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T10:59:10.697Z"
+  },
+  {
+    "id": "LOG-950687-181d",
+    "action": "CONTENT_UPDATE",
+    "actor": "editor@ambedkar-archive.in",
+    "role": "content_editor",
+    "resourceType": "debates",
+    "resourceId": "REC-DEB-1790765950677",
+    "details": "Updated debates record: \"Archival Commentary on 1932 Poona Deliberations\" (v2)",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T10:59:10.687Z"
+  },
+  {
+    "id": "LOG-950678-15e6",
+    "action": "CONTENT_CREATE",
+    "actor": "editor@ambedkar-archive.in",
+    "role": "content_editor",
+    "resourceType": "debates",
+    "resourceId": "REC-DEB-1790765950677",
+    "details": "Created debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T10:59:10.678Z"
+  },
+  {
+    "id": "LOG-823030-eaba",
+    "action": "SYSTEM_CONFIG",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "system",
+    "resourceId": "config",
+    "details": "Updated institutional settings",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T10:57:03.030Z"
+  },
+  {
+    "id": "LOG-822545-fe02",
+    "action": "DOCUMENT_INGEST",
+    "actor": "archivist@ambedkar-archive.in",
+    "role": "archivist",
+    "resourceType": "document",
+    "resourceId": "ARCH-DOC-1790765822545",
+    "details": "Archived document: \"Draft Resolution on Social Rights (1928)\"",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T10:57:02.545Z"
+  },
+  {
+    "id": "LOG-705836-a123",
+    "action": "SETTINGS_UPDATE",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "system",
+    "resourceId": "settings",
+    "details": "Updated institutional system settings",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T10:55:05.836Z"
+  },
+  {
+    "id": "LOG-705820-8e55",
+    "action": "INCIDENT_CREATE",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "incident",
+    "resourceId": "INC-2026-5817",
+    "details": "Reported incident INC-2026-5817: Minor optical scan distortion detected in Volume 4 page 112",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T10:55:05.820Z"
+  },
+  {
+    "id": "LOG-705734-165a",
+    "action": "AI_INDEX_TRIGGER",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "ai",
+    "resourceId": "knowledge_base",
+    "details": "Triggered full corpus re-indexing and embedding refresh",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T10:55:05.735Z"
+  },
+  {
+    "id": "LOG-705661-342a",
+    "action": "ASSET_VERIFY",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "asset",
+    "resourceId": "AST-DOC-1916-001",
+    "details": "Verified integrity of asset AST-DOC-1916-001: VERIFIED",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T10:55:05.661Z"
+  },
+  {
+    "id": "LOG-705508-4826",
+    "action": "SECURITY_ACKNOWLEDGE",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "security",
+    "resourceId": "SEC-630019-2e39",
+    "details": "Acknowledged security alert SEC-630019-2e39",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T10:55:05.508Z"
+  },
+  {
+    "id": "LOG-705256-aa90",
+    "action": "PASSWORD_RESET",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "user",
+    "resourceId": "mock-user-researcher-001",
+    "details": "Force password reset initiated for user mock-user-researcher-001",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T10:55:05.256Z"
+  },
+  {
+    "id": "LOG-703111-dccc",
+    "action": "OCR_VERIFY",
+    "actor": "archivist@ambedkar-archive.in",
+    "role": "archivist",
+    "resourceType": "ocr",
+    "resourceId": "OCR-JOB-101",
+    "details": "Reviewed and approved OCR transcription for OCR-JOB-101",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T10:55:03.111Z"
+  },
+  {
+    "id": "LOG-703093-f1bd",
+    "action": "METADATA_UPDATE",
+    "actor": "archivist@ambedkar-archive.in",
+    "role": "archivist",
+    "resourceType": "metadata",
+    "resourceId": "DOC-PREMIS-01",
+    "details": "Updated metadata schema for document DOC-PREMIS-01",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T10:55:03.093Z"
+  },
+  {
+    "id": "LOG-703084-783e",
+    "action": "DOCUMENT_INGEST",
+    "actor": "archivist@ambedkar-archive.in",
+    "role": "archivist",
+    "resourceType": "document",
+    "resourceId": "INGEST-1790765703082",
+    "details": "Ingested file: \"Ambedkar_Address_1942.pdf\" (SHA-256: cc4af409cf57...)",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T10:55:03.084Z"
+  },
+  {
+    "id": "LOG-703059-ac7b",
+    "action": "CONTENT_RESTORE",
+    "actor": "editor@ambedkar-archive.in",
+    "role": "content_editor",
+    "resourceType": "debates",
+    "resourceId": "REC-DEB-1790765703014",
+    "details": "Restored debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T10:55:03.060Z"
+  },
+  {
+    "id": "LOG-703048-a0b4",
+    "action": "CONTENT_ARCHIVE",
+    "actor": "editor@ambedkar-archive.in",
+    "role": "content_editor",
+    "resourceType": "debates",
+    "resourceId": "REC-DEB-1790765703014",
+    "details": "Archived debates record: \"Archival Commentary on 1932 Poona Deliberations\" (Soft delete)",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T10:55:03.049Z"
+  },
+  {
+    "id": "LOG-703038-9f97",
+    "action": "CONTENT_UPDATE",
+    "actor": "editor@ambedkar-archive.in",
+    "role": "content_editor",
+    "resourceType": "debates",
+    "resourceId": "REC-DEB-1790765703014",
+    "details": "Updated debates record: \"Archival Commentary on 1932 Poona Deliberations\" (v2)",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T10:55:03.039Z"
+  },
+  {
+    "id": "LOG-703016-9392",
+    "action": "CONTENT_CREATE",
+    "actor": "editor@ambedkar-archive.in",
+    "role": "content_editor",
+    "resourceType": "debates",
+    "resourceId": "REC-DEB-1790765703014",
+    "details": "Created debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T10:55:03.016Z"
+  },
+  {
+    "id": "LOG-974928-b8ad",
+    "action": "SYSTEM_CONFIG",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "system",
+    "resourceId": "config",
+    "details": "Updated institutional settings",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:52:54.928Z"
+  },
+  {
+    "id": "LOG-974595-039e",
+    "action": "DOCUMENT_INGEST",
+    "actor": "archivist@ambedkar-archive.in",
+    "role": "archivist",
+    "resourceType": "document",
+    "resourceId": "ARCH-DOC-1790761974595",
+    "details": "Archived document: \"Draft Resolution on Social Rights (1928)\"",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:52:54.595Z"
+  },
+  {
+    "id": "LOG-924739-832a",
+    "action": "SETTINGS_UPDATE",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "system",
+    "resourceId": "settings",
+    "details": "Updated institutional system settings",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:52:04.739Z"
+  },
+  {
+    "id": "LOG-924719-fdf4",
+    "action": "INCIDENT_CREATE",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "incident",
+    "resourceId": "INC-2026-4716",
+    "details": "Reported incident INC-2026-4716: Minor optical scan distortion detected in Volume 4 page 112",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:52:04.719Z"
+  },
+  {
+    "id": "LOG-924644-704c",
+    "action": "AI_INDEX_TRIGGER",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "ai",
+    "resourceId": "knowledge_base",
+    "details": "Triggered full corpus re-indexing and embedding refresh",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:52:04.644Z"
+  },
+  {
+    "id": "LOG-924566-a1aa",
+    "action": "ASSET_VERIFY",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "asset",
+    "resourceId": "AST-DOC-1916-001",
+    "details": "Verified integrity of asset AST-DOC-1916-001: VERIFIED",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:52:04.566Z"
+  },
+  {
+    "id": "LOG-924405-5079",
+    "action": "SECURITY_ACKNOWLEDGE",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "security",
+    "resourceId": "SEC-915099-26a4",
+    "details": "Acknowledged security alert SEC-915099-26a4",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:52:04.405Z"
+  },
+  {
+    "id": "LOG-924143-0f93",
+    "action": "PASSWORD_RESET",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "user",
+    "resourceId": "mock-user-researcher-001",
+    "details": "Force password reset initiated for user mock-user-researcher-001",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:52:04.143Z"
+  },
+  {
+    "id": "LOG-921923-34d0",
+    "action": "OCR_VERIFY",
+    "actor": "archivist@ambedkar-archive.in",
+    "role": "archivist",
+    "resourceType": "ocr",
+    "resourceId": "OCR-JOB-101",
+    "details": "Reviewed and approved OCR transcription for OCR-JOB-101",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:52:01.923Z"
+  },
+  {
+    "id": "LOG-921905-2df1",
+    "action": "METADATA_UPDATE",
+    "actor": "archivist@ambedkar-archive.in",
+    "role": "archivist",
+    "resourceType": "metadata",
+    "resourceId": "DOC-PREMIS-01",
+    "details": "Updated metadata schema for document DOC-PREMIS-01",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:52:01.905Z"
+  },
+  {
+    "id": "LOG-921895-43e4",
+    "action": "DOCUMENT_INGEST",
+    "actor": "archivist@ambedkar-archive.in",
+    "role": "archivist",
+    "resourceType": "document",
+    "resourceId": "INGEST-1790761921883",
+    "details": "Ingested file: \"Ambedkar_Address_1942.pdf\" (SHA-256: cc4af409cf57...)",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:52:01.895Z"
+  },
+  {
+    "id": "LOG-921861-4f06",
+    "action": "CONTENT_RESTORE",
+    "actor": "editor@ambedkar-archive.in",
+    "role": "content_editor",
+    "resourceType": "debates",
+    "resourceId": "REC-DEB-1790761921829",
+    "details": "Restored debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:52:01.862Z"
+  },
+  {
+    "id": "LOG-921853-1648",
+    "action": "CONTENT_ARCHIVE",
+    "actor": "editor@ambedkar-archive.in",
+    "role": "content_editor",
+    "resourceType": "debates",
+    "resourceId": "REC-DEB-1790761921829",
+    "details": "Archived debates record: \"Archival Commentary on 1932 Poona Deliberations\" (Soft delete)",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:52:01.853Z"
+  },
+  {
+    "id": "LOG-921842-fa74",
+    "action": "CONTENT_UPDATE",
+    "actor": "editor@ambedkar-archive.in",
+    "role": "content_editor",
+    "resourceType": "debates",
+    "resourceId": "REC-DEB-1790761921829",
+    "details": "Updated debates record: \"Archival Commentary on 1932 Poona Deliberations\" (v2)",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:52:01.842Z"
+  },
+  {
+    "id": "LOG-921830-7820",
+    "action": "CONTENT_CREATE",
+    "actor": "editor@ambedkar-archive.in",
+    "role": "content_editor",
+    "resourceType": "debates",
+    "resourceId": "REC-DEB-1790761921829",
+    "details": "Created debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:52:01.831Z"
+  },
+  {
+    "id": "LOG-879991-38b0",
+    "action": "OCR_VERIFY",
+    "actor": "archivist@ambedkar-archive.in",
+    "role": "archivist",
+    "resourceType": "ocr",
+    "resourceId": "OCR-JOB-101",
+    "details": "Reviewed and approved OCR transcription for OCR-JOB-101",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:51:19.991Z"
+  },
+  {
+    "id": "LOG-879973-f9a0",
+    "action": "METADATA_UPDATE",
+    "actor": "archivist@ambedkar-archive.in",
+    "role": "archivist",
+    "resourceType": "metadata",
+    "resourceId": "DOC-PREMIS-01",
+    "details": "Updated metadata schema for document DOC-PREMIS-01",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:51:19.973Z"
+  },
+  {
+    "id": "LOG-879964-1021",
+    "action": "DOCUMENT_INGEST",
+    "actor": "archivist@ambedkar-archive.in",
+    "role": "archivist",
+    "resourceType": "document",
+    "resourceId": "INGEST-1790761879962",
+    "details": "Ingested file: \"Ambedkar_Address_1942.pdf\" (SHA-256: cc4af409cf57...)",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:51:19.964Z"
+  },
+  {
+    "id": "LOG-879938-eff9",
+    "action": "CONTENT_RESTORE",
+    "actor": "editor@ambedkar-archive.in",
+    "role": "content_editor",
+    "resourceType": "debates",
+    "resourceId": "REC-DEB-1790761879908",
+    "details": "Restored debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:51:19.938Z"
+  },
+  {
+    "id": "LOG-879928-59de",
+    "action": "CONTENT_ARCHIVE",
+    "actor": "editor@ambedkar-archive.in",
+    "role": "content_editor",
+    "resourceType": "debates",
+    "resourceId": "REC-DEB-1790761879908",
+    "details": "Archived debates record: \"Archival Commentary on 1932 Poona Deliberations\" (Soft delete)",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:51:19.928Z"
+  },
+  {
+    "id": "LOG-879919-85b3",
+    "action": "CONTENT_UPDATE",
+    "actor": "editor@ambedkar-archive.in",
+    "role": "content_editor",
+    "resourceType": "debates",
+    "resourceId": "REC-DEB-1790761879908",
+    "details": "Updated debates record: \"Archival Commentary on 1932 Poona Deliberations\" (v2)",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:51:19.919Z"
+  },
+  {
+    "id": "LOG-879909-24b3",
+    "action": "CONTENT_CREATE",
+    "actor": "editor@ambedkar-archive.in",
+    "role": "content_editor",
+    "resourceType": "debates",
+    "resourceId": "REC-DEB-1790761879908",
+    "details": "Created debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:51:19.910Z"
+  },
+  {
+    "id": "LOG-451242-01fb",
+    "action": "SYSTEM_CONFIG",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "system",
+    "resourceId": "config",
+    "details": "Updated institutional settings",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:44:11.242Z"
+  },
+  {
+    "id": "LOG-450926-949f",
+    "action": "DOCUMENT_INGEST",
+    "actor": "archivist@ambedkar-archive.in",
+    "role": "archivist",
+    "resourceType": "document",
+    "resourceId": "ARCH-DOC-1790761450926",
+    "details": "Archived document: \"Draft Resolution on Social Rights (1928)\"",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:44:10.926Z"
+  },
+  {
+    "id": "LOG-439275-3075",
+    "action": "SETTINGS_UPDATE",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "system",
+    "resourceId": "settings",
+    "details": "Updated institutional system settings",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:43:59.275Z"
+  },
+  {
+    "id": "LOG-439257-5d96",
+    "action": "INCIDENT_CREATE",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "incident",
+    "resourceId": "INC-2026-9254",
+    "details": "Reported incident INC-2026-9254: Minor optical scan distortion detected in Volume 4 page 112",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:43:59.257Z"
+  },
+  {
+    "id": "LOG-439180-89c8",
+    "action": "AI_INDEX_TRIGGER",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "ai",
+    "resourceId": "knowledge_base",
+    "details": "Triggered full corpus re-indexing and embedding refresh",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:43:59.180Z"
+  },
+  {
+    "id": "LOG-439098-8fcb",
+    "action": "ASSET_VERIFY",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "asset",
+    "resourceId": "AST-DOC-1916-001",
+    "details": "Verified integrity of asset AST-DOC-1916-001: VERIFIED",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:43:59.098Z"
+  },
+  {
+    "id": "LOG-438922-df43",
+    "action": "SECURITY_ACKNOWLEDGE",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "security",
+    "resourceId": "SEC-123402-831a",
+    "details": "Acknowledged security alert SEC-123402-831a",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:43:58.923Z"
+  },
+  {
+    "id": "LOG-438631-b0bf",
+    "action": "PASSWORD_RESET",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "user",
+    "resourceId": "mock-user-researcher-001",
+    "details": "Force password reset initiated for user mock-user-researcher-001",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:43:58.631Z"
+  },
+  {
+    "id": "LOG-281194-2cbe",
+    "action": "SETTINGS_UPDATE",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "system",
+    "resourceId": "settings",
+    "details": "Updated institutional system settings",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:41:21.195Z"
+  },
+  {
+    "id": "LOG-281172-3413",
+    "action": "INCIDENT_CREATE",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "incident",
+    "resourceId": "INC-2026-1170",
+    "details": "Reported incident INC-2026-1170: Minor optical scan distortion detected in Volume 4 page 112",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:41:21.172Z"
+  },
+  {
+    "id": "LOG-281091-8cbc",
+    "action": "AI_INDEX_TRIGGER",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "ai",
+    "resourceId": "knowledge_base",
+    "details": "Triggered full corpus re-indexing and embedding refresh",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:41:21.091Z"
+  },
+  {
+    "id": "LOG-280948-51fe",
+    "action": "ASSET_VERIFY",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "asset",
+    "resourceId": "AST-DOC-1916-001",
+    "details": "Verified integrity of asset AST-DOC-1916-001: VERIFIED",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:41:20.948Z"
+  },
+  {
+    "id": "LOG-280700-137a",
+    "action": "SECURITY_ACKNOWLEDGE",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "security",
+    "resourceId": "SEC-123402-831a",
+    "details": "Acknowledged security alert SEC-123402-831a",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:41:20.700Z"
+  },
+  {
+    "id": "LOG-280392-2d39",
+    "action": "PASSWORD_RESET",
+    "actor": "superadmin@ambedkar-archive.in",
+    "role": "super_admin",
+    "resourceType": "user",
+    "resourceId": "mock-user-researcher-001",
+    "details": "Force password reset initiated for user mock-user-researcher-001",
+    "ip": "127.0.0.1",
+    "timestamp": "2026-09-30T09:41:20.392Z"
   },
   {
     "id": "LOG-350241-0bbb",
@@ -42,28 +1318,6 @@
     "details": "Updated institutional settings",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T20:05:50.241Z"
-  },
-  {
-    "id": "LOG-350234-318b",
-    "action": "RECORD_DELETE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-TEST-DEL",
-    "details": "Deleted archival record ARCH-DOC-TEST-DEL",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T20:05:50.234Z"
-  },
-  {
-    "id": "LOG-349960-88d4",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "AIC-TEST-001",
-    "details": "Verified OCR for manuscript AIC-TEST-001",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T20:05:49.960Z"
   },
   {
     "id": "LOG-349953-85b6",
@@ -97,17 +1351,6 @@
     "details": "Reported incident INC-2026-6301: Minor optical scan distortion detected in Volume 4 page 112",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T20:05:16.303Z"
-  },
-  {
-    "id": "LOG-316283-b5e6",
-    "action": "CONTENT_SCHEDULE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "speeches",
-    "resourceId": "CON-TEST-1936",
-    "details": "Scheduled publication of \"Commemorative Release: Castes in India\" for 2026-09-30T20:05:16.284Z",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T20:05:16.283Z"
   },
   {
     "id": "LOG-316222-3cad",
@@ -152,28 +1395,6 @@
     "details": "Force password reset initiated for user mock-user-researcher-001",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T20:05:14.865Z"
-  },
-  {
-    "id": "LOG-312240-d04f",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T20:05:12.240Z"
-  },
-  {
-    "id": "LOG-312226-c2ac",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to archivist",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T20:05:12.226Z"
   },
   {
     "id": "LOG-312178-5654",
@@ -275,17 +1496,6 @@
     "timestamp": "2026-09-29T19:53:11.034Z"
   },
   {
-    "id": "LOG-591016-4ea8",
-    "action": "CONTENT_SCHEDULE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "speeches",
-    "resourceId": "CON-TEST-1936",
-    "details": "Scheduled publication of \"Commemorative Release: Castes in India\" for 2026-09-30T19:53:11.010Z",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T19:53:11.017Z"
-  },
-  {
     "id": "LOG-590955-8a87",
     "action": "AI_INDEX_TRIGGER",
     "actor": "superadmin@ambedkar-archive.in",
@@ -352,17 +1562,6 @@
     "timestamp": "2026-09-29T19:53:00.353Z"
   },
   {
-    "id": "LOG-580335-aaa3",
-    "action": "CONTENT_SCHEDULE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "speeches",
-    "resourceId": "CON-TEST-1936",
-    "details": "Scheduled publication of \"Commemorative Release: Castes in India\" for 2026-09-30T19:53:00.324Z",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T19:53:00.335Z"
-  },
-  {
     "id": "LOG-580257-8f33",
     "action": "AI_INDEX_TRIGGER",
     "actor": "superadmin@ambedkar-archive.in",
@@ -407,39 +1606,6 @@
     "timestamp": "2026-09-29T19:52:59.138Z"
   },
   {
-    "id": "LOG-578042-15d2",
-    "action": "USER_PROVISION",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "6abc17194b7391fb62989506",
-    "details": "Admin provisioned account for scholar.1790711577572@columbia.edu with role visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T19:52:58.042Z"
-  },
-  {
-    "id": "LOG-563083-45f5",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T19:52:43.083Z"
-  },
-  {
-    "id": "LOG-562843-3271",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T19:52:42.844Z"
-  },
-  {
     "id": "LOG-558949-94a1",
     "action": "SYSTEM_CONFIG",
     "actor": "superadmin@ambedkar-archive.in",
@@ -449,28 +1615,6 @@
     "details": "Updated institutional settings",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T19:52:38.949Z"
-  },
-  {
-    "id": "LOG-558940-ce78",
-    "action": "RECORD_DELETE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-TEST-DEL",
-    "details": "Deleted archival record ARCH-DOC-TEST-DEL",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T19:52:38.940Z"
-  },
-  {
-    "id": "LOG-558326-9bf0",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "AIC-TEST-001",
-    "details": "Verified OCR for manuscript AIC-TEST-001",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T19:52:38.326Z"
   },
   {
     "id": "LOG-558320-d565",
@@ -484,39 +1628,6 @@
     "timestamp": "2026-09-29T19:52:38.320Z"
   },
   {
-    "id": "LOG-552689-0a9c",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T19:52:32.689Z"
-  },
-  {
-    "id": "LOG-552017-2fdf",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T19:52:32.017Z"
-  },
-  {
-    "id": "LOG-542728-a027",
-    "action": "USER_PROVISION",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "6abc16f64b7391fb629893cb",
-    "details": "Admin provisioned account for scholar.1790711542074@columbia.edu with role visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T19:52:22.728Z"
-  },
-  {
     "id": "LOG-540107-c3ff",
     "action": "SYSTEM_CONFIG",
     "actor": "superadmin@ambedkar-archive.in",
@@ -526,28 +1637,6 @@
     "details": "Updated institutional settings",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T19:52:20.107Z"
-  },
-  {
-    "id": "LOG-540100-fec0",
-    "action": "RECORD_DELETE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-TEST-DEL",
-    "details": "Deleted archival record ARCH-DOC-TEST-DEL",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T19:52:20.100Z"
-  },
-  {
-    "id": "LOG-539216-ebfa",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "AIC-TEST-001",
-    "details": "Verified OCR for manuscript AIC-TEST-001",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T19:52:19.216Z"
   },
   {
     "id": "LOG-539205-3c2b",
@@ -583,17 +1672,6 @@
     "timestamp": "2026-09-29T19:52:05.100Z"
   },
   {
-    "id": "LOG-525072-a65e",
-    "action": "CONTENT_SCHEDULE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "speeches",
-    "resourceId": "CON-TEST-1936",
-    "details": "Scheduled publication of \"Commemorative Release: Castes in India\" for 2026-09-30T19:52:05.062Z",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T19:52:05.072Z"
-  },
-  {
     "id": "LOG-524994-4a4d",
     "action": "AI_INDEX_TRIGGER",
     "actor": "superadmin@ambedkar-archive.in",
@@ -625,28 +1703,6 @@
     "details": "Force password reset initiated for user mock-user-researcher-001",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T19:52:04.079Z"
-  },
-  {
-    "id": "LOG-522263-5d31",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T19:52:02.263Z"
-  },
-  {
-    "id": "LOG-522250-4347",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to archivist",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T19:52:02.251Z"
   },
   {
     "id": "LOG-522220-08c3",
@@ -748,17 +1804,6 @@
     "timestamp": "2026-09-29T19:51:46.042Z"
   },
   {
-    "id": "LOG-506021-b852",
-    "action": "CONTENT_SCHEDULE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "speeches",
-    "resourceId": "CON-TEST-1936",
-    "details": "Scheduled publication of \"Commemorative Release: Castes in India\" for 2026-09-30T19:51:46.012Z",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T19:51:46.021Z"
-  },
-  {
     "id": "LOG-505950-806c",
     "action": "AI_INDEX_TRIGGER",
     "actor": "superadmin@ambedkar-archive.in",
@@ -790,28 +1835,6 @@
     "details": "Force password reset initiated for user mock-user-researcher-001",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T19:51:45.080Z"
-  },
-  {
-    "id": "LOG-501784-276b",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T19:51:41.784Z"
-  },
-  {
-    "id": "LOG-501766-a66a",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to archivist",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T19:51:41.766Z"
   },
   {
     "id": "LOG-501715-763b",
@@ -891,39 +1914,6 @@
     "timestamp": "2026-09-29T19:51:41.618Z"
   },
   {
-    "id": "LOG-785729-51dd",
-    "action": "USER_PROVISION",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-0a4e52ca467f9eeb",
-    "details": "Admin provisioned account for scholar.1790709785386@columbia.edu with role visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T19:23:05.729Z"
-  },
-  {
-    "id": "LOG-773463-3c6c",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T19:22:53.464Z"
-  },
-  {
-    "id": "LOG-773431-f4ee",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T19:22:53.432Z"
-  },
-  {
     "id": "LOG-765584-bc76",
     "action": "SYSTEM_CONFIG",
     "actor": "superadmin@ambedkar-archive.in",
@@ -933,28 +1923,6 @@
     "details": "Updated institutional settings",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T19:22:45.584Z"
-  },
-  {
-    "id": "LOG-765575-1b1d",
-    "action": "RECORD_DELETE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-TEST-DEL",
-    "details": "Deleted archival record ARCH-DOC-TEST-DEL",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T19:22:45.576Z"
-  },
-  {
-    "id": "LOG-765550-bdd0",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "AIC-TEST-001",
-    "details": "Verified OCR for manuscript AIC-TEST-001",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T19:22:45.550Z"
   },
   {
     "id": "LOG-765538-b1ac",
@@ -988,17 +1956,6 @@
     "details": "Reported incident INC-2026-0934: Minor optical scan distortion detected in Volume 4 page 112",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T19:22:20.936Z"
-  },
-  {
-    "id": "LOG-740918-e478",
-    "action": "CONTENT_SCHEDULE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "speeches",
-    "resourceId": "CON-TEST-1936",
-    "details": "Scheduled publication of \"Commemorative Release: Castes in India\" for 2026-09-30T19:22:20.908Z",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T19:22:20.919Z"
   },
   {
     "id": "LOG-740850-087d",
@@ -1043,28 +2000,6 @@
     "details": "Force password reset initiated for user mock-user-researcher-001",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T19:22:20.744Z"
-  },
-  {
-    "id": "LOG-740388-e25d",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T19:22:20.388Z"
-  },
-  {
-    "id": "LOG-740378-abf5",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to archivist",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T19:22:20.378Z"
   },
   {
     "id": "LOG-740346-b69b",
@@ -1144,39 +2079,6 @@
     "timestamp": "2026-09-29T19:22:20.249Z"
   },
   {
-    "id": "LOG-314141-7c0a",
-    "action": "USER_PROVISION",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-71d42d6d9625c617",
-    "details": "Admin provisioned account for scholar.1790708313807@columbia.edu with role visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:58:34.141Z"
-  },
-  {
-    "id": "LOG-300674-a4ad",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:58:20.675Z"
-  },
-  {
-    "id": "LOG-300650-22e4",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:58:20.651Z"
-  },
-  {
     "id": "LOG-292854-38e7",
     "action": "SYSTEM_CONFIG",
     "actor": "superadmin@ambedkar-archive.in",
@@ -1186,28 +2088,6 @@
     "details": "Updated institutional settings",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T18:58:12.854Z"
-  },
-  {
-    "id": "LOG-292846-668e",
-    "action": "RECORD_DELETE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-TEST-DEL",
-    "details": "Deleted archival record ARCH-DOC-TEST-DEL",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:58:12.846Z"
-  },
-  {
-    "id": "LOG-292819-cf28",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "AIC-TEST-001",
-    "details": "Verified OCR for manuscript AIC-TEST-001",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:58:12.819Z"
   },
   {
     "id": "LOG-292808-c883",
@@ -1241,17 +2121,6 @@
     "details": "Reported incident INC-2026-8034: Minor optical scan distortion detected in Volume 4 page 112",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T18:57:48.038Z"
-  },
-  {
-    "id": "LOG-268016-285a",
-    "action": "CONTENT_SCHEDULE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "speeches",
-    "resourceId": "CON-TEST-1936",
-    "details": "Scheduled publication of \"Commemorative Release: Castes in India\" for 2026-09-30T18:57:48.006Z",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:57:48.016Z"
   },
   {
     "id": "LOG-267946-ebd8",
@@ -1296,28 +2165,6 @@
     "details": "Force password reset initiated for user mock-user-researcher-001",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T18:57:47.800Z"
-  },
-  {
-    "id": "LOG-267341-98e0",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:57:47.341Z"
-  },
-  {
-    "id": "LOG-267334-dd77",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to archivist",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:57:47.334Z"
   },
   {
     "id": "LOG-267306-df58",
@@ -1397,39 +2244,6 @@
     "timestamp": "2026-09-29T18:57:47.222Z"
   },
   {
-    "id": "LOG-250038-f0b9",
-    "action": "USER_PROVISION",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-c6926291c604f754",
-    "details": "Admin provisioned account for scholar.1790708249672@columbia.edu with role visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:57:30.038Z"
-  },
-  {
-    "id": "LOG-238275-d7b6",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:57:18.275Z"
-  },
-  {
-    "id": "LOG-238247-4b39",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:57:18.248Z"
-  },
-  {
     "id": "LOG-230592-85cb",
     "action": "SYSTEM_CONFIG",
     "actor": "superadmin@ambedkar-archive.in",
@@ -1439,28 +2253,6 @@
     "details": "Updated institutional settings",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T18:57:10.592Z"
-  },
-  {
-    "id": "LOG-230584-491f",
-    "action": "RECORD_DELETE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-TEST-DEL",
-    "details": "Deleted archival record ARCH-DOC-TEST-DEL",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:57:10.584Z"
-  },
-  {
-    "id": "LOG-230568-fe8e",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "AIC-TEST-001",
-    "details": "Verified OCR for manuscript AIC-TEST-001",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:57:10.568Z"
   },
   {
     "id": "LOG-230559-adb5",
@@ -1494,17 +2286,6 @@
     "details": "Reported incident INC-2026-6884: Minor optical scan distortion detected in Volume 4 page 112",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T18:56:46.890Z"
-  },
-  {
-    "id": "LOG-206859-fdc5",
-    "action": "CONTENT_SCHEDULE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "speeches",
-    "resourceId": "CON-TEST-1936",
-    "details": "Scheduled publication of \"Commemorative Release: Castes in India\" for 2026-09-30T18:56:46.847Z",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:56:46.859Z"
   },
   {
     "id": "LOG-206777-1e55",
@@ -1549,28 +2330,6 @@
     "details": "Force password reset initiated for user mock-user-researcher-001",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T18:56:46.627Z"
-  },
-  {
-    "id": "LOG-206302-e35c",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:56:46.302Z"
-  },
-  {
-    "id": "LOG-206295-2d88",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to archivist",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:56:46.295Z"
   },
   {
     "id": "LOG-206270-d660",
@@ -1661,28 +2420,6 @@
     "timestamp": "2026-09-29T18:55:54.887Z"
   },
   {
-    "id": "LOG-154880-c2c7",
-    "action": "RECORD_DELETE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-TEST-DEL",
-    "details": "Deleted archival record ARCH-DOC-TEST-DEL",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:55:54.880Z"
-  },
-  {
-    "id": "LOG-154863-c1d4",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "AIC-TEST-001",
-    "details": "Verified OCR for manuscript AIC-TEST-001",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:55:54.863Z"
-  },
-  {
     "id": "LOG-154844-9ba3",
     "action": "DOCUMENT_INGEST",
     "actor": "archivist@ambedkar-archive.in",
@@ -1694,39 +2431,6 @@
     "timestamp": "2026-09-29T18:55:54.844Z"
   },
   {
-    "id": "LOG-076441-3917",
-    "action": "USER_PROVISION",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-680066df8f043df4",
-    "details": "Admin provisioned account for scholar.1790708075977@columbia.edu with role visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:54:36.441Z"
-  },
-  {
-    "id": "LOG-064191-d784",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:54:24.191Z"
-  },
-  {
-    "id": "LOG-064132-662d",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:54:24.133Z"
-  },
-  {
     "id": "LOG-055447-ca33",
     "action": "SYSTEM_CONFIG",
     "actor": "superadmin@ambedkar-archive.in",
@@ -1736,28 +2440,6 @@
     "details": "Updated institutional settings",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T18:54:15.447Z"
-  },
-  {
-    "id": "LOG-055437-5399",
-    "action": "RECORD_DELETE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-TEST-DEL",
-    "details": "Deleted archival record ARCH-DOC-TEST-DEL",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:54:15.437Z"
-  },
-  {
-    "id": "LOG-055416-97d7",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "AIC-TEST-001",
-    "details": "Verified OCR for manuscript AIC-TEST-001",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:54:15.417Z"
   },
   {
     "id": "LOG-055397-9119",
@@ -1791,17 +2473,6 @@
     "details": "Reported incident INC-2026-0847: Minor optical scan distortion detected in Volume 4 page 112",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T18:53:50.850Z"
-  },
-  {
-    "id": "LOG-030834-56a2",
-    "action": "CONTENT_SCHEDULE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "speeches",
-    "resourceId": "CON-TEST-1936",
-    "details": "Scheduled publication of \"Commemorative Release: Castes in India\" for 2026-09-30T18:53:50.827Z",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:53:50.834Z"
   },
   {
     "id": "LOG-030791-8770",
@@ -1846,28 +2517,6 @@
     "details": "Force password reset initiated for user mock-user-researcher-001",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T18:53:50.689Z"
-  },
-  {
-    "id": "LOG-030417-f9dd",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:53:50.417Z"
-  },
-  {
-    "id": "LOG-030410-82e2",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to archivist",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:53:50.410Z"
   },
   {
     "id": "LOG-030389-e145",
@@ -1947,17 +2596,6 @@
     "timestamp": "2026-09-29T18:53:50.308Z"
   },
   {
-    "id": "LOG-025260-a3c8",
-    "action": "USER_PROVISION",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-a3918c27d1ba5477",
-    "details": "Admin provisioned account for scholar.1790708024967@columbia.edu with role visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:53:45.260Z"
-  },
-  {
     "id": "LOG-018985-494b",
     "action": "SETTINGS_UPDATE",
     "actor": "superadmin@ambedkar-archive.in",
@@ -1978,17 +2616,6 @@
     "details": "Reported incident INC-2026-8968: Minor optical scan distortion detected in Volume 4 page 112",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T18:53:38.969Z"
-  },
-  {
-    "id": "LOG-018956-85cd",
-    "action": "CONTENT_SCHEDULE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "speeches",
-    "resourceId": "CON-TEST-1936",
-    "details": "Scheduled publication of \"Commemorative Release: Castes in India\" for 2026-09-30T18:53:38.951Z",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:53:38.956Z"
   },
   {
     "id": "LOG-018917-aa95",
@@ -2035,61 +2662,6 @@
     "timestamp": "2026-09-29T18:53:38.823Z"
   },
   {
-    "id": "LOG-001941-5ad2",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:53:21.941Z"
-  },
-  {
-    "id": "LOG-001916-654a",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:53:21.916Z"
-  },
-  {
-    "id": "LOG-659796-7504",
-    "action": "USER_PROVISION",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-76508f932d008f46",
-    "details": "Admin provisioned account for scholar.1790707659420@columbia.edu with role visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:47:39.796Z"
-  },
-  {
-    "id": "LOG-648119-e93a",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:47:28.120Z"
-  },
-  {
-    "id": "LOG-648091-4657",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:47:28.091Z"
-  },
-  {
     "id": "LOG-640009-9a55",
     "action": "SYSTEM_CONFIG",
     "actor": "superadmin@ambedkar-archive.in",
@@ -2099,28 +2671,6 @@
     "details": "Updated institutional settings",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T18:47:20.009Z"
-  },
-  {
-    "id": "LOG-640001-d6ce",
-    "action": "RECORD_DELETE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-TEST-DEL",
-    "details": "Deleted archival record ARCH-DOC-TEST-DEL",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:47:20.001Z"
-  },
-  {
-    "id": "LOG-639982-21f0",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "AIC-TEST-001",
-    "details": "Verified OCR for manuscript AIC-TEST-001",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:47:19.983Z"
   },
   {
     "id": "LOG-639971-0773",
@@ -2154,17 +2704,6 @@
     "details": "Reported incident INC-2026-6135: Minor optical scan distortion detected in Volume 4 page 112",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T18:46:56.137Z"
-  },
-  {
-    "id": "LOG-616119-6317",
-    "action": "CONTENT_SCHEDULE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "speeches",
-    "resourceId": "CON-TEST-1936",
-    "details": "Scheduled publication of \"Commemorative Release: Castes in India\" for 2026-09-30T18:46:56.111Z",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:46:56.119Z"
   },
   {
     "id": "LOG-616072-c9b8",
@@ -2209,28 +2748,6 @@
     "details": "Force password reset initiated for user mock-user-researcher-001",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T18:46:55.976Z"
-  },
-  {
-    "id": "LOG-615668-c82a",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:46:55.668Z"
-  },
-  {
-    "id": "LOG-615661-7b38",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to archivist",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:46:55.661Z"
   },
   {
     "id": "LOG-615632-37f1",
@@ -2310,61 +2827,6 @@
     "timestamp": "2026-09-29T18:46:55.549Z"
   },
   {
-    "id": "LOG-579214-89e2",
-    "action": "USER_PROVISION",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-f6155d663999168a",
-    "details": "Admin provisioned account for scholar.1790707578915@columbia.edu with role visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:46:19.214Z"
-  },
-  {
-    "id": "LOG-535303-0398",
-    "action": "USER_PROVISION",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-1e93740c96a91a7f",
-    "details": "Admin provisioned account for scholar.1790707535013@columbia.edu with role visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:45:35.303Z"
-  },
-  {
-    "id": "LOG-410634-25e8",
-    "action": "USER_PROVISION",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-6f25e7f40444c5ea",
-    "details": "Admin provisioned account for scholar.1790707410339@columbia.edu with role visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:43:30.634Z"
-  },
-  {
-    "id": "LOG-437255-0509",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:10:37.255Z"
-  },
-  {
-    "id": "LOG-437235-ea5e",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:10:37.235Z"
-  },
-  {
     "id": "LOG-435208-991a",
     "action": "SYSTEM_CONFIG",
     "actor": "superadmin@ambedkar-archive.in",
@@ -2374,28 +2836,6 @@
     "details": "Updated institutional settings",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T18:10:35.209Z"
-  },
-  {
-    "id": "LOG-435198-42f9",
-    "action": "RECORD_DELETE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-TEST-DEL",
-    "details": "Deleted archival record ARCH-DOC-TEST-DEL",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:10:35.198Z"
-  },
-  {
-    "id": "LOG-435177-0e7a",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "AIC-TEST-001",
-    "details": "Verified OCR for manuscript AIC-TEST-001",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:10:35.177Z"
   },
   {
     "id": "LOG-435166-9096",
@@ -2429,17 +2869,6 @@
     "details": "Reported incident INC-2026-0085: Minor optical scan distortion detected in Volume 4 page 112",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T18:10:10.089Z"
-  },
-  {
-    "id": "LOG-410065-e575",
-    "action": "CONTENT_SCHEDULE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "speeches",
-    "resourceId": "CON-TEST-1936",
-    "details": "Scheduled publication of \"Commemorative Release: Castes in India\" for 2026-09-30T18:10:10.056Z",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:10:10.065Z"
   },
   {
     "id": "LOG-410005-b7c8",
@@ -2484,28 +2913,6 @@
     "details": "Force password reset initiated for user mock-user-researcher-001",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T18:10:09.908Z"
-  },
-  {
-    "id": "LOG-409613-8c1b",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:10:09.613Z"
-  },
-  {
-    "id": "LOG-409605-faf4",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to archivist",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:10:09.605Z"
   },
   {
     "id": "LOG-409576-8811",
@@ -2607,17 +3014,6 @@
     "timestamp": "2026-09-29T18:08:38.472Z"
   },
   {
-    "id": "LOG-318441-8163",
-    "action": "CONTENT_SCHEDULE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "speeches",
-    "resourceId": "CON-TEST-1936",
-    "details": "Scheduled publication of \"Commemorative Release: Castes in India\" for 2026-09-30T18:08:38.429Z",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:08:38.441Z"
-  },
-  {
     "id": "LOG-318375-3aa6",
     "action": "AI_INDEX_TRIGGER",
     "actor": "superadmin@ambedkar-archive.in",
@@ -2660,28 +3056,6 @@
     "details": "Force password reset initiated for user mock-user-researcher-001",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T18:08:38.280Z"
-  },
-  {
-    "id": "LOG-317804-e6c4",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:08:37.804Z"
-  },
-  {
-    "id": "LOG-317787-2b43",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to archivist",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:08:37.788Z"
   },
   {
     "id": "LOG-317741-2f71",
@@ -2761,28 +3135,6 @@
     "timestamp": "2026-09-29T18:08:37.555Z"
   },
   {
-    "id": "LOG-882782-6d0e",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:01:22.782Z"
-  },
-  {
-    "id": "LOG-882761-60f0",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:01:22.761Z"
-  },
-  {
     "id": "LOG-881052-353a",
     "action": "SYSTEM_CONFIG",
     "actor": "superadmin@ambedkar-archive.in",
@@ -2792,28 +3144,6 @@
     "details": "Updated institutional settings",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T18:01:21.052Z"
-  },
-  {
-    "id": "LOG-881043-2025",
-    "action": "RECORD_DELETE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-TEST-DEL",
-    "details": "Deleted archival record ARCH-DOC-TEST-DEL",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:01:21.043Z"
-  },
-  {
-    "id": "LOG-881022-6c50",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "AIC-TEST-001",
-    "details": "Verified OCR for manuscript AIC-TEST-001",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:01:21.022Z"
   },
   {
     "id": "LOG-881008-2c6e",
@@ -2847,17 +3177,6 @@
     "details": "Reported incident INC-2026-5121: Minor optical scan distortion detected in Volume 4 page 112",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T18:00:55.124Z"
-  },
-  {
-    "id": "LOG-855103-1892",
-    "action": "CONTENT_SCHEDULE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "speeches",
-    "resourceId": "CON-TEST-1936",
-    "details": "Scheduled publication of \"Commemorative Release: Castes in India\" for 2026-09-30T18:00:55.094Z",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:00:55.103Z"
   },
   {
     "id": "LOG-855042-7373",
@@ -2902,28 +3221,6 @@
     "details": "Force password reset initiated for user mock-user-researcher-001",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T18:00:54.940Z"
-  },
-  {
-    "id": "LOG-854640-1464",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:00:54.640Z"
-  },
-  {
-    "id": "LOG-854631-9e21",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to archivist",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:00:54.632Z"
   },
   {
     "id": "LOG-854601-45ae",
@@ -3003,28 +3300,6 @@
     "timestamp": "2026-09-29T18:00:54.513Z"
   },
   {
-    "id": "LOG-850117-c920",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:00:50.117Z"
-  },
-  {
-    "id": "LOG-850109-88e0",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to archivist",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:00:50.109Z"
-  },
-  {
     "id": "LOG-850082-e2b5",
     "action": "OCR_VERIFY",
     "actor": "archivist@ambedkar-archive.in",
@@ -3102,28 +3377,6 @@
     "timestamp": "2026-09-29T18:00:49.994Z"
   },
   {
-    "id": "LOG-822898-0f4a",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:00:22.898Z"
-  },
-  {
-    "id": "LOG-822878-2dc3",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:00:22.878Z"
-  },
-  {
     "id": "LOG-820676-247d",
     "action": "SYSTEM_CONFIG",
     "actor": "superadmin@ambedkar-archive.in",
@@ -3133,28 +3386,6 @@
     "details": "Updated institutional settings",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T18:00:20.676Z"
-  },
-  {
-    "id": "LOG-820666-9e7f",
-    "action": "RECORD_DELETE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-TEST-DEL",
-    "details": "Deleted archival record ARCH-DOC-TEST-DEL",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:00:20.666Z"
-  },
-  {
-    "id": "LOG-820645-ee59",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "AIC-TEST-001",
-    "details": "Verified OCR for manuscript AIC-TEST-001",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T18:00:20.645Z"
   },
   {
     "id": "LOG-820634-77a6",
@@ -3188,17 +3419,6 @@
     "details": "Reported incident INC-2026-3205: Minor optical scan distortion detected in Volume 4 page 112",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T17:59:53.208Z"
-  },
-  {
-    "id": "LOG-793188-30bd",
-    "action": "CONTENT_SCHEDULE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "speeches",
-    "resourceId": "CON-TEST-1936",
-    "details": "Scheduled publication of \"Commemorative Release: Castes in India\" for 2026-09-30T17:59:53.179Z",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:59:53.189Z"
   },
   {
     "id": "LOG-793141-d9d4",
@@ -3243,17 +3463,6 @@
     "details": "Force password reset initiated for user mock-user-researcher-001",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T17:59:53.042Z"
-  },
-  {
-    "id": "LOG-792713-b64e",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to archivist",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:59:52.713Z"
   },
   {
     "id": "LOG-792678-a35c",
@@ -3355,17 +3564,6 @@
     "timestamp": "2026-09-29T17:59:43.919Z"
   },
   {
-    "id": "LOG-783900-e53d",
-    "action": "CONTENT_SCHEDULE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "speeches",
-    "resourceId": "CON-TEST-1936",
-    "details": "Scheduled publication of \"Commemorative Release: Castes in India\" for 2026-09-30T17:59:43.892Z",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:59:43.900Z"
-  },
-  {
     "id": "LOG-783844-ad05",
     "action": "AI_INDEX_TRIGGER",
     "actor": "superadmin@ambedkar-archive.in",
@@ -3410,28 +3608,6 @@
     "timestamp": "2026-09-29T17:59:43.746Z"
   },
   {
-    "id": "LOG-391677-f16c",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:36:31.677Z"
-  },
-  {
-    "id": "LOG-391655-6b82",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:36:31.656Z"
-  },
-  {
     "id": "LOG-360902-f4cd",
     "action": "SETTINGS_UPDATE",
     "actor": "superadmin@ambedkar-archive.in",
@@ -3452,17 +3628,6 @@
     "details": "Reported incident INC-2026-0879: Minor optical scan distortion detected in Volume 4 page 112",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T17:36:00.882Z"
-  },
-  {
-    "id": "LOG-360864-7c36",
-    "action": "CONTENT_SCHEDULE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "speeches",
-    "resourceId": "CON-TEST-1936",
-    "details": "Scheduled publication of \"Commemorative Release: Castes in India\" for 2026-09-30T17:36:00.854Z",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:36:00.864Z"
   },
   {
     "id": "LOG-360810-efe9",
@@ -3531,17 +3696,6 @@
     "timestamp": "2026-09-29T17:35:42.943Z"
   },
   {
-    "id": "LOG-342924-bd58",
-    "action": "CONTENT_SCHEDULE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "speeches",
-    "resourceId": "CON-TEST-1936",
-    "details": "Scheduled publication of \"Commemorative Release: Castes in India\" for 2026-09-30T17:35:42.916Z",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:35:42.924Z"
-  },
-  {
     "id": "LOG-342850-8564",
     "action": "AI_INDEX_TRIGGER",
     "actor": "superadmin@ambedkar-archive.in",
@@ -3606,17 +3760,6 @@
     "details": "Reported incident INC-2026-5650: Minor optical scan distortion detected in Volume 4 page 112",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T17:26:55.653Z"
-  },
-  {
-    "id": "LOG-815629-dba2",
-    "action": "CONTENT_SCHEDULE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "speeches",
-    "resourceId": "CON-TEST-1936",
-    "details": "Scheduled publication of \"Commemorative Release: Castes in India\" for 2026-09-30T17:26:55.619Z",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:26:55.629Z"
   },
   {
     "id": "LOG-815569-97bc",
@@ -3685,17 +3828,6 @@
     "timestamp": "2026-09-29T17:21:01.451Z"
   },
   {
-    "id": "LOG-461435-3677",
-    "action": "CONTENT_SCHEDULE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "speeches",
-    "resourceId": "CON-TEST-1936",
-    "details": "Scheduled publication of \"Commemorative Release: Castes in India\" for 2026-09-30T17:21:01.429Z",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:21:01.435Z"
-  },
-  {
     "id": "LOG-461382-70dd",
     "action": "AI_INDEX_TRIGGER",
     "actor": "superadmin@ambedkar-archive.in",
@@ -3762,17 +3894,6 @@
     "timestamp": "2026-09-29T17:19:25.894Z"
   },
   {
-    "id": "LOG-365875-2673",
-    "action": "CONTENT_SCHEDULE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "speeches",
-    "resourceId": "CON-TEST-1936",
-    "details": "Scheduled publication of \"Commemorative Release: Castes in India\" for 2026-09-30T17:19:25.866Z",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:19:25.875Z"
-  },
-  {
     "id": "LOG-365811-0127",
     "action": "AI_INDEX_TRIGGER",
     "actor": "superadmin@ambedkar-archive.in",
@@ -3817,28 +3938,6 @@
     "timestamp": "2026-09-29T17:19:25.710Z"
   },
   {
-    "id": "LOG-308469-c544",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:18:28.470Z"
-  },
-  {
-    "id": "LOG-308447-09bd",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:18:28.447Z"
-  },
-  {
     "id": "LOG-305306-0a91",
     "action": "SYSTEM_CONFIG",
     "actor": "superadmin@ambedkar-archive.in",
@@ -3850,28 +3949,6 @@
     "timestamp": "2026-09-29T17:18:25.307Z"
   },
   {
-    "id": "LOG-305297-85ef",
-    "action": "RECORD_DELETE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-TEST-DEL",
-    "details": "Deleted archival record ARCH-DOC-TEST-DEL",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:18:25.297Z"
-  },
-  {
-    "id": "LOG-305278-0429",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "AIC-TEST-001",
-    "details": "Verified OCR for manuscript AIC-TEST-001",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:18:25.278Z"
-  },
-  {
     "id": "LOG-305267-ac18",
     "action": "DOCUMENT_INGEST",
     "actor": "archivist@ambedkar-archive.in",
@@ -3881,17 +3958,6 @@
     "details": "Archived document: \"Draft Resolution on Social Rights (1928)\"",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T17:18:25.267Z"
-  },
-  {
-    "id": "LOG-255017-7447",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to archivist",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:17:35.017Z"
   },
   {
     "id": "LOG-254986-15d9",
@@ -3971,28 +4037,6 @@
     "timestamp": "2026-09-29T17:17:34.875Z"
   },
   {
-    "id": "LOG-046184-16f1",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:14:06.184Z"
-  },
-  {
-    "id": "LOG-046156-f3bb",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:14:06.157Z"
-  },
-  {
     "id": "LOG-039525-2697",
     "action": "SYSTEM_CONFIG",
     "actor": "superadmin@ambedkar-archive.in",
@@ -4004,28 +4048,6 @@
     "timestamp": "2026-09-29T17:13:59.525Z"
   },
   {
-    "id": "LOG-039514-449e",
-    "action": "RECORD_DELETE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-TEST-DEL",
-    "details": "Deleted archival record ARCH-DOC-TEST-DEL",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:13:59.514Z"
-  },
-  {
-    "id": "LOG-039484-0eed",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "AIC-TEST-001",
-    "details": "Verified OCR for manuscript AIC-TEST-001",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:13:59.485Z"
-  },
-  {
     "id": "LOG-039471-cace",
     "action": "DOCUMENT_INGEST",
     "actor": "archivist@ambedkar-archive.in",
@@ -4035,17 +4057,6 @@
     "details": "Archived document: \"Draft Resolution on Social Rights (1928)\"",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T17:13:59.472Z"
-  },
-  {
-    "id": "LOG-996295-e648",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to archivist",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:13:16.295Z"
   },
   {
     "id": "LOG-996272-8b24",
@@ -4090,1413 +4101,5 @@
     "details": "Restored debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
     "ip": "127.0.0.1",
     "timestamp": "2026-09-29T17:13:16.220Z"
-  },
-  {
-    "id": "LOG-996210-e2d6",
-    "action": "CONTENT_ARCHIVE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790701996170",
-    "details": "Archived debates record: \"Archival Commentary on 1932 Poona Deliberations\" (Soft delete)",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:13:16.210Z"
-  },
-  {
-    "id": "LOG-996196-e861",
-    "action": "CONTENT_UPDATE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790701996170",
-    "details": "Updated debates record: \"Archival Commentary on 1932 Poona Deliberations\" (v2)",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:13:16.196Z"
-  },
-  {
-    "id": "LOG-996173-a395",
-    "action": "CONTENT_CREATE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790701996170",
-    "details": "Created debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:13:16.173Z"
-  },
-  {
-    "id": "LOG-976308-bcb2",
-    "action": "SYSTEM_CONFIG",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "system",
-    "resourceId": "config",
-    "details": "Updated institutional settings",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:12:56.308Z"
-  },
-  {
-    "id": "LOG-976297-41a4",
-    "action": "RECORD_DELETE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-TEST-DEL",
-    "details": "Deleted archival record ARCH-DOC-TEST-DEL",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:12:56.298Z"
-  },
-  {
-    "id": "LOG-976282-7f9f",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "AIC-TEST-001",
-    "details": "Verified OCR for manuscript AIC-TEST-001",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:12:56.283Z"
-  },
-  {
-    "id": "LOG-976263-0a75",
-    "action": "DOCUMENT_INGEST",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-1790701976262",
-    "details": "Archived document: \"Draft Resolution on Social Rights (1928)\"",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:12:56.263Z"
-  },
-  {
-    "id": "LOG-956787-c288",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:12:36.787Z"
-  },
-  {
-    "id": "LOG-956767-9715",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:12:36.767Z"
-  },
-  {
-    "id": "LOG-792987-30d9",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:09:52.987Z"
-  },
-  {
-    "id": "LOG-792965-1bb4",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:09:52.965Z"
-  },
-  {
-    "id": "LOG-783207-a621",
-    "action": "SYSTEM_CONFIG",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "system",
-    "resourceId": "config",
-    "details": "Updated institutional settings",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:09:43.207Z"
-  },
-  {
-    "id": "LOG-783194-42e3",
-    "action": "RECORD_DELETE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-TEST-DEL",
-    "details": "Deleted archival record ARCH-DOC-TEST-DEL",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:09:43.195Z"
-  },
-  {
-    "id": "LOG-783164-ebe9",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "AIC-TEST-001",
-    "details": "Verified OCR for manuscript AIC-TEST-001",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:09:43.164Z"
-  },
-  {
-    "id": "LOG-783153-2775",
-    "action": "DOCUMENT_INGEST",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-1790701783153",
-    "details": "Archived document: \"Draft Resolution on Social Rights (1928)\"",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:09:43.154Z"
-  },
-  {
-    "id": "LOG-783065-8658",
-    "action": "DOCUMENT_INGEST",
-    "actor": "researcher@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-1790701783065",
-    "details": "Archived document: \"Unauthorized Test Doc\"",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:09:43.065Z"
-  },
-  {
-    "id": "LOG-743208-c227",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to archivist",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:09:03.208Z"
-  },
-  {
-    "id": "LOG-743177-19c0",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "OCR-JOB-101",
-    "details": "Reviewed and approved OCR transcription for OCR-JOB-101",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:09:03.177Z"
-  },
-  {
-    "id": "LOG-743155-3c09",
-    "action": "METADATA_UPDATE",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "metadata",
-    "resourceId": "DOC-PREMIS-01",
-    "details": "Updated metadata schema for document DOC-PREMIS-01",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:09:03.155Z"
-  },
-  {
-    "id": "LOG-743144-0c6f",
-    "action": "DOCUMENT_INGEST",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "document",
-    "resourceId": "INGEST-1790701743141",
-    "details": "Ingested file: \"Ambedkar_Address_1942.pdf\" (SHA-256: cc4af409cf57...)",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:09:03.144Z"
-  },
-  {
-    "id": "LOG-743105-0c45",
-    "action": "CONTENT_RESTORE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790701743043",
-    "details": "Restored debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:09:03.105Z"
-  },
-  {
-    "id": "LOG-743087-9af4",
-    "action": "CONTENT_ARCHIVE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790701743043",
-    "details": "Archived debates record: \"Archival Commentary on 1932 Poona Deliberations\" (Soft delete)",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:09:03.088Z"
-  },
-  {
-    "id": "LOG-743069-a255",
-    "action": "CONTENT_UPDATE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790701743043",
-    "details": "Updated debates record: \"Archival Commentary on 1932 Poona Deliberations\" (v2)",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:09:03.069Z"
-  },
-  {
-    "id": "LOG-743045-732c",
-    "action": "CONTENT_CREATE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790701743043",
-    "details": "Created debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:09:03.045Z"
-  },
-  {
-    "id": "LOG-721645-889a",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:08:41.645Z"
-  },
-  {
-    "id": "LOG-721625-3f52",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:08:41.626Z"
-  },
-  {
-    "id": "LOG-636142-a282",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:07:16.142Z"
-  },
-  {
-    "id": "LOG-618410-e77a",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:06:58.411Z"
-  },
-  {
-    "id": "LOG-618390-137f",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T17:06:58.390Z"
-  },
-  {
-    "id": "LOG-973172-44ad",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:39:33.172Z"
-  },
-  {
-    "id": "LOG-973152-b966",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:39:33.152Z"
-  },
-  {
-    "id": "LOG-955705-862b",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to archivist",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:39:15.705Z"
-  },
-  {
-    "id": "LOG-955677-c795",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "OCR-JOB-101",
-    "details": "Reviewed and approved OCR transcription for OCR-JOB-101",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:39:15.677Z"
-  },
-  {
-    "id": "LOG-955664-58fb",
-    "action": "METADATA_UPDATE",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "metadata",
-    "resourceId": "DOC-PREMIS-01",
-    "details": "Updated metadata schema for document DOC-PREMIS-01",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:39:15.664Z"
-  },
-  {
-    "id": "LOG-955656-8df8",
-    "action": "DOCUMENT_INGEST",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "document",
-    "resourceId": "INGEST-1790699955654",
-    "details": "Ingested file: \"Ambedkar_Address_1942.pdf\" (SHA-256: cc4af409cf57...)",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:39:15.656Z"
-  },
-  {
-    "id": "LOG-955631-541a",
-    "action": "CONTENT_RESTORE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790699955578",
-    "details": "Restored debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:39:15.631Z"
-  },
-  {
-    "id": "LOG-955620-fa53",
-    "action": "CONTENT_ARCHIVE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790699955578",
-    "details": "Archived debates record: \"Archival Commentary on 1932 Poona Deliberations\" (Soft delete)",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:39:15.621Z"
-  },
-  {
-    "id": "LOG-955608-393a",
-    "action": "CONTENT_UPDATE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790699955578",
-    "details": "Updated debates record: \"Archival Commentary on 1932 Poona Deliberations\" (v2)",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:39:15.608Z"
-  },
-  {
-    "id": "LOG-955580-9c6a",
-    "action": "CONTENT_CREATE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790699955578",
-    "details": "Created debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:39:15.580Z"
-  },
-  {
-    "id": "LOG-945029-b3ad",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:39:05.029Z"
-  },
-  {
-    "id": "LOG-945013-0cef",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:39:05.013Z"
-  },
-  {
-    "id": "LOG-932771-b269",
-    "action": "SYSTEM_CONFIG",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "system",
-    "resourceId": "config",
-    "details": "Updated institutional settings",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:38:52.772Z"
-  },
-  {
-    "id": "LOG-932762-87cd",
-    "action": "RECORD_DELETE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-TEST-DEL",
-    "details": "Deleted archival record ARCH-DOC-TEST-DEL",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:38:52.762Z"
-  },
-  {
-    "id": "LOG-932737-b53f",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "AIC-TEST-001",
-    "details": "Verified OCR for manuscript AIC-TEST-001",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:38:52.737Z"
-  },
-  {
-    "id": "LOG-932726-8cbe",
-    "action": "DOCUMENT_INGEST",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-1790699932726",
-    "details": "Archived document: \"Draft Resolution on Social Rights (1928)\"",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:38:52.727Z"
-  },
-  {
-    "id": "LOG-883701-dc59",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to archivist",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:38:03.702Z"
-  },
-  {
-    "id": "LOG-883635-cb20",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "OCR-JOB-101",
-    "details": "Reviewed and approved OCR transcription for OCR-JOB-101",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:38:03.635Z"
-  },
-  {
-    "id": "LOG-883594-382f",
-    "action": "METADATA_UPDATE",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "metadata",
-    "resourceId": "DOC-PREMIS-01",
-    "details": "Updated metadata schema for document DOC-PREMIS-01",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:38:03.594Z"
-  },
-  {
-    "id": "LOG-883572-4123",
-    "action": "DOCUMENT_INGEST",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "document",
-    "resourceId": "INGEST-1790699883568",
-    "details": "Ingested file: \"Ambedkar_Address_1942.pdf\" (SHA-256: cc4af409cf57...)",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:38:03.572Z"
-  },
-  {
-    "id": "LOG-883507-be87",
-    "action": "CONTENT_RESTORE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790699883432",
-    "details": "Restored debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:38:03.508Z"
-  },
-  {
-    "id": "LOG-883482-590c",
-    "action": "CONTENT_ARCHIVE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790699883432",
-    "details": "Archived debates record: \"Archival Commentary on 1932 Poona Deliberations\" (Soft delete)",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:38:03.483Z"
-  },
-  {
-    "id": "LOG-883454-2817",
-    "action": "CONTENT_UPDATE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790699883432",
-    "details": "Updated debates record: \"Archival Commentary on 1932 Poona Deliberations\" (v2)",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:38:03.454Z"
-  },
-  {
-    "id": "LOG-883436-9795",
-    "action": "CONTENT_CREATE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790699883432",
-    "details": "Created debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:38:03.436Z"
-  },
-  {
-    "id": "LOG-473008-c87b",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:14:33.008Z"
-  },
-  {
-    "id": "LOG-472986-1cc2",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:14:32.986Z"
-  },
-  {
-    "id": "LOG-465848-cc34",
-    "action": "SYSTEM_CONFIG",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "system",
-    "resourceId": "config",
-    "details": "Updated institutional settings",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:14:25.848Z"
-  },
-  {
-    "id": "LOG-465841-9e79",
-    "action": "RECORD_DELETE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-TEST-DEL",
-    "details": "Deleted archival record ARCH-DOC-TEST-DEL",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:14:25.841Z"
-  },
-  {
-    "id": "LOG-465827-4b65",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "AIC-TEST-001",
-    "details": "Verified OCR for manuscript AIC-TEST-001",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:14:25.827Z"
-  },
-  {
-    "id": "LOG-465819-c59b",
-    "action": "DOCUMENT_INGEST",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-1790698465819",
-    "details": "Archived document: \"Draft Resolution on Social Rights (1928)\"",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:14:25.819Z"
-  },
-  {
-    "id": "LOG-424955-51de",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to archivist",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:13:44.955Z"
-  },
-  {
-    "id": "LOG-424934-9139",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "OCR-JOB-101",
-    "details": "Reviewed and approved OCR transcription for OCR-JOB-101",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:13:44.934Z"
-  },
-  {
-    "id": "LOG-424921-e899",
-    "action": "METADATA_UPDATE",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "metadata",
-    "resourceId": "DOC-PREMIS-01",
-    "details": "Updated metadata schema for document DOC-PREMIS-01",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:13:44.921Z"
-  },
-  {
-    "id": "LOG-424913-f87b",
-    "action": "DOCUMENT_INGEST",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "document",
-    "resourceId": "INGEST-1790698424912",
-    "details": "Ingested file: \"Ambedkar_Address_1942.pdf\" (SHA-256: cc4af409cf57...)",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:13:44.914Z"
-  },
-  {
-    "id": "LOG-424891-27e7",
-    "action": "CONTENT_RESTORE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790698424855",
-    "details": "Restored debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:13:44.891Z"
-  },
-  {
-    "id": "LOG-424878-5ef8",
-    "action": "CONTENT_ARCHIVE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790698424855",
-    "details": "Archived debates record: \"Archival Commentary on 1932 Poona Deliberations\" (Soft delete)",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:13:44.878Z"
-  },
-  {
-    "id": "LOG-424867-d292",
-    "action": "CONTENT_UPDATE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790698424855",
-    "details": "Updated debates record: \"Archival Commentary on 1932 Poona Deliberations\" (v2)",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:13:44.867Z"
-  },
-  {
-    "id": "LOG-424857-e993",
-    "action": "CONTENT_CREATE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790698424855",
-    "details": "Created debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:13:44.857Z"
-  },
-  {
-    "id": "LOG-405969-2624",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:13:25.969Z"
-  },
-  {
-    "id": "LOG-405952-45a0",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:13:25.952Z"
-  },
-  {
-    "id": "LOG-397857-5c29",
-    "action": "SYSTEM_CONFIG",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "system",
-    "resourceId": "config",
-    "details": "Updated institutional settings",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:13:17.857Z"
-  },
-  {
-    "id": "LOG-397848-8492",
-    "action": "RECORD_DELETE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-TEST-DEL",
-    "details": "Deleted archival record ARCH-DOC-TEST-DEL",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:13:17.849Z"
-  },
-  {
-    "id": "LOG-397834-9efb",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "AIC-TEST-001",
-    "details": "Verified OCR for manuscript AIC-TEST-001",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:13:17.834Z"
-  },
-  {
-    "id": "LOG-397824-fb87",
-    "action": "DOCUMENT_INGEST",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-1790698397823",
-    "details": "Archived document: \"Draft Resolution on Social Rights (1928)\"",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-29T16:13:17.824Z"
-  },
-  {
-    "id": "LOG-375583-d29d",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:46:15.584Z"
-  },
-  {
-    "id": "LOG-375553-ee67",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:46:15.553Z"
-  },
-  {
-    "id": "LOG-372050-d034",
-    "action": "SYSTEM_CONFIG",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "system",
-    "resourceId": "config",
-    "details": "Updated institutional settings",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:46:12.051Z"
-  },
-  {
-    "id": "LOG-372030-ef94",
-    "action": "RECORD_DELETE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-TEST-DEL",
-    "details": "Deleted archival record ARCH-DOC-TEST-DEL",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:46:12.030Z"
-  },
-  {
-    "id": "LOG-371995-f60f",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "AIC-TEST-001",
-    "details": "Verified OCR for manuscript AIC-TEST-001",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:46:11.995Z"
-  },
-  {
-    "id": "LOG-371970-bfa4",
-    "action": "DOCUMENT_INGEST",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-1790538371970",
-    "details": "Archived document: \"Draft Resolution on Social Rights (1928)\"",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:46:11.970Z"
-  },
-  {
-    "id": "LOG-329450-759b",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to archivist",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:45:29.450Z"
-  },
-  {
-    "id": "LOG-329416-a4ef",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "OCR-JOB-101",
-    "details": "Reviewed and approved OCR transcription for OCR-JOB-101",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:45:29.416Z"
-  },
-  {
-    "id": "LOG-329395-9d67",
-    "action": "METADATA_UPDATE",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "metadata",
-    "resourceId": "DOC-PREMIS-01",
-    "details": "Updated metadata schema for document DOC-PREMIS-01",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:45:29.395Z"
-  },
-  {
-    "id": "LOG-329382-4519",
-    "action": "DOCUMENT_INGEST",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "document",
-    "resourceId": "INGEST-1790538329380",
-    "details": "Ingested file: \"Ambedkar_Address_1942.pdf\" (SHA-256: cc4af409cf57...)",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:45:29.382Z"
-  },
-  {
-    "id": "LOG-329346-e2fd",
-    "action": "CONTENT_RESTORE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790538329298",
-    "details": "Restored debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:45:29.346Z"
-  },
-  {
-    "id": "LOG-329333-40c9",
-    "action": "CONTENT_ARCHIVE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790538329298",
-    "details": "Archived debates record: \"Archival Commentary on 1932 Poona Deliberations\" (Soft delete)",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:45:29.333Z"
-  },
-  {
-    "id": "LOG-329317-68b6",
-    "action": "CONTENT_UPDATE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790538329298",
-    "details": "Updated debates record: \"Archival Commentary on 1932 Poona Deliberations\" (v2)",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:45:29.318Z"
-  },
-  {
-    "id": "LOG-329300-2f05",
-    "action": "CONTENT_CREATE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790538329298",
-    "details": "Created debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:45:29.300Z"
-  },
-  {
-    "id": "LOG-226678-f1e6",
-    "action": "SYSTEM_CONFIG",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "system",
-    "resourceId": "config",
-    "details": "Updated institutional settings",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:43:46.678Z"
-  },
-  {
-    "id": "LOG-226668-0221",
-    "action": "RECORD_DELETE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-TEST-DEL",
-    "details": "Deleted archival record ARCH-DOC-TEST-DEL",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:43:46.668Z"
-  },
-  {
-    "id": "LOG-226655-e681",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "AIC-TEST-001",
-    "details": "Verified OCR for manuscript AIC-TEST-001",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:43:46.655Z"
-  },
-  {
-    "id": "LOG-226647-0f0a",
-    "action": "DOCUMENT_INGEST",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-1790538226647",
-    "details": "Archived document: \"Draft Resolution on Social Rights (1928)\"",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:43:46.647Z"
-  },
-  {
-    "id": "LOG-195328-9363",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to archivist",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:43:15.328Z"
-  },
-  {
-    "id": "LOG-195286-0193",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "OCR-JOB-101",
-    "details": "Reviewed and approved OCR transcription for OCR-JOB-101",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:43:15.286Z"
-  },
-  {
-    "id": "LOG-195258-602f",
-    "action": "METADATA_UPDATE",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "metadata",
-    "resourceId": "DOC-PREMIS-01",
-    "details": "Updated metadata schema for document DOC-PREMIS-01",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:43:15.258Z"
-  },
-  {
-    "id": "LOG-195240-7de1",
-    "action": "DOCUMENT_INGEST",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "document",
-    "resourceId": "INGEST-1790538195236",
-    "details": "Ingested file: \"Ambedkar_Address_1942.pdf\" (SHA-256: cc4af409cf57...)",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:43:15.240Z"
-  },
-  {
-    "id": "LOG-195205-08c0",
-    "action": "CONTENT_RESTORE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790538195158",
-    "details": "Restored debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:43:15.205Z"
-  },
-  {
-    "id": "LOG-195193-9f70",
-    "action": "CONTENT_ARCHIVE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790538195158",
-    "details": "Archived debates record: \"Archival Commentary on 1932 Poona Deliberations\" (Soft delete)",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:43:15.193Z"
-  },
-  {
-    "id": "LOG-195175-e635",
-    "action": "CONTENT_UPDATE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790538195158",
-    "details": "Updated debates record: \"Archival Commentary on 1932 Poona Deliberations\" (v2)",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:43:15.175Z"
-  },
-  {
-    "id": "LOG-195160-582d",
-    "action": "CONTENT_CREATE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790538195158",
-    "details": "Created debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:43:15.161Z"
-  },
-  {
-    "id": "LOG-102941-55e4",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:41:42.941Z"
-  },
-  {
-    "id": "LOG-102919-5764",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:41:42.919Z"
-  },
-  {
-    "id": "LOG-096813-1712",
-    "action": "SYSTEM_CONFIG",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "system",
-    "resourceId": "config",
-    "details": "Updated institutional settings",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:41:36.813Z"
-  },
-  {
-    "id": "LOG-096805-d7fe",
-    "action": "RECORD_DELETE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-TEST-DEL",
-    "details": "Deleted archival record ARCH-DOC-TEST-DEL",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:41:36.805Z"
-  },
-  {
-    "id": "LOG-096794-177f",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "AIC-TEST-001",
-    "details": "Verified OCR for manuscript AIC-TEST-001",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:41:36.794Z"
-  },
-  {
-    "id": "LOG-096787-9eb1",
-    "action": "DOCUMENT_INGEST",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-1790538096787",
-    "details": "Archived document: \"Draft Resolution on Social Rights (1928)\"",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:41:36.787Z"
-  },
-  {
-    "id": "LOG-053648-eaaa",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to archivist",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:40:53.649Z"
-  },
-  {
-    "id": "LOG-053609-5f5b",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "OCR-JOB-101",
-    "details": "Reviewed and approved OCR transcription for OCR-JOB-101",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:40:53.609Z"
-  },
-  {
-    "id": "LOG-053586-d3f7",
-    "action": "METADATA_UPDATE",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "metadata",
-    "resourceId": "DOC-PREMIS-01",
-    "details": "Updated metadata schema for document DOC-PREMIS-01",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:40:53.586Z"
-  },
-  {
-    "id": "LOG-053571-b9b8",
-    "action": "DOCUMENT_INGEST",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "document",
-    "resourceId": "INGEST-1790538053568",
-    "details": "Ingested file: \"Ambedkar_Address_1942.pdf\" (SHA-256: cc4af409cf57...)",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:40:53.571Z"
-  },
-  {
-    "id": "LOG-053527-7b75",
-    "action": "CONTENT_RESTORE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790538053479",
-    "details": "Restored debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:40:53.527Z"
-  },
-  {
-    "id": "LOG-053511-5870",
-    "action": "CONTENT_ARCHIVE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790538053479",
-    "details": "Archived debates record: \"Archival Commentary on 1932 Poona Deliberations\" (Soft delete)",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:40:53.512Z"
-  },
-  {
-    "id": "LOG-053496-0f00",
-    "action": "CONTENT_UPDATE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790538053479",
-    "details": "Updated debates record: \"Archival Commentary on 1932 Poona Deliberations\" (v2)",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:40:53.496Z"
-  },
-  {
-    "id": "LOG-053481-dc55",
-    "action": "CONTENT_CREATE",
-    "actor": "editor@ambedkar-archive.in",
-    "role": "content_editor",
-    "resourceType": "debates",
-    "resourceId": "REC-DEB-1790538053479",
-    "details": "Created debates record: \"Archival Commentary on 1932 Poona Deliberations\"",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:40:53.481Z"
-  },
-  {
-    "id": "LOG-806944-8aee",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:36:46.945Z"
-  },
-  {
-    "id": "LOG-806923-c43c",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:36:46.923Z"
-  },
-  {
-    "id": "LOG-797482-b947",
-    "action": "SYSTEM_CONFIG",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "system",
-    "resourceId": "config",
-    "details": "Updated institutional settings",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:36:37.482Z"
-  },
-  {
-    "id": "LOG-797466-4e7e",
-    "action": "RECORD_DELETE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-TEST-DEL",
-    "details": "Deleted archival record ARCH-DOC-TEST-DEL",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:36:37.467Z"
-  },
-  {
-    "id": "LOG-797431-7677",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "AIC-TEST-001",
-    "details": "Verified OCR for manuscript AIC-TEST-001",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:36:37.431Z"
-  },
-  {
-    "id": "LOG-797413-96a7",
-    "action": "DOCUMENT_INGEST",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-1790537797412",
-    "details": "Archived document: \"Draft Resolution on Social Rights (1928)\"",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:36:37.413Z"
-  },
-  {
-    "id": "LOG-413646-0cc0",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to visitor",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:30:13.647Z"
-  },
-  {
-    "id": "LOG-413626-7dde",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-000",
-    "details": "Changed role of user user-000 to researcher",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:30:13.626Z"
-  },
-  {
-    "id": "LOG-405101-2870",
-    "action": "SYSTEM_CONFIG",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "system",
-    "resourceId": "config",
-    "details": "Updated institutional settings",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:30:05.101Z"
-  },
-  {
-    "id": "LOG-405092-e137",
-    "action": "RECORD_DELETE",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-TEST-DEL",
-    "details": "Deleted archival record ARCH-DOC-TEST-DEL",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:30:05.092Z"
-  },
-  {
-    "id": "LOG-405078-fde8",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "AIC-TEST-001",
-    "details": "Verified OCR for manuscript AIC-TEST-001",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:30:05.079Z"
-  },
-  {
-    "id": "LOG-405070-e20d",
-    "action": "DOCUMENT_INGEST",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "document",
-    "resourceId": "ARCH-DOC-1790537405070",
-    "details": "Archived document: \"Draft Resolution on Social Rights (1928)\"",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:30:05.070Z"
-  },
-  {
-    "id": "LOG-357486-472a",
-    "action": "ROLE_MODIFY",
-    "actor": "superadmin@ambedkar-archive.in",
-    "role": "super_admin",
-    "resourceType": "user",
-    "resourceId": "user-001",
-    "details": "Changed role of user user-001 to archivist",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:29:17.486Z"
-  },
-  {
-    "id": "LOG-357443-2e44",
-    "action": "OCR_VERIFY",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "ocr",
-    "resourceId": "OCR-JOB-101",
-    "details": "Reviewed and approved OCR transcription for OCR-JOB-101",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:29:17.443Z"
-  },
-  {
-    "id": "LOG-357422-a880",
-    "action": "METADATA_UPDATE",
-    "actor": "archivist@ambedkar-archive.in",
-    "role": "archivist",
-    "resourceType": "metadata",
-    "resourceId": "DOC-PREMIS-01",
-    "details": "Updated metadata schema for document DOC-PREMIS-01",
-    "ip": "127.0.0.1",
-    "timestamp": "2026-09-27T19:29:17.422Z"
   }
 ]

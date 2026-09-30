@@ -13,6 +13,9 @@
  *  8. Authentic institutional metrics and authentication stats
  */
 
+require('dotenv').config();
+process.env.NODE_ENV = 'test';
+process.env.TEST_MODE = 'true';
 const assert = require('assert');
 const userService = require('../backend/services/userService');
 const adminService = require('../backend/services/adminService');
@@ -263,6 +266,8 @@ async function runTests() {
     // 12. Test Teardown: Leave database clean
     console.log('\n--- 12. Test Teardown: Purging Test Fixtures ---');
     try {
+      await req(`/api/admin/users/${encodeURIComponent(uniqueEmail)}`, 'DELETE', null, adminToken).catch(() => {});
+      await req(`/api/admin/users/${encodeURIComponent(otpUserEmail)}`, 'DELETE', null, adminToken).catch(() => {});
       const User = require('../backend/models/User');
       const AuthEvent = require('../backend/models/AuthEvent');
       const connectDB = require('../backend/config/db');

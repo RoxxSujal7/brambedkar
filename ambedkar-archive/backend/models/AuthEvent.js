@@ -89,6 +89,22 @@ const authEventSchema = new mongoose.Schema(
 
 authEventSchema.index({ createdAt: -1 });
 
+// Enforce strict test data isolation before saving
+authEventSchema.pre('save', function (next) {
+  try {
+    const userService = require('../services/userService');
+    if (this.eventClassification === 'test' || (userService && userService.isTestEmail && userService.isTestEmail(this.userEmail))) {
+      this.eventClassification = 'test';
+      if (mongoose.connection && mongoose.connection.name === 'ambedkar_archive') {
+        return next(new Error(`[TEST DATA ISOLATION] Blocked attempt to persist test AuthEvent (${this.userEmail}) into production database ambedkar_archive.`));
+      }
+    }
+  } catch (err) {
+    if (err.message && err.message.includes('[TEST DATA ISOLATION]')) return next(err);
+  }
+  next();
+});
+
 // Virtual aliases for frontend & audit consistency
 authEventSchema.virtual('provider').get(function () {
   return this.authMethod;

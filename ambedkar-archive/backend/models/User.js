@@ -121,7 +121,15 @@ userSchema.pre('save', function (next) {
     if (userService && userService.classifyUser) {
       this.userClassification = userService.classifyUser(this, this._id);
     }
-  } catch (_) {}
+    // Hard isolation check: Prevent saving test accounts to production database ambedkar_archive
+    if (mongoose.connection && mongoose.connection.name === 'ambedkar_archive') {
+      if (this.userClassification === 'test' || (userService && userService.isTestEmail && userService.isTestEmail(this.email))) {
+        return next(new Error(`[TEST DATA ISOLATION] Blocked attempt to persist synthetic test user (${this.email}) into production database ambedkar_archive.`));
+      }
+    }
+  } catch (err) {
+    if (err.message && err.message.includes('[TEST DATA ISOLATION]')) return next(err);
+  }
   next();
 });
 

@@ -20,9 +20,53 @@ const { protect } = require('../middleware/auth');
 const { requireRole, requirePermission, canManageRole, normalizeRole } = require('../middleware/roles');
 const userService = require('../services/userService');
 const adminService = require('../services/adminService');
+const { isDbConnected } = require('../config/db');
+const mongoose = require('mongoose');
 
 // All routes under /api/admin require authentication
 router.use(protect);
+
+// Institutional Administration Access Gate:
+// In production or live database mode, administrative APIs (/api/admin/*) are exclusively
+// accessible by genuine, verified administrator accounts.
+// Demo personas, offline mock identities, and test accounts are strictly FORBIDDEN (403).
+router.use((req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({ success: false, message: 'Authentication required.' });
+  }
+
+  const userId = String(req.user._id || req.user.id || '');
+  const email = (req.user.email || '').toLowerCase().trim();
+  const classification = userService.classifyUser
+    ? userService.classifyUser(req.user, userId)
+    : (req.user.userClassification || 'real');
+
+  const isDemo = classification === 'demo' ||
+                 req.user.userClassification === 'demo' ||
+                 userId.startsWith('mock-user-') ||
+                 Boolean(req.user.isDemo);
+
+  const isTest = classification === 'test' ||
+                 req.user.userClassification === 'test' ||
+                 (userService.isTestEmail && userService.isTestEmail(email));
+
+  const isProduction = process.env.NODE_ENV === 'production' ||
+                       Boolean(process.env.VERCEL) ||
+                       Boolean(process.env.VERCEL_ENV) ||
+                       req.headers['x-enforce-production-rbac'] === 'true';
+
+  if (isProduction && (isDemo || isTest)) {
+    return res.status(403).json({
+      success: false,
+      message: 'Access denied. The institutional administration console is restricted to verified production administrator credentials. Demo and synthetic accounts are strictly forbidden from accessing production administration.',
+      code: 'DEMO_ADMIN_FORBIDDEN',
+      classification,
+      currentRole: req.user.role,
+    });
+  }
+
+  next();
+});
 
 
 // Data Directory & Persistence paths
@@ -816,8 +860,8 @@ router.post('/ocr/verify', requirePermission('verify_ocr'), (req, res) => {
 // 2.7 AUDIT LOG ENDPOINT
 // ═════════════════════════════════════════════════════════════════════════════
 
-// GET /api/admin/audit-log
-router.get('/audit-log', requireRole('super_admin', 'admin'), (req, res) => {
+// GET /api/admin/audit-log and /api/admin/audit-logs
+router.get(['/audit-log', '/audit-logs'], requireRole('super_admin', 'admin'), (req, res) => {
   const { action, actor, limit = 50 } = req.query;
   let filtered = [...auditLog];
 

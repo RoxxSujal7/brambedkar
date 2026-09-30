@@ -79,12 +79,12 @@ async function runEnterpriseTests() {
   console.log('  PHASE 28: INSTITUTIONAL ADMIN ENTERPRISE UPGRADE TEST SUITE');
   console.log('═════════════════════════════════════════════════════════════════════\n');
 
-  // Authenticate test accounts
+  // Authenticate test accounts with real administrator
   const saRes = await req('/api/auth/login', 'POST', {
-    email: 'superadmin@ambedkar-archive.in',
-    password: 'SuperAdmin@1234'
+    email: 'admin@ambedkar-archive.in',
+    password: 'Admin@1234'
   });
-  assert(saRes.status === 200 && saRes.data.token, 'Super admin login failed');
+  assert(saRes.status === 200 && saRes.data.token, 'Admin login failed');
   superAdminToken = saRes.data.token;
 
   const visRes = await req('/api/auth/login', 'POST', {

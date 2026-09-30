@@ -21,6 +21,7 @@ const testFiles = [
   'theme-font-contrast.test.js',
   'real-user-login-intelligence.test.js',
   'test-data-isolation-and-classification.test.js',
+  'admin-real-vs-demo-auth.test.js',
 ];
 
 console.log('========================================================');

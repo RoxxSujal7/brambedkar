@@ -56,6 +56,6 @@ jobs:
  
       - name: Upload Strix SARIF to GitHub Code Scanning
         if: always() && env.LLM_API_KEY != ''
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: strix_runs
